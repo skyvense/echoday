@@ -28,11 +28,16 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
+      # The runner image ships an Android SDK; setup-android@v3 breaks on
+      # current cmdline-tools (it tries to install the removed 'tools'
+      # package), so install the two needed packages directly.
       - name: Install platform 34 and build-tools 34.0.0
-        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+        run: |
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          [ -x "$SDKMANAGER" ] || SDKMANAGER=$(ls "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager | sort -V | tail -1)
+          yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+          "$SDKMANAGER" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Inject signing keystore
         env:
@@ -47,6 +52,8 @@ jobs:
           printf '%s' "$KEYSTORE_INFO" > keystore-info.txt
 
       - name: Build APK
+        env:
+          ANDROID_HOME: /usr/local/lib/android/sdk
         run: ./build-apk.sh
 
       - name: Upload APK artifact
