@@ -50,9 +50,13 @@ public final class CloudSettings {
     private final Button createTokenButton, copyTokenButton, copyGuideButton;
     private final LinearLayout tokensContainer;
     private final View connectSection;
+    private final LinearLayout couponRow;
+    private final EditText couponInput;
+    private final Button redeemButton;
 
     private boolean loading = true;
     private boolean busy = false;
+    private boolean couponBusy = false;
     private String lastCreatedToken = null;
 
     public CloudSettings(Activity act, ViewGroup container, Ui.Palette pal) {
@@ -110,6 +114,30 @@ public final class CloudSettings {
         authRow.addView(loginButton, weightParams());
         authRow.addView(logoutButton, weightParams());
         card.addView(authRow);
+
+        // ---- Coupon redemption (logged-in only; visibility set in refreshState) ----
+        couponRow = new LinearLayout(act);
+        couponRow.setOrientation(LinearLayout.HORIZONTAL);
+        couponRow.setGravity(Gravity.CENTER_VERTICAL);
+        LinearLayout.LayoutParams crp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        crp.topMargin = dp(10);
+        couponRow.setLayoutParams(crp);
+        couponInput = input(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS,
+                act.getString(R.string.cloud_coupon_hint));
+        couponInput.setLayoutParams(new LinearLayout.LayoutParams(0,
+                ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        couponRow.addView(couponInput);
+        redeemButton = new Button(act);
+        redeemButton.setText(R.string.cloud_coupon_redeem);
+        Ui.stylePrimary(redeemButton, pal);
+        LinearLayout.LayoutParams rbp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        rbp.leftMargin = dp(8);
+        redeemButton.setLayoutParams(rbp);
+        couponRow.addView(redeemButton);
+        couponRow.setVisibility(View.GONE);
+        card.addView(couponRow);
 
         // ---- Connect my Muse ----
         LinearLayout connect = new LinearLayout(act);
@@ -198,6 +226,7 @@ public final class CloudSettings {
         registerButton.setOnClickListener(v -> doAuth(true));
         loginButton.setOnClickListener(v -> doAuth(false));
         logoutButton.setOnClickListener(v -> doLogout());
+        redeemButton.setOnClickListener(v -> doRedeemCoupon());
         createTokenButton.setOnClickListener(v -> doCreateToken());
         copyTokenButton.setOnClickListener(v -> {
             if (lastCreatedToken != null) {
@@ -228,6 +257,7 @@ public final class CloudSettings {
 
     private void refreshState(boolean forceTokens) {
         boolean loggedIn = Prefs.cloudLoggedIn(act);
+        couponRow.setVisibility(loggedIn ? View.VISIBLE : View.GONE);
         logoutButton.setVisibility(loggedIn ? View.VISIBLE : View.GONE);
         registerButton.setVisibility(loggedIn ? View.GONE : View.VISIBLE);
         loginButton.setVisibility(loggedIn ? View.GONE : View.VISIBLE);
@@ -284,6 +314,13 @@ public final class CloudSettings {
         if (billing == null) return act.getString(R.string.cloud_logged_in_as, email);
         String mode = billing.optString("mode", "");
         if ("paid".equals(mode)) {
+            String until = billing.optString("paidUntil", "");
+            if (until.startsWith("2099")) {
+                return act.getString(R.string.cloud_status_paid_lifetime, email);
+            }
+            if (until.length() >= 10) {
+                return act.getString(R.string.cloud_status_paid_until, email, until.substring(0, 10));
+            }
             return act.getString(R.string.cloud_status_paid, email);
         }
         if ("trial".equals(mode)) {
@@ -379,6 +416,83 @@ public final class CloudSettings {
         toast(act.getString(R.string.cloud_logout_done));
         refreshState(false);
         io.execute(() -> MuseCloud.logout(base, jwt));
+    }
+
+    private void doRedeemCoupon() {
+        if (couponBusy) return;
+        if (!Prefs.cloudLoggedIn(act)) {
+            toast(act.getString(R.string.cloud_tokens_login_first));
+            return;
+        }
+        final String code = couponInput.getText().toString().trim();
+        if (code.isEmpty()) {
+            toast(act.getString(R.string.cloud_coupon_err_empty));
+            return;
+        }
+        couponBusy = true;
+        redeemButton.setEnabled(false);
+        couponInput.setEnabled(false);
+        redeemButton.setText(R.string.cloud_coupon_working);
+        final String base = Prefs.cloudUrl(act);
+        final String jwt = Prefs.cloudJwt(act);
+        io.execute(() -> {
+            JSONObject result = null;
+            Exception error = null;
+            try {
+                result = MuseCloud.redeemCoupon(base, jwt, code);
+            } catch (Exception e) {
+                error = e;
+            }
+            final JSONObject fResult = result;
+            final Exception fError = error;
+            ui.post(() -> {
+                couponBusy = false;
+                redeemButton.setEnabled(true);
+                couponInput.setEnabled(true);
+                redeemButton.setText(R.string.cloud_coupon_redeem);
+                if (fError != null || fResult == null) {
+                    toast(couponErrorText(fError));
+                    return;
+                }
+                couponInput.setText("");
+                String until = fResult.optString("paid_until", "");
+                if ("lifetime".equals(fResult.optString("kind", "")) || until.startsWith("2099")) {
+                    toast(act.getString(R.string.cloud_coupon_ok_lifetime));
+                } else if (until.length() >= 10) {
+                    toast(act.getString(R.string.cloud_coupon_ok_until, until.substring(0, 10)));
+                } else {
+                    toast(act.getString(R.string.cloud_coupon_ok_generic));
+                }
+                refreshState(true);
+            });
+        });
+    }
+
+    /** Maps a redeem failure to its user-facing string (server error code → copy). */
+    private String couponErrorText(Exception e) {
+        if (e instanceof MuseCloud.HttpException) {
+            MuseCloud.HttpException he = (MuseCloud.HttpException) e;
+            switch (he.errorCode) {
+                case "invalid":
+                    return act.getString(R.string.cloud_coupon_err_invalid);
+                case "expired":
+                    return act.getString(R.string.cloud_coupon_err_expired);
+                case "exhausted":
+                    return act.getString(R.string.cloud_coupon_err_exhausted);
+                case "already_redeemed":
+                    return act.getString(R.string.cloud_coupon_err_already);
+                case "disabled":
+                    return act.getString(R.string.cloud_coupon_err_disabled);
+                default:
+                    break;
+            }
+            // Unknown server error: show its message when there is one.
+            String m = he.getMessage();
+            if (m != null && !m.isEmpty()) {
+                return act.getString(R.string.cloud_auth_failed, trimErr(he));
+            }
+        }
+        return act.getString(R.string.cloud_coupon_err_network);
     }
 
     private void doCreateToken() {

@@ -35,10 +35,17 @@ public final class MuseCloud {
     /** HTTP failure carrying the status code and the server's message. */
     public static final class HttpException extends Exception {
         public final int code;
+        /** Machine-readable error code from the body's "error" field ("" when absent). */
+        public final String errorCode;
 
         public HttpException(int code, String message) {
+            this(code, message, "");
+        }
+
+        public HttpException(int code, String message, String errorCode) {
             super(message);
             this.code = code;
+            this.errorCode = errorCode == null ? "" : errorCode;
         }
     }
 
@@ -79,6 +86,17 @@ public final class MuseCloud {
     /** GET /api/v1/me → publicUser {id, email, created_at, billing{…}, public_url}. */
     public static JSONObject me(String baseUrl, String jwt) throws Exception {
         return requestJson(baseUrl, "GET", "/api/v1/me", jwt, null);
+    }
+
+    /**
+     * POST /api/v1/coupons/redeem {code} → {code, kind, paid_until, mode,
+     * source, billing}. Failures throw HttpException whose errorCode is one
+     * of invalid / expired / exhausted / already_redeemed / disabled.
+     */
+    public static JSONObject redeemCoupon(String baseUrl, String jwt, String code) throws Exception {
+        JSONObject body = new JSONObject();
+        body.put("code", code);
+        return requestJson(baseUrl, "POST", "/api/v1/coupons/redeem", jwt, body);
     }
 
     // ---- agent tokens (user JWT) ----
@@ -218,10 +236,20 @@ public final class MuseCloud {
         String resp = readBody(conn);
         conn.disconnect();
         if (code < 200 || code >= 300) {
-            throw new HttpException(code, serverMessage(resp));
+            throw new HttpException(code, serverMessage(resp), serverErrorCode(resp));
         }
         if (resp == null || resp.trim().isEmpty()) return new JSONObject();
         return new JSONObject(resp);
+    }
+
+    /** Extracts the machine-readable "error" code of a platform error body, if present. */
+    private static String serverErrorCode(String body) {
+        if (body != null) {
+            try {
+                return new JSONObject(body).optString("error", "");
+            } catch (Exception ignored) {}
+        }
+        return "";
     }
 
     /** Extracts the "message" field of a platform error body, if present. */
