@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+agent-tools/
+*.log
+data
+.DS_Store
+android/**/*.apk
+coverage

@@ -1,0 +1,17 @@
+# secrets & local config
+.env
+*.env
+!*.env.example
+keystore-info.txt
+*.keystore
+vault/
+
+# build output
+node_modules/
+dist/
+build-out/
+*.apk
+
+# data
+data/
+*.log

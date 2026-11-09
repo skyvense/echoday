@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f3efe4;
+  --paper-deep: #e7e0d0;
+  --ink: #1b1714;
+  --ink-soft: #5e564c;
+  --card: #fffdf8;
+  --line: #d9d0c0;
+  --red: #c23b2e;
+  --red-deep: #8d241c;
+  --moss: #2f6b4f;
+  --amber: #8a5a12;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --paper: #141210;
+  --paper-deep: #221e1a;
+  --ink: #f6f1e7;
+  --ink-soft: #c9bbaa;
+  --card: #1e1a17;
+  --line: #3c342c;
+  --red: #e15a4a;
+  --red-deep: #ffb4a8;
+  --moss: #8dccb0;
+  --amber: #e0b56a;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141210;
+    --paper-deep: #221e1a;
+    --ink: #f6f1e7;
+    --ink-soft: #c9bbaa;
+    --card: #1e1a17;
+    --line: #3c342c;
+    --red: #e15a4a;
+    --red-deep: #ffb4a8;
+    --moss: #8dccb0;
+    --amber: #e0b56a;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --font-sans: "Figtree Variable", "Segoe UI", sans-serif;
+  --font-serif: "Fraunces Variable", Georgia, serif;
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-card: var(--card);
+  --color-line: var(--line);
+  --color-red: var(--red);
+  --color-red-deep: var(--red-deep);
+  --color-moss: var(--moss);
+  --color-amber: var(--amber);
+}
+
+html {
+  background: var(--color-paper);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--color-ink);
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(194, 59, 46, 0.08), transparent 50%),
+    var(--color-paper);
+  font-family: var(--font-sans);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-red);
+  outline-offset: 2px;
+}
+
+.prose-day h1,
+.prose-day h2,
+.prose-day h3 {
+  font-family: var(--font-serif);
+  font-weight: 560;
+  letter-spacing: -0.02em;
+  margin: 1.1em 0 0.35em;
+}
+
+.prose-day h1 {
+  font-size: 1.7rem;
+}
+
+.prose-day h2 {
+  font-size: 1.3rem;
+}
+
+.prose-day p,
+.prose-day li {
+  line-height: 1.55;
+}
+
+.prose-day ul,
+.prose-day ol {
+  padding-left: 1.2rem;
+  margin: 0.4rem 0 0.8rem;
+}
+
+.prose-day code {
+  font-size: 0.92em;
+  background: var(--color-paper-deep);
+  padding: 0.05em 0.3em;
+  border-radius: 0.25rem;
+}
+
+.prose-day p:first-child,
+.prose-day h1:first-child,
+.prose-day h2:first-child {
+  margin-top: 0;
+}

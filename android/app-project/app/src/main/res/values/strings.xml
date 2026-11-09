@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Default strings (English). Other locales live in values-<lang>/. -->
+<resources>
+    <string name="app_name">Muse Daily Recorder Cloud</string>
+    <!-- Short seconds unit for the segment progress overlay (e.g. 120/600s).
+         Only zh overrides this; every other locale falls back to "s". -->
+    <string name="seconds_short">s</string>
+    <string name="status_tap_record">Tap the red button to start recording</string>
+    <string name="status_tap_record_no_s3">Tap the red button to start recording (S3 is not configured yet; recordings will stay on this phone)</string>
+    <string name="files_title">Recordings</string>
+    <string name="files_title_pending">Recordings (%1$d pending · %2$s MB)</string>
+    <string name="retry_upload">Retry upload now</string>
+    <string name="settings_button">⚙️ Settings (S3 &amp; recording)</string>
+    <string name="settings_collapse">Collapse settings</string>
+    <string name="settings_s3_title">S3 storage settings (saving triggers an upload right away)</string>
+    <string name="preset_label">Cloud preset (picking one fills in the address and region; you can still edit them)</string>
+    <string name="endpoint_label">Endpoint (for R2: https://&lt;AccountID&gt;.r2.cloudflarestorage.com)</string>
+    <string name="region_label">Region (R2 uses “auto”; other providers use their region code)</string>
+    <string name="bucket_label">Bucket (Tencent Cloud bucket names need the -APPID suffix)</string>
+    <string name="access_key_label">Access Key ID</string>
+    <string name="secret_label">Secret Access Key (stored only on this phone — never share it)</string>
+    <string name="virtual_style_label">Virtual-host style (bucket in the hostname; check for Alibaba / Tencent / AWS / Qiniu, leave unchecked for R2 / B2)</string>
+    <string name="segment_minutes_label">Segment length (minutes, default 60)</string>
+    <string name="wifi_only_label">Upload only on Wi‑Fi / unmetered networks</string>
+    <string name="delete_after_label">Delete local segments after a successful upload (saves space)</string>
+    <string name="auto_resume_label">Auto-resume recording after the phone restarts</string>
+    <string name="snapshot_label">📸 Auto snapshot when the phone is raised past ~80°</string>
+    <string name="snapshot_hint">Off by default. When on: raise the phone from flat to upright and hold ~1 second — it takes photos, shrinks them to ~1024 px / ≤500 KB on the phone, and uploads them to snapshot-YYYY-MM-DD/ in the bucket. While recording runs it also works with the screen locked or off; after a phone reboot, open the app once to restore screen-off capture. Turn it off to stop all camera use.</string>
+    <string name="row_snapshot">📸 %1$s snapshot · %2$s MB · Pending upload</string>
+    <string name="tab_record">🎙 Record</string>
+    <string name="tab_cloud">☁️ Cloud</string>
+    <string name="tab_reports">📊 Reports</string>
+    <string name="tab_settings">⚙️ Settings</string>
+
+    <string name="cat_recording">🎙 Recording</string>
+    <string name="cat_upload">⬆️ Upload</string>
+    <string name="cat_snapshot">📸 Auto snapshot</string>
+    <string name="cat_reports">📊 Daily reports (Supabase)</string>
+    <string name="cat_system">🌐 Language &amp; system</string>
+
+    <string name="supabase_url_label">Supabase project URL</string>
+    <string name="supabase_key_label">Supabase publishable (anon) key — from the console: Settings → API</string>
+    <string name="supabase_hint">Used only by the Reports tab, read-only; the publishable key is enough (reads verified). Never paste the service_role key here.</string>
+
+    <string name="cloud_title">Cloud files (R2)</string>
+    <string name="cloud_refresh">Refresh</string>
+    <string name="cloud_back">‹ Back</string>
+    <string name="cloud_loading">Loading…</string>
+    <string name="cloud_downloading">Downloading…</string>
+    <string name="cloud_empty">Nothing here yet</string>
+    <string name="cloud_not_configured">Set up cloud storage in the Settings tab first</string>
+    <string name="cloud_failed">Failed: %1$s</string>
+    <string name="cloud_photo_section">📸 Photos</string>
+    <string name="cloud_audio_section">🎵 Audio</string>
+    <string name="player_play">▶ Play</string>
+    <string name="player_pause">⏸ Pause</string>
+
+    <string name="reports_title">Daily summaries</string>
+    <string name="reports_loading">Loading…</string>
+    <string name="reports_empty">No daily summaries yet</string>
+    <string name="reports_not_configured">Paste the Supabase publishable key in the Settings tab to read daily summaries here</string>
+    <string name="reports_failed">Failed to load: %1$s</string>
+    <string name="reports_segments">%1$d segments</string>
+    <string name="reports_sheet_button">Daily activity sheet (%1$d photos · %2$d activities)</string>
+    <string name="reports_sheet_hide">Hide activity sheet</string>
+    <string name="reports_sheet_loading">Loading image…</string>
+    <string name="reports_sheet_failed">Activity sheet could not be loaded: %1$s</string>
+    <string name="reports_analyses_title">Window reports of the day</string>
+    <string name="reports_analyses_failed">Window reports could not be loaded (read policy may be missing)</string>
+
+    <string name="snapshot_camera_label">Snapshot cameras (applies immediately)</string>
+    <string name="snap_status_waiting">📸 Snapshot detection: waiting for a raise (now %1$d°, fires past 80°)</string>
+    <string name="snap_status_raising">📸 Raising detected at %1$d° — keep going to 80°</string>
+    <string name="snap_status_pose">📸 Pose detected at %1$d° — hold it…</string>
+    <string name="snap_status_high">📸 Snapshot done — lower the phone to get ready again</string>
+    <string name="snap_status_held">📸 Holding upright — next auto shot in %1$d s</string>
+    <string name="snap_status_locked">📸 Shot taken — lay the phone flat to shoot again</string>
+    <string name="snapshot_repeat_label">Auto-repeat while held upright, minutes (0 = off)</string>
+    <string name="snap_status_capturing">📸 Taking snapshot…</string>
+    <string name="snap_status_cooldown">📸 Cooldown — %1$d s left</string>
+    <string name="snap_status_no_permission">📸 Snapshot detection: camera permission needed</string>
+    <string name="snapshot_filter_label">Filter out blank snapshots on this phone</string>
+    <string name="snapshot_filter_hint">On by default. Each photo is scored on the phone (a few ms); near-black or detail-free frames (lens covered, in a pocket) are not saved or uploaded — only a count is recorded. Turn off to upload every frame.</string>
+    <string name="snapshot_test_button">📸 Test snapshot now</string>
+    <string name="toast_snapshot_testing">Taking a test snapshot… watch the file list below</string>
+
+    <string-array name="snapshot_camera_options">
+        <item>Back + front</item>
+        <item>Back only</item>
+        <item>Front only</item>
+    </string-array>
+    <string name="toast_camera_permission">Please allow camera permission for auto snapshots</string>
+    <string name="toast_camera_denied">Camera permission denied — auto snapshot stays off</string>
+    <string name="save_settings">Save settings</string>
+    <string name="battery_button">Allow background running (disable battery optimization)</string>
+    <string name="events_title">Event markers</string>
+    <string name="no_events_yet">No markers yet</string>
+    <string name="conv_card">💬 Conversation</string>
+    <string name="meeting_card">👥 Meeting</string>
+    <string name="tap_to_start">Tap to start</string>
+    <string name="self_note_button">🎙 Voice note · Hold to talk, release to stop</string>
+    <string name="self_note_active">Recording voice note… release to stop</string>
+    <string name="self_note_recording">Recording voice note… release to stop</string>
+    <string name="status_remaining">%1$d min left · %2$d min recorded</string>
+    <string name="card_active">In progress · %1$d min, tap to stop</string>
+    <string name="row_recording">🔴 %1$s · %2$s MB · Recording</string>
+    <!-- Label for the in-progress row when its size is shown inside a progress bar instead. -->
+    <string name="row_recording_label">🔴 %1$s · Recording</string>
+    <string name="row_note">%1$s note · %2$s MB · Pending upload</string>
+    <string name="row_segment">%1$s segment · %2$s MB · Pending upload</string>
+    <string name="no_pending_ok">No pending segments ✓</string>
+    <string name="no_files_yet">No recordings yet</string>
+    <string name="events_pending_row">Event markers · Pending sync</string>
+    <string name="uploading">Uploading %1$d/%2$d: %3$s · %4$d%%</string>
+    <string name="last_upload">Last upload (%1$s): %2$s</string>
+    <string name="failing_warning">⚠️ Uploads have been failing for over 30 minutes — check your settings and network\n%1$s</string>
+    <string name="toast_stopped">Stopped</string>
+    <string name="toast_retry_started">Retrying upload…</string>
+    <string name="toast_settings_saved">Settings saved, uploading now</string>
+    <string name="toast_note_start_failed">Failed to start voice note</string>
+    <string name="toast_note_saved">Voice note saved, will upload automatically</string>
+    <string name="toast_note_too_short">Too short, not saved</string>
+    <string name="toast_mic_permission">Please allow microphone permission first, then tap the button again</string>
+    <string name="toast_battery_already">Background running is already allowed</string>
+    <string name="toast_battery_open_failed">Could not open battery settings — please allow this app to run in the background in system settings</string>
+    <string name="event_conv_start">Conversation started</string>
+    <string name="event_conv_end">Conversation ended</string>
+    <string name="event_meeting_start">Meeting started</string>
+    <string name="event_meeting_end">Meeting ended</string>
+    <string name="event_self_note">Voice note</string>
+    <string name="last_event">Latest marker: %1$s · %2$s</string>
+    <string name="marked_toast">Marked: %1$s %2$s</string>
+    <string name="help_title">Help</string>
+    <string name="record_button_desc">Record button</string>
+    <string name="notif_preparing">Preparing to record…</string>
+    <string name="notif_recording">Recording: %1$s</string>
+    <string name="notif_start_failed">Failed to start recording: %1$s</string>
+    <string name="channel_name">Recording status</string>
+    <string name="channel_desc">Persistent notification while recording</string>
+    <string name="notif_stop">Stop recording</string>
+    <string name="up_style_virtual">Virtual-host</string>
+    <string name="up_style_path">Path</string>
+    <string name="up_target_info">\nActual request: bucket “%1$s” @ %2$s (%3$s style, region %4$s)</string>
+    <string name="up_err_placeholder">Not uploaded: the Endpoint still contains the &lt;AccountID&gt; placeholder — replace it with your real R2 Account ID</string>
+    <string name="up_err_not_configured">Not uploaded: S3 settings are incomplete (check the Endpoint, bucket and both keys in Settings)</string>
+    <string name="up_err_wifi_only">Not uploaded: “Wi‑Fi only upload” is on and the current network is metered</string>
+    <string name="up_no_valid_segments">No valid pending segments (cleaned up %1$d empty segments)</string>
+    <string name="up_no_pending_files">Nothing pending upload</string>
+    <string name="up_failed">Upload failed: %1$s — %2$s%3$s</string>
+    <string name="up_events_sync_failed">Recordings uploaded, but event markers failed to sync — will retry (uploaded %1$d segments)</string>
+    <string name="up_done">Upload complete ✓ %1$d segments</string>
+    <string name="up_events_synced">, event markers synced</string>
+    <string name="up_stubs_cleaned">, cleaned up %1$d empty segments</string>
+    <string name="up_events_suffix">(event markers)</string>
+    <string name="language_label">Language</string>
+    <string name="dark_mode_label">Dark mode</string>
+
+    <string-array name="dark_mode_options">
+        <item>Follow system</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+
+    <string-array name="language_codes">
+        <item>system</item>
+        <item>en</item>
+        <item>zh</item>
+        <item>ja</item>
+        <item>ko</item>
+        <item>es</item>
+        <item>fr</item>
+        <item>de</item>
+        <item>pt</item>
+        <item>ru</item>
+    </string-array>
+    <string-array name="language_names">
+        <item>System default</item>
+        <item>English</item>
+        <item>中文</item>
+        <item>日本語</item>
+        <item>한국어</item>
+        <item>Español</item>
+        <item>Français</item>
+        <item>Deutsch</item>
+        <item>Português</item>
+        <item>Русский</item>
+    </string-array>
+    <string-array name="preset_names">
+        <item>Cloudflare R2</item>
+        <item>Backblaze B2 · US West</item>
+        <item>Backblaze B2 · US East</item>
+        <item>Backblaze B2 · Europe</item>
+        <item>Alibaba Cloud OSS · Hangzhou (S3-compatible)</item>
+        <item>Alibaba Cloud OSS · Shanghai (S3-compatible)</item>
+        <item>Alibaba Cloud OSS · Beijing (S3-compatible)</item>
+        <item>Alibaba Cloud OSS · Shenzhen (S3-compatible)</item>
+        <item>Tencent Cloud COS · Guangzhou (S3-compatible)</item>
+        <item>Tencent Cloud COS · Shanghai (S3-compatible)</item>
+        <item>Tencent Cloud COS · Beijing (S3-compatible)</item>
+        <item>AWS S3 · US East</item>
+        <item>AWS S3 · Singapore</item>
+        <item>Qiniu Kodo · East China (S3-compatible)</item>
+        <item>Custom</item>
+    </string-array>
+
+    <!-- v1.13 mockup-layout strings -->
+    <string name="title_record">Record</string>
+    <string name="title_cloud">Cloud</string>
+    <string name="title_reports">Reports</string>
+    <string name="title_settings">Settings</string>
+    <string name="header_recording_today">Recording · %1$d segments today</string>
+    <string name="seg_info">Segment %1$s / %2$s · %3$s</string>
+    <string name="seg_info_idle">Segment %1$s / %2$s</string>
+    <string name="seg_state_syncing">Auto-uploading</string>
+    <string name="seg_state_synced">Synced</string>
+    <string name="conv_desc">Everyday conversations</string>
+    <string name="meeting_desc">Multi-person meetings</string>
+    <string name="self_note_title">Hold to talk · Voice note</string>
+    <string name="self_note_sub">Release to save as a voice-note marker</string>
+    <string name="record_pending_count">%1$d segments pending</string>
+    <string name="record_pending_synced">0 segments pending · R2 synced</string>
+    <string name="cloud_subtitle">Cloudflare R2 · %1$s</string>
+    <string name="storage_label">Storage</string>
+    <string name="storage_quota">Free quota 10 GB</string>
+    <string name="cloud_counts">%1$d photos · %2$d audio</string>
+    <string name="cloud_photos_title">Photos</string>
+    <string name="cloud_audio_title">Audio</string>
+    <string name="reports_subtitle">Supabase · Daily summaries &amp; activity sheets</string>
+    <string name="settings_subtitle">All settings · Changes take effect right away</string>
+    <string name="group_cloud">Cloud storage</string>
+    <string name="group_recording">Recording</string>
+    <string name="group_upload">Upload</string>
+    <string name="group_snapshot">Auto snapshot</string>
+    <string name="group_reports">Daily reports</string>
+    <string name="group_system">Language &amp; system</string>
+
+    <!-- Muse AI Cloud trial (v1.25.0) -->
+    <string name="group_cloud_ai">Muse AI Cloud (trial)</string>
+    <string name="cloud_hint">Register or sign in here in the app. Uploads can then go to the platform instead of your own bucket, and your own Muse can pull each day and push the recognition result back.</string>
+    <string name="cloud_server_label">Server</string>
+    <string name="cloud_email_label">Email</string>
+    <string name="cloud_password_label">Password (never saved on this phone)</string>
+    <string name="cloud_register">Register</string>
+    <string name="cloud_login">Log in</string>
+    <string name="cloud_logout">Log out</string>
+    <string name="cloud_not_logged_in">Not logged in. Registering starts a 7-day free trial.</string>
+    <string name="cloud_logged_in_as">Logged in: %1$s</string>
+    <string name="cloud_status_trial">Logged in: %1$s · Trial until %2$s</string>
+    <string name="cloud_status_paid">Logged in: %1$s · Subscription active</string>
+    <string name="cloud_status_readonly">Logged in: %1$s · Read-only (trial ended or subscription inactive)</string>
+    <string name="cloud_status_offline">Logged in: %1$s · Could not reach the server (%2$s)</string>
+    <string name="cloud_auth_working">Contacting the server…</string>
+    <string name="cloud_err_fields">Enter email and password first.</string>
+    <string name="cloud_register_ok">Registered — your 7-day trial has started.</string>
+    <string name="cloud_login_ok">Logged in.</string>
+    <string name="cloud_logout_done">Logged out.</string>
+    <string name="cloud_auth_failed">Failed: %1$s</string>
+    <string name="cloud_mode_label">Upload to Muse AI Cloud</string>
+    <string name="cloud_mode_hint">When on and logged in, finished segments, markers and snapshots upload to the platform with your account instead of S3/R2. Off = your own bucket, unchanged.</string>
+    <string name="cloud_mode_on">Cloud upload is on.</string>
+    <string name="cloud_mode_on_need_login">Cloud upload is on — log in above to start uploading.</string>
+    <string name="cloud_connect_title">Connect my Muse</string>
+    <string name="cloud_connect_hint">Create an agent token here and paste it to your own Muse (or another agent). It can pull your days — audio and photos — and push the daily recognition result back. It only ever reaches your own data.</string>
+    <string name="cloud_base_label">Base URL: %1$s</string>
+    <string name="cloud_tokens_login_first">Log in to manage agent tokens.</string>
+    <string name="cloud_tokens_empty">No agent tokens yet.</string>
+    <string name="cloud_token_row">%1$s · %2$s… · %3$s</string>
+    <string name="cloud_token_create">Generate token</string>
+    <string name="cloud_token_created_hint">New token — shown only once, copy it now:</string>
+    <string name="cloud_token_created_toast">Token created. Copy it now — it will not be shown again.</string>
+    <string name="cloud_token_copy">Copy token</string>
+    <string name="cloud_token_copied">Token copied.</string>
+    <string name="cloud_token_revoke">Revoke</string>
+    <string name="cloud_token_revoked">Token revoked.</string>
+    <string name="cloud_guide_copy">Copy connect instructions</string>
+    <string name="cloud_guide_copied">Instructions copied — paste them to your Muse.</string>
+    <string name="cloud_guide_need_token">Generate a token first, then copy the instructions.</string>
+    <string name="cloud_guide_text">Connect to my Muse AI Cloud for me.\nPlatform base URL: %1$s\nMy agent token: %2$s\nSend the token as this header on every request: Authorization: Bearer %2$s\n\nPlease do this for me every day:\n1. GET /api/v1/muse/days — find the days that have no result yet.\n2. GET /api/v1/muse/days/{date} — take the manifest, then download every audio segment, self-note, event-marker file and snapshot photo using the download URLs in the manifest.\n3. Transcribe the audio and run photo recognition locally on your side — the platform never calls a model.\n4. Write the daily summary (my self-notes first, split by the event markers), the full transcript, the window analyses and the photo-recognition notes, and build one daily activity sheet JPEG (about 1 MB) from the usable photos.\n5. Push the result back: PUT /api/v1/muse/days/{date}/result with JSON {markdown, transcript_markdown, analyses_json, photo_analysis_markdown}, then PUT the sheet JPEG (Content-Type: image/jpeg) to /api/v1/muse/days/{date}/sheet.\nThis token only reaches my own data. Keep processing new days until I say stop.</string>
+    <string name="up_cloud_blocked">Muse AI Cloud paused uploads: %1$s</string>
+    <string name="up_cloud_failed">Cloud upload failed: %1$s — %2$s</string>
+    <string name="group_backend">Service</string>
+    <string name="backend_mode_title">Service mode</string>
+    <string name="backend_mode_self">Self-hosted (your R2 + Supabase)</string>
+    <string name="backend_mode_cloud">Muse AI Cloud service</string>
+    <string name="backend_mode_self_on">Self-hosted mode: uploads, cloud files and reports use your own R2 + Supabase.</string>
+    <string name="backend_mode_cloud_on">Muse AI Cloud mode: uploads, cloud files and reports use the platform.</string>
+    <string name="backend_not_logged_in">Log in to Muse AI Cloud in the Settings tab first</string>
+    <string name="cloud_subtitle_cloud">Muse AI Cloud · %1$s</string>
+    <string name="reports_not_configured_cloud">Log in to Muse AI Cloud in the Settings tab to read daily summaries here</string>
+    <string name="reports_no_summary">No summary for this day yet</string>
+    <string name="reports_photo_title">Photo analysis</string>
+    <string name="reports_sheet_button_simple">View daily activity sheet</string>
+</resources>

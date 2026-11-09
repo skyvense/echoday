@@ -1,0 +1,37 @@
+-- PROPOSED ONLY. Do not apply to project xpmorezsouevzihgjpxe until reviewed.
+-- Inspected 2026-11-07 (read-only). No statement in this file has been executed there.
+--
+-- Observed public tables have no per-user column. Enabling RLS with no policy
+-- blocks the Data API, which is safer than today's open tables, and it also
+-- stops any anon-key client that currently reads them. Add an owner column and
+-- a policy before enabling RLS if those readers must keep working.
+--
+-- public.segment_transcripts (day date, segment text, raw_text text, updated_at timestamptz) RLS off
+-- public.analyses (window_start text, window_end text, analysis_text text, updated_at timestamptz) RLS off
+-- public.daily_summaries (day date, summary_text text, segment_count int, updated_at timestamptz) RLS off
+--
+-- Muse AI Cloud does not assume its user id equals a Supabase auth.users id.
+-- After a column exists, set SUPABASE_READ_ALLOWLIST to
+-- daily_summaries:owner_supabase_user_id:day|summary_text|segment_count
+-- and keep the secret key on the API only.
+
+-- alter table public.daily_summaries
+--   add column if not exists owner_supabase_user_id uuid;
+-- alter table public.segment_transcripts
+--   add column if not exists owner_supabase_user_id uuid;
+-- alter table public.analyses
+--   add column if not exists owner_supabase_user_id uuid;
+
+-- alter table public.daily_summaries enable row level security;
+-- alter table public.segment_transcripts enable row level security;
+-- alter table public.analyses enable row level security;
+
+-- create policy daily_summaries_select_own on public.daily_summaries
+--   for select to authenticated
+--   using (owner_supabase_user_id = auth.uid());
+-- create policy segment_transcripts_select_own on public.segment_transcripts
+--   for select to authenticated
+--   using (owner_supabase_user_id = auth.uid());
+-- create policy analyses_select_own on public.analyses
+--   for select to authenticated
+--   using (owner_supabase_user_id = auth.uid());

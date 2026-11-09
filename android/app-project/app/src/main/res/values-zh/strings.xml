@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Muse Daily Recorder Cloud</string>
+    <string name="seconds_short">秒</string>
+    <string name="status_tap_record">点红色按钮开始录音</string>
+    <string name="status_tap_record_no_s3">点红色按钮开始录音（S3 还没配置好，录音会先存手机里）</string>
+    <string name="files_title">录音文件</string>
+    <string name="files_title_pending">录音文件（待上传 %1$d 段 · %2$s MB）</string>
+    <string name="retry_upload">立即重试上传</string>
+    <string name="settings_button">⚙️ 配置（S3 与录音设置）</string>
+    <string name="settings_collapse">收起配置</string>
+    <string name="settings_s3_title">S3 存储设置（改完点保存，会自动上传一次）</string>
+    <string name="preset_label">云厂商预置（选中自动填好地址和区域，可再手改）</string>
+    <string name="endpoint_label">Endpoint（如 R2: https://&lt;AccountID&gt;.r2.cloudflarestorage.com）</string>
+    <string name="region_label">区域 Region（R2 填 auto，B2/阿里/腾讯填对应的区域代号）</string>
+    <string name="bucket_label">存储桶 Bucket（腾讯云的桶名要带 -APPID 后缀）</string>
+    <string name="access_key_label">Access Key ID</string>
+    <string name="secret_label">Secret Access Key（只存在本机，不要发给任何人）</string>
+    <string name="virtual_style_label">虚拟主机风格（桶名放域名前；阿里/腾讯/AWS/七牛勾选，R2/B2 不勾）</string>
+    <string name="segment_minutes_label">每段时长（分钟，默认 60）</string>
+    <string name="wifi_only_label">仅在 Wi‑Fi / 不计流量网络时上传</string>
+    <string name="delete_after_label">上传成功后删除本地片段（省空间）</string>
+    <string name="auto_resume_label">手机重启后自动恢复录音</string>
+    <string name="snapshot_label">📸 抬起手机自动拍照（抬过约 80° 就拍）</string>
+    <string name="snapshot_hint">默认关闭。开启后：把手机从平放抬到直立并停稳约 1 秒，自动拍照，先在本机缩到约 1024 宽、500 KB 以内，再排队上传到桶里的 snapshot-日期/ 文件夹。录音运行期间锁屏、息屏也能拍；手机重启后请先打开一次 App，息屏拍照才会恢复。关掉就完全不用摄像头。</string>
+    <string name="row_snapshot">📸 %1$s 快照 · %2$s MB · 待上传</string>
+    <string name="tab_record">🎙 录音</string>
+    <string name="tab_cloud">☁️ 云端</string>
+    <string name="tab_reports">📊 日报</string>
+    <string name="tab_settings">⚙️ 配置</string>
+
+    <string name="cat_recording">🎙 录音</string>
+    <string name="cat_upload">⬆️ 上传</string>
+    <string name="cat_snapshot">📸 自动拍照</string>
+    <string name="cat_reports">📊 每日报告（Supabase）</string>
+    <string name="cat_system">🌐 语言与系统</string>
+
+    <string name="supabase_url_label">Supabase 项目地址</string>
+    <string name="supabase_key_label">Supabase publishable（anon）key — 在控制台 Settings → API 复制</string>
+    <string name="supabase_hint">只给「日报」页用，只读。填 publishable key 就行（已实测可读）。千万别把 service_role key 填到这里。</string>
+
+    <string name="cloud_title">云端文件（R2）</string>
+    <string name="cloud_refresh">刷新</string>
+    <string name="cloud_back">‹ 返回</string>
+    <string name="cloud_loading">加载中…</string>
+    <string name="cloud_downloading">下载中…</string>
+    <string name="cloud_empty">这里还没有文件</string>
+    <string name="cloud_not_configured">请先在「配置」页填好云存储</string>
+    <string name="cloud_failed">失败：%1$s</string>
+    <string name="cloud_photo_section">📸 照片</string>
+    <string name="cloud_audio_section">🎵 语音</string>
+    <string name="player_play">▶ 播放</string>
+    <string name="player_pause">⏸ 暂停</string>
+
+    <string name="reports_title">每日总结</string>
+    <string name="reports_loading">加载中…</string>
+    <string name="reports_empty">还没有每日总结</string>
+    <string name="reports_not_configured">在「配置」页填入 Supabase 的 publishable key 后，这里就能看每日总结</string>
+    <string name="reports_failed">加载失败：%1$s</string>
+    <string name="reports_segments">%1$d 段录音</string>
+    <string name="reports_sheet_button">看当日活动图（%1$d 张照片 · %2$d 个活动时段）</string>
+    <string name="reports_sheet_hide">收起活动图</string>
+    <string name="reports_sheet_loading">图片加载中…</string>
+    <string name="reports_sheet_failed">活动图没加载出来：%1$s</string>
+    <string name="reports_analyses_title">当天分段报告</string>
+    <string name="reports_analyses_failed">分段报告没读到（可能还没开只读策略）</string>
+
+    <string name="snapshot_camera_label">拍照用哪个摄像头（改完立即生效）</string>
+    <string name="snap_status_waiting">📸 拍照检测：等待抬起（当前 %1$d°，抬过 80° 触发）</string>
+    <string name="snap_status_raising">📸 检测到抬起 %1$d°，继续抬到 80°</string>
+    <string name="snap_status_pose">📸 已检测到姿势 %1$d°，保持住…</string>
+    <string name="snap_status_high">📸 已拍摄，把手机放低后可再次抬起</string>
+    <string name="snap_status_held">📸 竖置保持中，%1$d 秒后自动再拍</string>
+    <string name="snap_status_locked">📸 已拍摄，平放手机后才能再拍</string>
+    <string name="snapshot_repeat_label">竖置保持时自动再拍间隔（分钟，0 = 关）</string>
+    <string name="snap_status_capturing">📸 正在拍照…</string>
+    <string name="snap_status_cooldown">📸 冷却中，还剩 %1$d 秒</string>
+    <string name="snap_status_no_permission">📸 拍照检测：需要相机权限</string>
+    <string name="snapshot_filter_label">在本机过滤无内容快照</string>
+    <string name="snapshot_filter_hint">默认开启。每张照片先在本机打分（几毫秒）；近乎全黑或没有细节的帧（镜头被遮挡、在口袋里）不保存也不上传，只记录一个计数。关掉则每张都上传。</string>
+    <string name="snapshot_test_button">📸 立即测试拍一次</string>
+    <string name="toast_snapshot_testing">正在测试拍照…留意下面的文件列表</string>
+
+    <string-array name="snapshot_camera_options">
+        <item>前后都拍</item>
+        <item>只拍后置</item>
+        <item>只拍前置</item>
+    </string-array>
+    <string name="toast_camera_permission">请允许相机权限，自动拍照才能用</string>
+    <string name="toast_camera_denied">没有相机权限，自动拍照保持关闭</string>
+    <string name="save_settings">保存设置</string>
+    <string name="battery_button">允许后台运行（关闭电池优化）</string>
+    <string name="events_title">事件标记</string>
+    <string name="no_events_yet">还没有标记</string>
+    <string name="conv_card">💬 对话</string>
+    <string name="meeting_card">👥 会议</string>
+    <string name="tap_to_start">点一下开始</string>
+    <string name="self_note_button">🎙 自述录音 · 按住说话，松开结束</string>
+    <string name="self_note_active">正在自述…松开结束</string>
+    <string name="self_note_recording">自述录音中…松开按钮结束</string>
+    <string name="status_remaining">剩余 %1$d 分钟 · 已录 %2$d 分钟</string>
+    <string name="card_active">进行中 · 已 %1$d 分钟，点一下结束</string>
+    <string name="row_recording">🔴 %1$s · %2$s MB · 录音中</string>
+    <string name="row_recording_label">🔴 %1$s · 录音中</string>
+    <string name="row_note">%1$s 的自述 · %2$s MB · 待上传</string>
+    <string name="row_segment">%1$s 的片段 · %2$s MB · 待上传</string>
+    <string name="no_pending_ok">没有待上传片段 ✓</string>
+    <string name="no_files_yet">还没有录音文件</string>
+    <string name="events_pending_row">事件标记 · 待同步</string>
+    <string name="uploading">正在上传 第 %1$d/%2$d 个：%3$s · %4$d%%</string>
+    <string name="last_upload">上次上传（%1$s）：%2$s</string>
+    <string name="failing_warning">⚠️ 上传已持续失败超过 30 分钟，请检查配置与网络\n%1$s</string>
+    <string name="toast_stopped">已停止</string>
+    <string name="toast_retry_started">开始重试上传…</string>
+    <string name="toast_settings_saved">设置已保存，开始上传</string>
+    <string name="toast_note_start_failed">自述录音启动失败</string>
+    <string name="toast_note_saved">自述已保存，会自动上传</string>
+    <string name="toast_note_too_short">太短了，没保存</string>
+    <string name="toast_mic_permission">请先允许麦克风权限，然后再点一次按钮</string>
+    <string name="toast_battery_already">已经允许后台运行了</string>
+    <string name="toast_battery_open_failed">打不开电池设置，请到系统设置里手动允许本应用后台运行</string>
+    <string name="event_conv_start">对话开始</string>
+    <string name="event_conv_end">对话结束</string>
+    <string name="event_meeting_start">会议开始</string>
+    <string name="event_meeting_end">会议结束</string>
+    <string name="event_self_note">自述录音</string>
+    <string name="last_event">最近标记：%1$s · %2$s</string>
+    <string name="marked_toast">已标记：%1$s %2$s</string>
+    <string name="help_title">使用帮助</string>
+    <string name="record_button_desc">录音按钮</string>
+    <string name="notif_preparing">正在准备录音…</string>
+    <string name="notif_recording">正在录音：%1$s</string>
+    <string name="notif_start_failed">录音启动失败：%1$s</string>
+    <string name="channel_name">录音状态</string>
+    <string name="channel_desc">录音进行中的常驻通知</string>
+    <string name="notif_stop">停止录音</string>
+    <string name="up_style_virtual">虚拟主机</string>
+    <string name="up_style_path">路径</string>
+    <string name="up_target_info">\n实际请求：桶「%1$s」@ %2$s（%3$s风格，区域 %4$s）</string>
+    <string name="up_err_placeholder">未上传：Endpoint 里还是占位符 &lt;AccountID&gt;，请换成你的真实 R2 Account ID</string>
+    <string name="up_err_not_configured">未上传：S3 设置还没填完整（点“配置”检查 Endpoint、桶名和两个 Key）</string>
+    <string name="up_err_wifi_only">未上传：已开启“仅 Wi‑Fi 上传”，当前网络是计流量网络</string>
+    <string name="up_no_valid_segments">没有有效的待上传片段（已清理 %1$d 个空片段）</string>
+    <string name="up_no_pending_files">没有待上传的文件</string>
+    <string name="up_failed">上传失败：%1$s — %2$s%3$s</string>
+    <string name="up_events_sync_failed">录音已传完，但事件标记同步失败，下次会重试（已成功 %1$d 段）</string>
+    <string name="up_done">上传完成 ✓ 成功 %1$d 段</string>
+    <string name="up_events_synced">，事件标记已同步</string>
+    <string name="up_stubs_cleaned">，已清理空片段 %1$d 个</string>
+    <string name="up_events_suffix">（事件标记）</string>
+    <string name="language_label">语言</string>
+    <string name="dark_mode_label">深色模式</string>
+
+    <string-array name="dark_mode_options">
+        <item>跟随系统</item>
+        <item>浅色</item>
+        <item>深色</item>
+    </string-array>
+
+    <string-array name="language_names">
+        <item>跟随系统</item>
+        <item>English</item>
+        <item>中文</item>
+        <item>日本語</item>
+        <item>한국어</item>
+        <item>Español</item>
+        <item>Français</item>
+        <item>Deutsch</item>
+        <item>Português</item>
+        <item>Русский</item>
+    </string-array>
+    <string-array name="preset_names">
+        <item>Cloudflare R2</item>
+        <item>Backblaze B2 · 美西</item>
+        <item>Backblaze B2 · 美东</item>
+        <item>Backblaze B2 · 欧洲</item>
+        <item>阿里云 OSS · 杭州（S3兼容）</item>
+        <item>阿里云 OSS · 上海（S3兼容）</item>
+        <item>阿里云 OSS · 北京（S3兼容）</item>
+        <item>阿里云 OSS · 深圳（S3兼容）</item>
+        <item>腾讯云 COS · 广州（S3兼容）</item>
+        <item>腾讯云 COS · 上海（S3兼容）</item>
+        <item>腾讯云 COS · 北京（S3兼容）</item>
+        <item>AWS S3 · 美东</item>
+        <item>AWS S3 · 新加坡</item>
+        <item>七牛云 Kodo · 华东（S3兼容）</item>
+        <item>自定义</item>
+    </string-array>
+
+    <!-- v1.13 mockup-layout strings -->
+    <string name="title_record">录音</string>
+    <string name="title_cloud">云端</string>
+    <string name="title_reports">日报</string>
+    <string name="title_settings">配置</string>
+    <string name="header_recording_today">正在录音 · 今天已录 %1$d 段</string>
+    <string name="seg_info">本段 %1$s / %2$s · %3$s</string>
+    <string name="seg_info_idle">本段 %1$s / %2$s</string>
+    <string name="seg_state_syncing">自动上传中</string>
+    <string name="seg_state_synced">已同步</string>
+    <string name="conv_desc">日常聊天场景</string>
+    <string name="meeting_desc">多人会议场景</string>
+    <string name="self_note_title">按住说话 · 自述</string>
+    <string name="self_note_sub">松开保存为自述标记</string>
+    <string name="record_pending_count">待上传 %1$d 段</string>
+    <string name="record_pending_synced">待上传 0 段 · R2 已同步</string>
+    <string name="cloud_subtitle">Cloudflare R2 · %1$s</string>
+    <string name="storage_label">存储用量</string>
+    <string name="storage_quota">免费额度 10 GB</string>
+    <string name="cloud_counts">照片 %1$d · 录音 %2$d</string>
+    <string name="cloud_photos_title">照片</string>
+    <string name="cloud_audio_title">语音</string>
+    <string name="reports_subtitle">Supabase · 每日总结与活动图</string>
+    <string name="settings_subtitle">所有设置 · 改完即时生效</string>
+    <string name="group_cloud">云存储</string>
+    <string name="group_recording">录音</string>
+    <string name="group_upload">上传</string>
+    <string name="group_snapshot">自动拍照</string>
+    <string name="group_reports">每日报告</string>
+    <string name="group_system">语言与系统</string>
+
+    <!-- Muse AI Cloud 试用（v1.25.0） -->
+    <string name="group_cloud_ai">Muse AI Cloud（试用）</string>
+    <string name="cloud_hint">直接在 app 里注册或登录。之后上传可以走平台（不用再配自己的存储桶），你自己的 Muse 也能每天来拉数据、把识别结果回传。</string>
+    <string name="cloud_server_label">服务器</string>
+    <string name="cloud_email_label">邮箱</string>
+    <string name="cloud_password_label">密码（不保存在手机上）</string>
+    <string name="cloud_register">注册</string>
+    <string name="cloud_login">登录</string>
+    <string name="cloud_logout">退出</string>
+    <string name="cloud_not_logged_in">尚未登录。注册即开始 7 天免费试用。</string>
+    <string name="cloud_logged_in_as">已登录：%1$s</string>
+    <string name="cloud_status_trial">已登录：%1$s · 试用至 %2$s</string>
+    <string name="cloud_status_paid">已登录：%1$s · 订阅有效</string>
+    <string name="cloud_status_readonly">已登录：%1$s · 只读（试用已结束或订阅未生效）</string>
+    <string name="cloud_status_offline">已登录：%1$s · 服务器暂时连不上（%2$s）</string>
+    <string name="cloud_auth_working">正在连接服务器…</string>
+    <string name="cloud_err_fields">先填邮箱和密码。</string>
+    <string name="cloud_register_ok">注册成功，7 天试用已开始。</string>
+    <string name="cloud_login_ok">已登录。</string>
+    <string name="cloud_logout_done">已退出登录。</string>
+    <string name="cloud_auth_failed">失败：%1$s</string>
+    <string name="cloud_mode_label">上传到 Muse AI Cloud</string>
+    <string name="cloud_mode_hint">打开且已登录时，录音段、标记和快照用账号上传到平台，不再走 S3/R2；关掉则用你自己的存储桶，和以前完全一样。</string>
+    <string name="cloud_mode_on">云端上传已打开。</string>
+    <string name="cloud_mode_on_need_login">云端上传已打开——请先在上方登录。</string>
+    <string name="cloud_connect_title">连接我的 Muse</string>
+    <string name="cloud_connect_hint">在这里生成 agent token，粘给你的 Muse（或其他 agent）。它能拉取你的每一天——音频和照片——并把每天的识别结果回传。它只能访问你本人的数据。</string>
+    <string name="cloud_base_label">平台地址：%1$s</string>
+    <string name="cloud_tokens_login_first">登录后可管理 agent token。</string>
+    <string name="cloud_tokens_empty">还没有 agent token。</string>
+    <string name="cloud_token_row">%1$s · %2$s… · %3$s</string>
+    <string name="cloud_token_create">生成 token</string>
+    <string name="cloud_token_created_hint">新 token——只显示这一次，请立即复制：</string>
+    <string name="cloud_token_created_toast">token 已生成，请立即复制，之后不会再显示。</string>
+    <string name="cloud_token_copy">复制 token</string>
+    <string name="cloud_token_copied">token 已复制。</string>
+    <string name="cloud_token_revoke">吊销</string>
+    <string name="cloud_token_revoked">token 已吊销。</string>
+    <string name="cloud_guide_copy">复制接入说明</string>
+    <string name="cloud_guide_copied">接入说明已复制，粘给你的 Muse 即可。</string>
+    <string name="cloud_guide_need_token">先生成一个 token，再复制接入说明。</string>
+    <string name="cloud_guide_text">请帮我连接 Muse AI Cloud。\n平台地址：%1$s\n我的 agent token：%2$s\n每次请求都带这个请求头：Authorization: Bearer %2$s\n\n请每天为我做这些事：\n1. GET /api/v1/muse/days —— 找出还没有识别结果的天。\n2. GET /api/v1/muse/days/{date} —— 取当天的清单，用清单里的下载地址把全部录音段、自述、事件标记文件和自动快照照片都拉到本地。\n3. 在你本地转写音频并做照片识别——平台不调用任何模型。\n4. 写好每日汇总（我的自述置顶、按事件标记切分）、完整转写稿、分时段分析和照片识别说明，并用可用照片拼一张约 1 MB 的每日活动图 JPEG。\n5. 回传结果：PUT /api/v1/muse/days/{date}/result，JSON 为 {markdown, transcript_markdown, analyses_json, photo_analysis_markdown}；再把活动图 JPEG（Content-Type: image/jpeg）PUT 到 /api/v1/muse/days/{date}/sheet。\n这个 token 只能访问我本人的数据。请持续处理新的一天，直到我说停。</string>
+    <string name="up_cloud_blocked">Muse AI Cloud 已暂停上传：%1$s</string>
+    <string name="up_cloud_failed">云端上传失败：%1$s — %2$s</string>
+    <string name="group_backend">服务</string>
+    <string name="backend_mode_title">服务模式</string>
+    <string name="backend_mode_self">自建（自己的 R2 + Supabase）</string>
+    <string name="backend_mode_cloud">我的服务（Muse AI Cloud）</string>
+    <string name="backend_mode_self_on">已切到自建模式：上传、云端文件和日报都走你自己的 R2 + Supabase。</string>
+    <string name="backend_mode_cloud_on">已切到 Muse AI Cloud 模式：上传、云端文件和日报都走平台。</string>
+    <string name="backend_not_logged_in">先在「配置」页登录 Muse AI Cloud</string>
+    <string name="cloud_subtitle_cloud">Muse AI Cloud · %1$s</string>
+    <string name="reports_not_configured_cloud">在「配置」页登录 Muse AI Cloud 后，这里就能看每日总结</string>
+    <string name="reports_no_summary">这一天还没有汇总</string>
+    <string name="reports_photo_title">照片分析</string>
+    <string name="reports_sheet_button_simple">看当日活动图</string>
+</resources>
