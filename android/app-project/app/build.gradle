@@ -10,8 +10,8 @@ android {
         applicationId 'personal.muse.recorder.cloud'
         minSdk 26
         targetSdk 34
-        versionCode 50
-        versionName '1.30.0'
+        versionCode 51
+        versionName '1.31.0'
     }
 
     buildTypes {
