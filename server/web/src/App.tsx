@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, NavLink, Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { api, clearToken, money, saveToken, type Me } from "./api";
-import { Mark } from "./site";
+import { LangToggle, useLang } from "./i18n";
+import { Mark, SiteFooter } from "./site";
 import { AdminPage } from "./pages/AdminPage";
 import { AuthPage } from "./pages/AuthPage";
 import { BillingPage } from "./pages/BillingPage";
@@ -72,8 +73,9 @@ export function App() {
 
 function RequireAuth() {
   const { me, loading } = useSession();
+  const { t } = useLang();
   if (loading) {
-    return <p className="px-6 py-16 text-ink-soft">Checking the session…</p>;
+    return <p className="px-6 py-16 text-ink-soft">{t("common.checkingSession")}</p>;
   }
   if (!me) return <Navigate to="/login" replace />;
   return <Outlet />;
@@ -81,6 +83,7 @@ function RequireAuth() {
 
 function Shell() {
   const { me, refresh } = useSession();
+  const { t } = useLang();
   const navigate = useNavigate();
   if (!me) return null;
   const billing = me.billing;
@@ -105,34 +108,37 @@ function Shell() {
             <span className="font-bold text-xl tracking-tight">EchoDay</span>
           </Link>
           <nav className="flex items-center gap-1 text-sm">
-            <Tab to="/days">Days</Tab>
-            <Tab to="/connect">Connect Muse</Tab>
-            <Tab to="/billing">Billing</Tab>
-            {me.is_admin && <Tab to="/admin">Admin</Tab>}
+            <Tab to="/days">{t("nav.days")}</Tab>
+            <Tab to="/connect">{t("nav.connect")}</Tab>
+            <Tab to="/billing">{t("nav.billing")}</Tab>
+            {me.is_admin && <Tab to="/admin">{t("nav.admin")}</Tab>}
           </nav>
           <div className="flex items-center gap-3 text-sm">
             <span className="hidden text-ink-soft sm:inline">{me.email}</span>
+            <LangToggle />
             <button
               type="button"
               onClick={logout}
               className="rounded-full border border-line px-3 py-1.5 text-ink-soft hover:border-ink hover:text-ink"
             >
-              Sign out
+              {t("nav.signOut")}
             </button>
           </div>
         </div>
       </header>
       {billing.mode === "trial" && (
         <Banner>
-          Trial uploads are open until {new Date(billing.trialEndsAt).toLocaleDateString()}. After that the shelf
-          stays readable. Keeping uploads on is {money(billing.priceCents, billing.currency)} a month.
+          {t("shell.trialBanner", {
+            date: new Date(billing.trialEndsAt).toLocaleDateString(),
+            price: money(billing.priceCents, billing.currency),
+          })}
         </Banner>
       )}
       {billing.mode === "read_only" && (
         <Banner tone="warn">
-          Uploads are paused ({billing.reason.replaceAll("_", " ")}). Existing days and Muse summaries still open.{" "}
+          {t("shell.readOnlyBanner", { reason: billing.reason.replaceAll("_", " ") })}{" "}
           <Link to="/billing" className="underline">
-            Review billing
+            {t("shell.reviewBilling")}
           </Link>
           .
         </Banner>
@@ -140,6 +146,7 @@ function Shell() {
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
         <Outlet />
       </main>
+      <SiteFooter />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { LangToggle, useLang } from "./i18n";
 
 export function Mark() {
   return (
@@ -11,6 +12,7 @@ export function Mark() {
 }
 
 export function ThemeToggle() {
+  const { t } = useLang();
   const [theme, setTheme] = useState<"light" | "dark" | "system">("system");
 
   useEffect(() => {
@@ -34,16 +36,17 @@ export function ThemeToggle() {
   return (
     <div className="flex rounded-full border border-line p-0.5 text-xs">
       <button type="button" className={`rounded-full px-2 py-1 ${theme === "light" ? "bg-ink text-paper" : ""}`} onClick={() => choose("light")}>
-        Light
+        {t("nav.light")}
       </button>
       <button type="button" className={`rounded-full px-2 py-1 ${theme === "dark" ? "bg-ink text-paper" : ""}`} onClick={() => choose("dark")}>
-        Dark
+        {t("nav.dark")}
       </button>
     </div>
   );
 }
 
 export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
+  const { t } = useLang();
   return (
     <header className="border-b border-line bg-card/80 backdrop-blur">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
@@ -52,10 +55,12 @@ export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
           <span className="font-bold text-xl tracking-tight">EchoDay</span>
         </Link>
         <nav className="flex flex-wrap items-center gap-3 text-sm">
-          <a href="/#how" className="text-ink-soft no-underline hover:text-ink">How it works</a>
-          <a href="/#pricing" className="text-ink-soft no-underline hover:text-ink">Pricing</a>
-          <a href="/#muse" className="text-ink-soft no-underline hover:text-ink">Connect Muse</a>
-          <Link to="/download" className="text-ink-soft no-underline hover:text-ink">Download</Link>
+          <a href="/#how" className="text-ink-soft no-underline hover:text-ink">{t("nav.how")}</a>
+          <a href="/#muse" className="text-ink-soft no-underline hover:text-ink">{t("nav.connect")}</a>
+          <a href="/#api" className="text-ink-soft no-underline hover:text-ink">{t("nav.api")}</a>
+          <a href="/#pricing" className="text-ink-soft no-underline hover:text-ink">{t("nav.pricing")}</a>
+          <a href="/#faq" className="text-ink-soft no-underline hover:text-ink">{t("nav.faq")}</a>
+          <Link to="/download" className="text-ink-soft no-underline hover:text-ink">{t("nav.download")}</Link>
           <a
             href="https://github.com/skyvense/echoday"
             target="_blank"
@@ -68,16 +73,40 @@ export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
             GitHub
           </a>
           <ThemeToggle />
+          <LangToggle />
           {signedIn ? (
-            <Link to="/days" className="rounded-full bg-ink px-3 py-1.5 text-paper no-underline">Days</Link>
+            <Link to="/days" className="rounded-full bg-ink px-3 py-1.5 text-paper no-underline">{t("nav.days")}</Link>
           ) : (
             <>
-              <Link to="/login" className="text-ink no-underline">Sign in</Link>
-              <Link to="/register" className="rounded-full bg-red px-3 py-1.5 text-white no-underline">Start 7-day trial</Link>
+              <Link to="/login" className="text-ink no-underline">{t("nav.signIn")}</Link>
+              <Link to="/register" className="rounded-full bg-red px-3 py-1.5 text-white no-underline">{t("nav.startTrial")}</Link>
             </>
           )}
         </nav>
       </div>
     </header>
+  );
+}
+
+export function SiteFooter() {
+  const { t } = useLang();
+  return (
+    <footer className="border-t border-line">
+      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-sm text-ink-soft sm:px-6">
+        <p className="flex items-center gap-2.5">
+          <Mark />
+          <span>
+            {t("footer.rights")} · {t("footer.tagline")}
+          </span>
+        </p>
+        <nav className="flex flex-wrap items-center gap-4">
+          <a href="/#muse" className="text-ink-soft no-underline hover:text-ink">{t("nav.connect")}</a>
+          <Link to="/download" className="text-ink-soft no-underline hover:text-ink">{t("nav.download")}</Link>
+          <a href="https://github.com/skyvense/echoday" target="_blank" rel="noreferrer" className="text-ink-soft no-underline hover:text-ink">
+            GitHub
+          </a>
+        </nav>
+      </div>
+    </footer>
   );
 }
