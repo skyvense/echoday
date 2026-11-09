@@ -34,19 +34,41 @@ const en = {
     reviewBilling: "Review billing",
   },
   landing: {
-    eyebrow: "All-day recorder shelf",
-    title: "The shelf for an all-day recorder.",
-    sub: "Audio and markers land here. Thinking stays with your Muse. This server never spends a transcription token.",
+    eyebrow: "All-day recording · AI memory",
+    title: "Never fear forgetting again.",
+    sub: "EchoDay listens to your whole day — every conversation, meeting, and fleeting thought — and your AI agent transcribes it, analyzes it, and writes it down. What you lived becomes something you can search, reread, and keep. Nothing that matters slips away.",
     trialNote: "$5/mo after. Cancel anytime. Transcription stays on your keys.",
     openDays: "Open your days",
     downloadApk: "Download Android APK",
-    staysTitle: "What stays here",
+    staysTitle: "Your second memory",
     staysItems: [
-      "Hour-long .m4a segments and voice notes",
+      "Every hour of audio, transcribed into searchable text",
       "Event markers: conversations, meetings, self-notes",
-      "The daily summary your agent writes back",
+      "Snapshot photos, recognized scene by scene",
+      "A daily summary your agent writes back each morning",
     ],
     staysNever: "What never runs here: Whisper, chat models, or any key you did not bring yourself.",
+    whyTitle: "A day, fully remembered",
+    whyIntro:
+      "Memory fades — that is not a flaw, it is just being human. EchoDay gives every day a second keeper: ears that never close, eyes that notice the scene, and an agent that turns it all into a story you can return to.",
+    whyCards: [
+      {
+        title: "Ears that never close",
+        body: "Your phone records the day as it happens — talks, meetings, the idea you muttered in the elevator — and every word is transcribed. What was said is never again a matter of guessing.",
+      },
+      {
+        title: "An agent that keeps the notes",
+        body: "Each morning your AI agent reads the whole day back: it splits conversations from meetings, pulls out decisions, promises, and to-dos, and writes the daily summary. You live the day; it does the remembering.",
+      },
+      {
+        title: "Eyes that remember the scene",
+        body: "Snapshots taken as you raise your phone are recognized one by one — where you went, what you were doing, who was around. Images let you recall the day in pictures, and help your agent truly understand how you spent it.",
+      },
+      {
+        title: "Forgetting stops being loss",
+        body: "Your mother's advice, a client's promise, your kid's first long sentence — memory fades, records don't. To forget is no longer to lose; it only means you haven't looked it up yet.",
+      },
+    ],
     howTitle: "How your agent works a day",
     howIntro:
       "EchoDay is a shelf, not a brain. Your own agent — Muse, Grok, or any tool that can make HTTPS calls — does the daily run below, on your keys.",

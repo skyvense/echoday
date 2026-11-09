@@ -107,6 +107,21 @@ export function LandingPage() {
           </div>
         </section>
 
+        <section id="why" className="border-t border-line">
+          <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
+            <h2 className="font-bold text-4xl tracking-tight">{L.whyTitle}</h2>
+            <p className="mt-4 max-w-2xl leading-relaxed text-ink-soft">{L.whyIntro}</p>
+            <div className="mt-10 grid gap-5 sm:grid-cols-2">
+              {L.whyCards.map((card) => (
+                <article key={card.title} className="rounded-3xl border border-line bg-card p-6 shadow-[0_1px_3px_rgba(19,26,48,0.07)]">
+                  <h3 className="font-bold text-xl tracking-tight">{card.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-ink-soft">{card.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section id="how" className="border-t border-line bg-card">
           <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
             <h2 className="font-bold text-4xl tracking-tight">{L.howTitle}</h2>
