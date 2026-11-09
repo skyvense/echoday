@@ -304,10 +304,17 @@ export function formatBytes(bytes: number): string {
   return `${(bytes / 1_000_000).toFixed(1)} MB`;
 }
 
+let dateLocale = "en-US";
+
+/** Called by the language provider so dates follow the UI language. */
+export function setDateLocale(locale: string) {
+  dateLocale = locale;
+}
+
 export function formatDay(isoDate: string): string {
   const [year, month, day] = isoDate.split("-").map(Number);
   if (!year || !month || !day) return isoDate;
-  return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString("en-US", {
+  return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString(dateLocale, {
     weekday: "long",
     month: "long",
     day: "numeric",
@@ -317,7 +324,7 @@ export function formatDay(isoDate: string): string {
 }
 
 export function formatWhen(iso: string): string {
-  return new Date(iso).toLocaleString(undefined, {
+  return new Date(iso).toLocaleString(dateLocale, {
     month: "short",
     day: "numeric",
     hour: "numeric",
