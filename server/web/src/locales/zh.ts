@@ -100,6 +100,31 @@ const zh: typeof en = {
       },
     ],
     museTitle: "连接 Muse",
+    appTitle: "把一天，装进口袋",
+    appIntro:
+      "早上点一下，手机就安静地替你守着这一天 —— 录音、拍下场景、标出重要时刻。你只管生活，记住这件事，交给它。",
+    appPhones: {
+      recording: "正在录音",
+      todayCount: "今天已录 289 段",
+      selfNote: "按住说话 · 自述",
+      conversation: "对话",
+      meeting: "会议",
+      everyday: "日常聊天场景",
+      multiPerson: "多人会议场景",
+      reports: "日报",
+      reportsSub: "每一天都有一篇总结",
+      viewSheet: "看当日活动图",
+      summaryLines: [
+        "晨会：芯片方案表决推迟到周四，后续清单由罗瑞跟进。",
+        "午饭和老朋友聊了他的新工作室，可能会有合作。",
+        "晚饭后散步 32 分钟。自述：周五前订好火车票。",
+      ],
+      cloud: "云端",
+      used: "已用",
+      photos: "照片",
+      audio: "语音",
+      tabs: ["录音", "云端", "日报", "配置"],
+    },
     museIntro:
       "带上你自己的 key。在「连接」页创建一个 muse_ token，你的 agent 就能下载某一天，在你已付费的模型服务上转写，再把日报回传。token 不能上传录音，也碰不到订阅计费。",
     museIntro2:

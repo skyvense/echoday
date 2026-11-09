@@ -99,6 +99,31 @@ const en = {
       },
     ],
     museTitle: "Connect Muse",
+    appTitle: "Your day, in your pocket",
+    appIntro:
+      "One tap in the morning and the phone quietly keeps the day — recording, snapping scenes, marking moments. You just live it; the remembering is handled.",
+    appPhones: {
+      recording: "Recording",
+      todayCount: "289 segments today",
+      selfNote: "Hold to talk · Self-note",
+      conversation: "Conversation",
+      meeting: "Meeting",
+      everyday: "Everyday chats",
+      multiPerson: "Multi-person scenes",
+      reports: "Reports",
+      reportsSub: "A summary for every day",
+      viewSheet: "View the day's activity sheet",
+      summaryLines: [
+        "Morning standup: the chip vote moved to Thursday; Rui owns the follow-up list.",
+        "Lunch with an old friend — talked about his new studio and a possible collaboration.",
+        "Evening walk, 32 minutes. Self-note: book the train tickets before Friday.",
+      ],
+      cloud: "Cloud",
+      used: "used",
+      photos: "Photos",
+      audio: "Audio",
+      tabs: ["Record", "Cloud", "Reports", "Settings"],
+    },
     museIntro:
       "Bring your own key. Create a muse_ token on the Connect page. Your agent downloads a day, transcribes it wherever you already pay for models, and posts the summary back. The token cannot upload audio or open billing.",
     museIntro2:
