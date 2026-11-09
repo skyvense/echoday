@@ -89,6 +89,7 @@ dayRoutes.get("/", async (c) => {
       bytes: Number(row.bytes),
       summary_excerpt: excerpt(row.summary),
       summary_updated_at: row.summary_updated_at ? new Date(row.summary_updated_at).toISOString() : null,
+      has_sheet: row.has_sheet,
     })),
   });
 });

@@ -13,6 +13,7 @@ export interface DayListRow {
   bytes: string | number;
   summary: string | null;
   summary_updated_at: Date | null;
+  has_sheet: boolean;
 }
 
 export async function listDays(userId: string, query: string): Promise<DayListRow[]> {
@@ -26,7 +27,8 @@ export async function listDays(userId: string, query: string): Promise<DayListRo
       (select count(*)::int from objects o where o.day_id = d.id and o.kind = 'snapshot') as snapshot_count,
       coalesce((select sum(bytes) from objects o where o.day_id = d.id and o.kind in ('segment', 'note')), 0) as bytes,
       s.markdown as summary,
-      s.updated_at as summary_updated_at
+      s.updated_at as summary_updated_at,
+      (s.sheet_key is not null) as has_sheet
     from days d
     left join summaries s on s.day_id = d.id
     where d.user_id = ${userId}

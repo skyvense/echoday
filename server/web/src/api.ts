@@ -116,6 +116,7 @@ export interface DaySummary {
   bytes: number;
   summary_excerpt: string | null;
   summary_updated_at: string | null;
+  has_sheet?: boolean;
 }
 
 export interface AudioFile {

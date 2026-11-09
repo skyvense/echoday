@@ -3,6 +3,31 @@ import { Link, useSearchParams } from "react-router-dom";
 import { ApiError, api, formatBytes, formatDay, type DaySummary } from "../api";
 import { useLang } from "../i18n";
 
+function SheetThumb({ date }: { date: string }) {
+  const [url, setUrl] = useState("");
+  useEffect(() => {
+    let cancelled = false;
+    let objectUrl = "";
+    api
+      .sheetObjectUrl(date)
+      .then((u) => {
+        if (cancelled) {
+          URL.revokeObjectURL(u);
+        } else {
+          objectUrl = u;
+          setUrl(u);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [date]);
+  if (!url) return <div className="w-14 shrink-0 self-stretch rounded-xl bg-paper" aria-hidden="true" />;
+  return <img src={url} alt="" className="w-14 shrink-0 self-stretch rounded-xl object-cover" />;
+}
+
 export function DaysPage() {
   const { t } = useLang();
   const [params, setParams] = useSearchParams();
@@ -70,14 +95,17 @@ export function DaysPage() {
         <ul className="mt-6 divide-y divide-line overflow-hidden rounded-3xl border border-line bg-card">
           {days.map((day) => (
             <li key={day.date}>
-              <Link to={`/days/${day.date}`} className="block px-5 py-4 no-underline hover:bg-paper">
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <p className="font-bold text-xl tracking-tight">{formatDay(day.date)}</p>
-                  <p className="text-sm text-ink-soft">
-                    {t("days.counts", { audio: day.audio_count, markers: day.marker_count, bytes: formatBytes(day.bytes) })}
-                  </p>
+              <Link to={`/days/${day.date}`} className="flex items-stretch gap-4 px-5 py-4 no-underline hover:bg-paper">
+                {day.has_sheet && <SheetThumb date={day.date} />}
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <p className="font-bold text-xl tracking-tight">{formatDay(day.date)}</p>
+                    <p className="text-sm text-ink-soft">
+                      {t("days.counts", { audio: day.audio_count, markers: day.marker_count, bytes: formatBytes(day.bytes) })}
+                    </p>
+                  </div>
+                  <p className="mt-1 text-sm text-ink-soft">{day.summary_excerpt || t("days.noSummary")}</p>
                 </div>
-                <p className="mt-1 text-sm text-ink-soft">{day.summary_excerpt || t("days.noSummary")}</p>
               </Link>
             </li>
           ))}
