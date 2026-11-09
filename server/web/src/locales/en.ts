@@ -291,6 +291,10 @@ const en = {
     saveError: "Could not save the summary.",
     noSummary:
       "No summary yet. Your Muse can PUT one, or you can write it here. This page does not call a model.",
+    activitySheet: "Activity sheet",
+    viewSheet: "View the activity sheet",
+    sheetLoading: "Loading…",
+    sheetLoadError: "Could not load the activity sheet.",
     transcript: "Transcript",
     markersTitle: "Markers",
     noMarkers: "No event markers for this day.",

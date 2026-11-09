@@ -150,6 +150,7 @@ export interface Summary {
   source: string;
   model: string | null;
   updated_at: string;
+  has_sheet?: boolean;
 }
 
 export interface DayDetail {
@@ -215,6 +216,14 @@ export const api = {
     }),
   days: (q = "") => request<{ days: DaySummary[] }>(`/api/v1/days?q=${encodeURIComponent(q)}`),
   day: (date: string) => request<DayDetail>(`/api/v1/days/${date}`),
+  sheetObjectUrl: async (date: string): Promise<string> => {
+    const headers = new Headers();
+    const token = sessionStorage.getItem(TOKEN_KEY);
+    if (token) headers.set("Authorization", `Bearer ${token}`);
+    const response = await fetch(`/api/v1/days/${date}/sheet`, { headers, credentials: "include" });
+    if (!response.ok) throw new ApiError(response.status, "sheet_error", response.statusText);
+    return URL.createObjectURL(await response.blob());
+  },
   saveSummary: (date: string, markdown: string, transcript: string) =>
     request<Summary>(`/api/v1/days/${date}/summary`, {
       method: "PUT",

@@ -14,6 +14,21 @@ export function DayPage() {
   const [transcript, setTranscript] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [sheetUrl, setSheetUrl] = useState("");
+  const [sheetBusy, setSheetBusy] = useState(false);
+  const [sheetError, setSheetError] = useState("");
+
+  async function loadSheet() {
+    setSheetBusy(true);
+    setSheetError("");
+    try {
+      setSheetUrl(await api.sheetObjectUrl(date));
+    } catch {
+      setSheetError(t("day.sheetLoadError"));
+    } finally {
+      setSheetBusy(false);
+    }
+  }
 
   function markerLabel(type: string | null): string {
     if (!type) return t("day.markerFallback");
@@ -137,6 +152,24 @@ export function DayPage() {
             />
           ) : (
             <p className="mt-4 text-ink-soft">{t("day.noSummary")}</p>
+          )}
+          {day.summary?.has_sheet && !editing && (
+            <div className="mt-8 border-t border-line pt-6">
+              <h3 className="font-bold text-xl tracking-tight">{t("day.activitySheet")}</h3>
+              {sheetUrl ? (
+                <img src={sheetUrl} alt={t("day.activitySheet")} className="mt-4 w-full rounded-2xl border border-line" />
+              ) : (
+                <button
+                  type="button"
+                  onClick={loadSheet}
+                  disabled={sheetBusy}
+                  className="mt-4 rounded-full bg-red px-4 py-2 text-white disabled:opacity-60"
+                >
+                  {sheetBusy ? t("day.sheetLoading") : t("day.viewSheet")}
+                </button>
+              )}
+              {sheetError && <p className="mt-3 text-sm text-red-deep">{sheetError}</p>}
+            </div>
           )}
           {day.summary?.transcript_markdown && !editing && (
             <details className="mt-6">
