@@ -87,6 +87,15 @@ export interface AdminUserDetail {
   tokens: AdminToken[];
 }
 
+export interface AdminActivityEntry {
+  id: string;
+  ts: string;
+  actor: string;
+  ip: string;
+  kind: string;
+  detail: string;
+}
+
 export interface AdminCoupon {
   id: string;
   code: string;
@@ -260,6 +269,7 @@ export const api = {
   stubActivate: () => request<Me>("/api/v1/billing/stub/activate", { method: "POST" }),
   stubTrial: () => request<Me & { message?: string }>("/api/v1/billing/stub/trial", { method: "POST" }),
   stubCancel: () => request<Me>("/api/v1/billing/stub/cancel", { method: "POST" }),
+  adminActivity: () => request<{ entries: AdminActivityEntry[] }>("/api/v1/admin/activity"),
   adminUsers: (q = "", limit = 25, offset = 0) =>
     request<{ users: AdminUser[]; total: number; limit: number; offset: number }>(
       `/api/v1/admin/users?q=${encodeURIComponent(q)}&limit=${limit}&offset=${offset}`,

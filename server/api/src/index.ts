@@ -54,6 +54,63 @@ app.get("/api/v1/docs", (c) => {
 });
 
 const v1 = new Hono<AppEnv>();
+
+// Activity log for the admin console: app uploads and agent (muse token)
+// requests. Written after the response, never blocking or failing it.
+v1.use("*", async (c, next) => {
+  await next();
+  try {
+    const pathname = new URL(c.req.url).pathname;
+    const isMuse = pathname.startsWith("/api/v1/muse/");
+    const isUpload = pathname.startsWith("/api/v1/upload/") && c.req.method === "PUT";
+    if (!isMuse && !isUpload) return;
+    const user = c.get("user");
+    if (!user) return;
+    const status = c.res.status;
+    const ip =
+      (c.req.header("x-forwarded-for") || "").split(",")[0]!.trim() ||
+      c.req.header("x-real-ip") ||
+      "";
+    let kind = "agent";
+    let detail = "";
+    if (isUpload) {
+      kind = "upload";
+      const key = decodeURIComponent(pathname.slice("/api/v1/upload/".length));
+      const storeName = env.storageDriver === "fs" ? "本地存储" : "R2";
+      detail =
+        status >= 200 && status < 300
+          ? `上传 ${key} 到平台 · ${storeName}存储成功`
+          : `上传 ${key} 失败 · HTTP ${status}`;
+    } else {
+      const sub = pathname.slice("/api/v1/muse".length);
+      const dayMatch = sub.match(/^\/days\/(\d{4}-\d{2}-\d{2})(?:\/(.*))?$/);
+      const rest = dayMatch?.[2] ?? "";
+      if (sub === "/days") {
+        detail = `agent 查询日子列表`;
+      } else if (dayMatch && rest === "manifest") {
+        detail = `agent 查询 ${dayMatch[1]} 的清单（manifest）`;
+      } else if (dayMatch && rest === "result" && c.req.method === "PUT") {
+        detail = `agent 回传 ${dayMatch[1]} 的日报`;
+      } else if (dayMatch && rest === "result") {
+        detail = `agent 读取 ${dayMatch[1]} 的日报`;
+      } else if (dayMatch && rest === "sheet") {
+        detail = `agent 回传 ${dayMatch[1]} 的活动图`;
+      } else if (dayMatch && rest.startsWith("files/")) {
+        detail = `agent 下载 ${decodeURIComponent(rest.slice("files/".length))}`;
+      } else {
+        detail = `agent 请求 ${c.req.method} ${sub}`;
+      }
+      detail += ` · HTTP ${status}`;
+    }
+    await sql`
+      insert into activity_log (user_id, actor, ip, kind, detail)
+      values (${user.id}, ${user.email}, ${ip}, ${kind}, ${detail})
+    `;
+  } catch (error) {
+    console.error("activity log write failed", error);
+  }
+});
+
 v1.get("/me", requireUser(), (c) => c.json(publicUser(c.get("user"))));
 v1.route("/auth", authRoutes);
 v1.route("/upload", uploadRoutes);

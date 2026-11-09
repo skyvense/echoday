@@ -4,6 +4,7 @@ import {
   api,
   formatBytes,
   formatWhen,
+  type AdminActivityEntry,
   type AdminCoupon,
   type AdminRedemption,
   type AdminUser,
@@ -17,7 +18,7 @@ const PAGE_SIZE = 25;
 export function AdminPage() {
   const { me } = useSession();
   const { t } = useLang();
-  const [tab, setTab] = useState<"users" | "coupons">("users");
+  const [tab, setTab] = useState<"users" | "coupons" | "activity">("users");
 
   if (!me) return null;
   if (!me.is_admin) {
@@ -40,8 +41,13 @@ export function AdminPage() {
         <TabButton active={tab === "coupons"} onClick={() => setTab("coupons")}>
           {t("admin.tabCoupons")}
         </TabButton>
+        <TabButton active={tab === "activity"} onClick={() => setTab("activity")}>
+          {t("admin.tabActivity")}
+        </TabButton>
       </div>
-      <div className="mt-6">{tab === "users" ? <UsersPanel /> : <CouponsPanel />}</div>
+      <div className="mt-6">
+        {tab === "users" ? <UsersPanel /> : tab === "coupons" ? <CouponsPanel /> : <ActivityPanel />}
+      </div>
     </div>
   );
 }
@@ -68,6 +74,48 @@ function TabButton({
 
 function errText(err: unknown, fallback: string): string {
   return err instanceof ApiError ? err.message : fallback;
+}
+
+function ActivityPanel() {
+  const { t } = useLang();
+  const [entries, setEntries] = useState<AdminActivityEntry[] | null>(null);
+  const [error, setError] = useState("");
+
+  const load = useCallback(() => {
+    setError("");
+    api
+      .adminActivity()
+      .then((result) => setEntries(result.entries))
+      .catch((err: unknown) => setError(errText(err, t("admin.loadError"))));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  if (error) return <p className="text-red-deep">{error}</p>;
+  if (entries === null) return <p className="text-ink-soft">{t("admin.loading")}</p>;
+  if (entries.length === 0) return <p className="text-ink-soft">{t("admin.activityEmpty")}</p>;
+  return (
+    <ul className="divide-y divide-line overflow-hidden rounded-3xl border border-line bg-card">
+      {entries.map((entry) => (
+        <li key={entry.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-3">
+          <span
+            className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
+              entry.kind === "upload" ? "bg-[#1c63f2]/10 text-[#1c63f2]" : "bg-[#f36b53]/10 text-red-deep"
+            }`}
+          >
+            {entry.kind === "upload" ? t("admin.activityKindUpload") : t("admin.activityKindAgent")}
+          </span>
+          <span className="min-w-0 flex-1 text-sm">{entry.detail}</span>
+          <span className="text-xs text-ink-soft">{entry.actor}</span>
+          {entry.ip && <span className="text-xs text-ink-soft">{entry.ip}</span>}
+          <span className="text-xs text-ink-soft">{formatWhen(entry.ts)}</span>
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 // ---------------------------------------------------------------- users

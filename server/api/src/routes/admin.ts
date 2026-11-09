@@ -350,6 +350,27 @@ adminRoutes.get("/coupons/:id/redemptions", async (c) => {
   });
 });
 
+adminRoutes.get("/activity", async (c) => {
+  const rows = await sql<
+    { id: string; ts: Date; actor: string; ip: string; kind: string; detail: string }[]
+  >`
+    select id::text, ts, actor, ip, kind, detail
+    from activity_log
+    order by ts desc, id desc
+    limit 100
+  `;
+  return c.json({
+    entries: rows.map((row) => ({
+      id: row.id,
+      ts: iso(row.ts),
+      actor: row.actor,
+      ip: row.ip,
+      kind: row.kind,
+      detail: row.detail,
+    })),
+  });
+});
+
 // ---------- maintenance ----------
 
 adminRoutes.post("/maintenance/retention", async (c) => {

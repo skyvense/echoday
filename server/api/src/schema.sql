@@ -131,3 +131,15 @@ CREATE TABLE IF NOT EXISTS supabase_identity_links (
   linked_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE (supabase_user_id)
 );
+
+CREATE TABLE IF NOT EXISTS activity_log (
+  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  ts timestamptz NOT NULL DEFAULT now(),
+  user_id uuid REFERENCES users(id) ON DELETE SET NULL,
+  actor text NOT NULL DEFAULT '',
+  ip text NOT NULL DEFAULT '',
+  kind text NOT NULL DEFAULT '',
+  detail text NOT NULL DEFAULT ''
+);
+
+CREATE INDEX IF NOT EXISTS activity_log_ts_idx ON activity_log (ts DESC);
