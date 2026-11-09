@@ -28,10 +28,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Settings card for the EchoDay trial (v1.25.0): account register /
- * login inside the app, the cloud-upload mode switch, and the in-app
- * "Connect my Muse" section (agent tokens + one-tap copy of the
- * ready-made instruction paragraph).
+ * Settings card for the EchoDay account (v1.25.0): account register /
+ * login inside the app and the in-app "Connect my Muse" section
+ * (agent tokens + one-tap copy of the ready-made instruction
+ * paragraph). Since v1.28.0 this is the only backend card — the app
+ * is platform-only.
  *
  * Settings persist immediately (same rule as the snapshot switches): the
  * server URL and email are written on every change; the password is never
@@ -47,8 +48,6 @@ public final class CloudSettings {
     private final TextView statusText, baseUrlText, newTokenText;
     private final Button registerButton, loginButton, logoutButton;
     private final Button createTokenButton, copyTokenButton, copyGuideButton;
-    private final android.widget.RadioButton selfModeButton, cloudModeButton;
-    private final View platformCard;
     private final LinearLayout tokensContainer;
     private final View connectSection;
 
@@ -60,28 +59,7 @@ public final class CloudSettings {
         this.act = act;
         this.pal = pal;
 
-        // ---- Service mode (v1.26.0): self-hosted vs EchoDay ----
-        // One mode drives uploads, the cloud tab and the reports tab via
-        // Backend. Switching applies and persists immediately.
-        LinearLayout modeCard = new LinearLayout(act);
-        modeCard.setOrientation(LinearLayout.VERTICAL);
-        modeCard.setBackground(Ui.cardBg(act, pal, 16));
-        modeCard.setPadding(dp(16), dp(14), dp(16), dp(16));
-        LinearLayout.LayoutParams mcp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        mcp.bottomMargin = dp(12);
-        modeCard.setLayoutParams(mcp);
-        container.addView(modeCard);
-        modeCard.addView(label(act.getString(R.string.backend_mode_title), 16, pal.text, true));
-        selfModeButton = modeRadio(R.string.backend_mode_self);
-        cloudModeButton = modeRadio(R.string.backend_mode_cloud);
-        modeCard.addView(selfModeButton);
-        modeCard.addView(cloudModeButton);
-        selfModeButton.setOnClickListener(v -> setBackendMode(Prefs.BACKEND_SELF));
-        cloudModeButton.setOnClickListener(v -> setBackendMode(Prefs.BACKEND_CLOUD));
-
         LinearLayout card = new LinearLayout(act);
-        platformCard = card;
         card.setOrientation(LinearLayout.VERTICAL);
         card.setBackground(Ui.cardBg(act, pal, 16));
         card.setPadding(dp(16), dp(14), dp(16), dp(16));
@@ -238,58 +216,12 @@ public final class CloudSettings {
 
         loading = false;
         updateBaseUrlText();
-        updateModeUi();
         refreshState(false);
     }
 
     /** Called when the settings tab becomes visible. */
     public void onShow() {
-        updateModeUi();
         refreshState(false);
-    }
-
-    // ---- backend mode ----
-
-    private android.widget.RadioButton modeRadio(int textRes) {
-        android.widget.RadioButton rb = new android.widget.RadioButton(act);
-        rb.setText(textRes);
-        rb.setTextSize(15);
-        rb.setTextColor(pal.text);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.topMargin = dp(8);
-        rb.setLayoutParams(lp);
-        return rb;
-    }
-
-    private void setBackendMode(int mode) {
-        if (Prefs.backendMode(act) == mode) {
-            updateModeUi();
-            return;
-        }
-        Prefs.setBackendMode(act, mode);
-        updateModeUi();
-        // Kick the uploader: pending files should flow to the new backend.
-        Uploader.kick(act);
-        toast(act.getString(mode == Prefs.BACKEND_CLOUD
-                ? R.string.backend_mode_cloud_on : R.string.backend_mode_self_on));
-    }
-
-    /** Reflects the current mode in the radios and section visibility. */
-    private void updateModeUi() {
-        boolean cloud = Prefs.isCloudBackend(act);
-        selfModeButton.setChecked(!cloud);
-        cloudModeButton.setChecked(cloud);
-        platformCard.setVisibility(cloud ? View.VISIBLE : View.GONE);
-        setSectionVisible(R.id.s3SectionTitle, !cloud);
-        setSectionVisible(R.id.s3GroupCard, !cloud);
-        setSectionVisible(R.id.reportsSectionTitle, !cloud);
-        setSectionVisible(R.id.reportsGroupCard, !cloud);
-    }
-
-    private void setSectionVisible(int id, boolean visible) {
-        View v = act.findViewById(id);
-        if (v != null) v.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     // ---- state / refresh ----

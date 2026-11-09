@@ -44,36 +44,6 @@ public class MainActivity extends Activity {
     private static final int REQ_PERMS = 42;
     private static final int REQ_CAMERA = 43;
 
-    // Presets: endpoint, region, virtualStyle. Display names live in the
-    // preset_names string-array so they follow the app language.
-    private static final String[][] PRESETS = {
-        {"https://<AccountID>.r2.cloudflarestorage.com", "auto", "path"},
-        {"https://s3.us-west-004.backblazeb2.com", "us-west-004", "path"},
-        {"https://s3.us-east-005.backblazeb2.com", "us-east-005", "path"},
-        {"https://s3.eu-central-003.backblazeb2.com", "eu-central-003", "path"},
-        {"https://oss-cn-hangzhou.aliyuncs.com", "cn-hangzhou", "virtual"},
-        {"https://oss-cn-shanghai.aliyuncs.com", "cn-shanghai", "virtual"},
-        {"https://oss-cn-beijing.aliyuncs.com", "cn-beijing", "virtual"},
-        {"https://oss-cn-shenzhen.aliyuncs.com", "cn-shenzhen", "virtual"},
-        {"https://cos.ap-guangzhou.myqcloud.com", "ap-guangzhou", "virtual"},
-        {"https://cos.ap-shanghai.myqcloud.com", "ap-shanghai", "virtual"},
-        {"https://cos.ap-beijing.myqcloud.com", "ap-beijing", "virtual"},
-        {"https://s3.us-east-1.amazonaws.com", "us-east-1", "virtual"},
-        {"https://s3.ap-southeast-1.amazonaws.com", "ap-southeast-1", "virtual"},
-        {"https://s3.cn-east-1.qiniucs.com", "cn-east-1", "virtual"},
-        {"", "", "path"},
-    };
-
-    // Pre-localization preset names (always Chinese): old installs saved the
-    // preset by display name, so loadSettings still recognizes those values.
-    private static final String[] LEGACY_PRESET_NAMES = {
-        "Cloudflare R2", "Backblaze B2 · 美西", "Backblaze B2 · 美东", "Backblaze B2 · 欧洲",
-        "阿里云 OSS · 杭州（S3兼容）", "阿里云 OSS · 上海（S3兼容）", "阿里云 OSS · 北京（S3兼容）",
-        "阿里云 OSS · 深圳（S3兼容）", "腾讯云 COS · 广州（S3兼容）", "腾讯云 COS · 上海（S3兼容）",
-        "腾讯云 COS · 北京（S3兼容）", "AWS S3 · 美东", "AWS S3 · 新加坡",
-        "七牛云 Kodo · 华东（S3兼容）", "自定义",
-    };
-
     private RecordButtonView recordButton;
     private WaveformView waveform;
     private TextView statusText, lastEventText, filesTitle, uploadStatusText;
@@ -90,18 +60,15 @@ public class MainActivity extends Activity {
     private R2Browser r2Browser;
     private SupabaseReports supabaseReports;
     private CloudSettings cloudSettings;
-    private EditText supabaseUrlInput, supabaseKeyInput;
-    private Spinner presetSpinner, languageSpinner, snapshotCameraSpinner, darkModeSpinner;
+    private Spinner languageSpinner, snapshotCameraSpinner, darkModeSpinner;
     private boolean snapshotSpinnerTouched = false;
     private boolean darkModeTouched = false;
     private Ui.Palette pal;
-    private EditText endpointInput, regionInput, bucketInput, accessKeyInput, secretKeyInput;
     private EditText segmentMinutesInput;
     private EditText snapshotRepeatInput;
-    private Switch virtualStyleCheck, wifiOnlyCheck, deleteAfterUploadCheck, autoResumeCheck;
+    private Switch wifiOnlyCheck, deleteAfterUploadCheck, autoResumeCheck;
     private Switch snapshotCheck;
     private Switch snapshotFilterCheck;
-    private boolean spinnerTouched = false;
     private boolean languageTouched = false;
     private long lastConfigSavedAt = 0;
     // Press-and-hold self-note state
@@ -220,14 +187,7 @@ public class MainActivity extends Activity {
         retryUploadButton = findViewById(R.id.retryUploadButton);
         pendingContainer = findViewById(R.id.pendingContainer);
         uploadProgress = findViewById(R.id.uploadProgress);
-        presetSpinner = findViewById(R.id.presetSpinner);
         languageSpinner = findViewById(R.id.languageSpinner);
-        endpointInput = findViewById(R.id.endpointInput);
-        regionInput = findViewById(R.id.regionInput);
-        bucketInput = findViewById(R.id.bucketInput);
-        accessKeyInput = findViewById(R.id.accessKeyInput);
-        secretKeyInput = findViewById(R.id.secretKeyInput);
-        virtualStyleCheck = findViewById(R.id.virtualStyleCheck);
         segmentMinutesInput = findViewById(R.id.segmentMinutesInput);
         wifiOnlyCheck = findViewById(R.id.wifiOnlyCheck);
         deleteAfterUploadCheck = findViewById(R.id.deleteAfterUploadCheck);
@@ -237,15 +197,14 @@ public class MainActivity extends Activity {
         snapshotRepeatInput = findViewById(R.id.snapshotRepeatInput);
         snapshotCameraSpinner = findViewById(R.id.snapshotCameraSpinner);
         settingsContainer = findViewById(R.id.settingsContainer);
-        supabaseUrlInput = findViewById(R.id.supabaseUrlInput);
-        supabaseKeyInput = findViewById(R.id.supabaseKeyInput);
         darkModeSpinner = findViewById(R.id.darkModeSpinner);
 
         applyTheme();
 
-        // Tabs: record (control) / cloud (R2 browser) / reports (Supabase)
-        // / settings. The settings that used to hide behind a toggle button
-        // on the record page now live on their own tab, categorized.
+        // Tabs: record (control) / cloud (platform browser) / reports
+        // (platform daily reports) / settings. The settings that used to
+        // hide behind a toggle button on the record page now live on
+        // their own tab, categorized.
         tabRecordButton = findViewById(R.id.tabRecordButton);
         tabCloudButton = findViewById(R.id.tabCloudButton);
         tabReportsButton = findViewById(R.id.tabReportsButton);
@@ -262,29 +221,6 @@ public class MainActivity extends Activity {
         tabReportsButton.setOnClickListener(v -> selectTab(2));
         tabSettingsButton.setOnClickListener(v -> selectTab(3));
         selectTab(0);
-
-        ArrayAdapter<String> presetAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item,
-                getResources().getStringArray(R.array.preset_names));
-        presetSpinner.setAdapter(presetAdapter);
-        presetSpinner.setOnTouchListener((v, e) -> {
-            spinnerTouched = true;
-            return false;
-        });
-        presetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                if (!spinnerTouched) return;
-                if (pos == PRESETS.length - 1) return; // Custom: leave the fields alone
-                String[] p = PRESETS[pos];
-                endpointInput.setText(p[0]);
-                regionInput.setText(p[1]);
-                virtualStyleCheck.setChecked("virtual".equals(p[2]));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
 
         ArrayAdapter<String> languageAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item,
@@ -694,27 +630,6 @@ public class MainActivity extends Activity {
                 break;
             }
         }
-        // Preset: new installs save the index; old installs saved the
-        // display name (always Chinese), so both are recognized.
-        String savedPreset = p.getString(Prefs.KEY_S3_PRESET, "0");
-        try {
-            int idx = Integer.parseInt(savedPreset);
-            if (idx >= 0 && idx < PRESETS.length) presetSpinner.setSelection(idx);
-        } catch (NumberFormatException e) {
-            String[] names = getResources().getStringArray(R.array.preset_names);
-            for (int i = 0; i < PRESETS.length; i++) {
-                if (names[i].equals(savedPreset) || LEGACY_PRESET_NAMES[i].equals(savedPreset)) {
-                    presetSpinner.setSelection(i);
-                    break;
-                }
-            }
-        }
-        endpointInput.setText(p.getString(Prefs.KEY_S3_ENDPOINT, PRESETS[0][0]));
-        regionInput.setText(p.getString(Prefs.KEY_S3_REGION, PRESETS[0][1]));
-        bucketInput.setText(p.getString(Prefs.KEY_S3_BUCKET, ""));
-        accessKeyInput.setText(p.getString(Prefs.KEY_S3_ACCESS_KEY, ""));
-        secretKeyInput.setText(p.getString(Prefs.KEY_S3_SECRET_KEY, ""));
-        virtualStyleCheck.setChecked(p.getBoolean(Prefs.KEY_S3_VIRTUAL, false));
         segmentMinutesInput.setText(String.valueOf(p.getInt(Prefs.KEY_SEGMENT_MINUTES, 60)));
         wifiOnlyCheck.setChecked(p.getBoolean(Prefs.KEY_WIFI_ONLY, false));
         deleteAfterUploadCheck.setChecked(p.getBoolean(Prefs.KEY_DELETE_AFTER_UPLOAD, true));
@@ -723,10 +638,6 @@ public class MainActivity extends Activity {
         snapshotFilterCheck.setChecked(p.getBoolean(Prefs.KEY_SNAPSHOT_FILTER, true));
         snapshotRepeatInput.setText(String.valueOf(Prefs.snapshotRepeatMinutes(this)));
         snapshotCameraSpinner.setSelection(Prefs.snapshotCameraMode(this));
-        String sbUrl = Prefs.supabaseUrl(this);
-        supabaseUrlInput.setText(sbUrl.isEmpty()
-                ? "https://xpmorezsouevzihgjpxe.supabase.co" : sbUrl);
-        supabaseKeyInput.setText(Prefs.supabaseKey(this));
     }
 
     private void saveSettings() {
@@ -741,13 +652,6 @@ public class MainActivity extends Activity {
         if (repeatMinutes < 0) repeatMinutes = 0;
         if (repeatMinutes > 120) repeatMinutes = 120;
         Prefs.get(this).edit()
-                .putString(Prefs.KEY_S3_PRESET, String.valueOf(presetSpinner.getSelectedItemPosition()))
-                .putString(Prefs.KEY_S3_ENDPOINT, endpointInput.getText().toString().trim())
-                .putString(Prefs.KEY_S3_REGION, regionInput.getText().toString().trim())
-                .putString(Prefs.KEY_S3_BUCKET, bucketInput.getText().toString().trim())
-                .putString(Prefs.KEY_S3_ACCESS_KEY, accessKeyInput.getText().toString().trim())
-                .putString(Prefs.KEY_S3_SECRET_KEY, secretKeyInput.getText().toString().trim())
-                .putBoolean(Prefs.KEY_S3_VIRTUAL, virtualStyleCheck.isChecked())
                 .putInt(Prefs.KEY_SEGMENT_MINUTES, minutes)
                 .putBoolean(Prefs.KEY_WIFI_ONLY, wifiOnlyCheck.isChecked())
                 .putBoolean(Prefs.KEY_DELETE_AFTER_UPLOAD, deleteAfterUploadCheck.isChecked())
@@ -756,8 +660,6 @@ public class MainActivity extends Activity {
                 .putBoolean(Prefs.KEY_SNAPSHOT_FILTER, snapshotFilterCheck.isChecked())
                 .putInt(Prefs.KEY_SNAPSHOT_REPEAT_MINUTES, repeatMinutes)
                 .putInt(Prefs.KEY_SNAPSHOT_CAMERA, snapshotCameraSpinner.getSelectedItemPosition())
-                .putString(Prefs.KEY_SB_URL, supabaseUrlInput.getText().toString().trim())
-                .putString(Prefs.KEY_SB_KEY, supabaseKeyInput.getText().toString().trim())
                 .apply();
         SnapshotWatcher.sync(this);
     }
@@ -870,9 +772,9 @@ public class MainActivity extends Activity {
             statusText.setText(R.string.self_note_recording);
         } else {
             statusText.setVisibility(View.VISIBLE);
-            statusText.setText(Prefs.s3Configured(this)
+            statusText.setText(Prefs.cloudLoggedIn(this)
                     ? getString(R.string.status_tap_record)
-                    : getString(R.string.status_tap_record_no_s3));
+                    : getString(R.string.status_tap_record_no_login));
         }
 
         styleEventCard(convCard, convCardTitle, convCardState,
@@ -921,7 +823,7 @@ public class MainActivity extends Activity {
                     String.format(Locale.US, "%.1f", f.length() / 1_000_000.0)));
             rowIsRecording.add(false);
         }
-        if (rows.isEmpty()) rows.add(Prefs.s3Configured(this)
+        if (rows.isEmpty()) rows.add(Prefs.cloudLoggedIn(this)
                 ? getString(R.string.no_pending_ok) : getString(R.string.no_files_yet));
         if (Uploader.eventsPending(this)) rows.add(getString(R.string.events_pending_row));
         while (rowIsRecording.size() < rows.size()) rowIsRecording.add(false);

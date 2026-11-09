@@ -34,12 +34,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * The "cloud" tab: browses the recording bucket on Cloudflare R2 by date —
- * audio segments (rec_/note_) and auto snapshots (snapshot-&lt;date&gt;/).
+ * The "cloud" tab: browses the recordings in the user's EchoDay account
+ * by date — audio segments (rec_/note_) and auto snapshots
+ * (snapshot-&lt;date&gt;/). (Class name kept from the R2 era; since
+ * v1.28.0 it only talks to the platform, via Backend.)
  *
  * v1.13 layout (per the approved mockups): header block, a storage-usage
- * card (bucket total from one full ListObjectsV2 pass, which also yields
- * the per-date photo/audio counts shown on the date rows), then the date's
+ * card (account total and quota from the platform, which also yields the
+ * per-date photo/audio counts shown on the date rows), then the date's
  * photos as a 3-column rounded-thumbnail grid and its audio as play cards.
  * Tapping a photo downloads and shows it full-size; tapping an audio card
  * downloads and plays it. Read-only; downloads go to a small cache.
@@ -77,7 +79,7 @@ public final class R2Browser {
     }
 
     private static final class Item {
-        /** Backend locator: an S3 key, or a platform URL path. */
+        /** Backend locator: a platform URL path. */
         String locator;
         String name;
         long size;
@@ -124,14 +126,7 @@ public final class R2Browser {
         Ui.styleGhost(backButton, pal);
         Ui.styleGhost(refreshButton, pal);
         Ui.styleGhost(playButton, pal);
-        if (Backend.isCloud(act)) {
-            subtitle.setText(act.getString(R.string.cloud_subtitle_cloud, Prefs.cloudUrl(act)));
-        } else {
-            String bucket = Prefs.s3Config(act).bucket;
-            subtitle.setText(bucket.isEmpty()
-                    ? "Cloudflare R2"
-                    : act.getString(R.string.cloud_subtitle, bucket));
-        }
+        subtitle.setText(act.getString(R.string.cloud_subtitle_cloud, Prefs.cloudUrl(act)));
         clearCache();
         backButton.setOnClickListener(v -> onBack());
         refreshButton.setOnClickListener(v -> {
@@ -203,8 +198,7 @@ public final class R2Browser {
             totalBytes = -1;
             renderDates();
             renderStorage();
-            setStatus(act.getString(Backend.isCloud(act)
-                    ? R.string.backend_not_logged_in : R.string.cloud_not_configured));
+            setStatus(act.getString(R.string.backend_not_logged_in));
             return;
         }
         if (!force && !dateInfos.isEmpty()

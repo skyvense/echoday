@@ -237,7 +237,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- ============ Page 2: cloud (R2 browser) ============ -->
+        <!-- ============ Page 2: cloud (platform browser) ============ -->
         <LinearLayout
             android:id="@+id/pageCloud"
             android:layout_width="match_parent"
@@ -443,7 +443,7 @@
             </FrameLayout>
         </LinearLayout>
 
-        <!-- ============ Page 3: reports (Supabase) ============ -->
+        <!-- ============ Page 3: reports (platform daily reports) ============ -->
         <LinearLayout
             android:id="@+id/pageReports"
             android:layout_width="match_parent"
@@ -613,7 +613,7 @@
                     android:text="@string/settings_subtitle"
                     android:textSize="14sp" />
 
-                <!-- Service mode + EchoDay: built programmatically by CloudSettings -->
+                <!-- EchoDay account: built programmatically by CloudSettings -->
                 <TextView
                     style="@style/SettingsSectionTitle"
                     android:tag="sub"
@@ -624,125 +624,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
-
-                <!-- 云存储 (S3 / R2) -->
-                <TextView
-                    android:id="@+id/s3SectionTitle"
-                    style="@style/SettingsSectionTitle"
-                    android:tag="sub"
-                    android:text="@string/group_cloud" />
-
-                <LinearLayout
-                    android:id="@+id/s3GroupCard"
-                    style="@style/SettingsGroupCard"
-                    android:tag="groupCard">
-
-                    <LinearLayout style="@style/SettingsRow">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/preset_label" />
-                        <Spinner
-                            android:id="@+id/presetSpinner"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-
-                    <View style="@style/SettingsDivider" />
-
-                    <LinearLayout style="@style/SettingsRow">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/endpoint_label" />
-                        <EditText
-                            android:id="@+id/endpointInput"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="https://…"
-                            android:inputType="textUri"
-                            android:singleLine="true" />
-                    </LinearLayout>
-
-                    <View style="@style/SettingsDivider" />
-
-                    <LinearLayout style="@style/SettingsRow">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/region_label" />
-                        <EditText
-                            android:id="@+id/regionInput"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="auto"
-                            android:inputType="text"
-                            android:singleLine="true" />
-                    </LinearLayout>
-
-                    <View style="@style/SettingsDivider" />
-
-                    <LinearLayout style="@style/SettingsRow">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/bucket_label" />
-                        <EditText
-                            android:id="@+id/bucketInput"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="recordings"
-                            android:inputType="text"
-                            android:singleLine="true" />
-                    </LinearLayout>
-
-                    <View style="@style/SettingsDivider" />
-
-                    <LinearLayout style="@style/SettingsRow">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/access_key_label" />
-                        <EditText
-                            android:id="@+id/accessKeyInput"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="AccessKey"
-                            android:inputType="text"
-                            android:singleLine="true" />
-                    </LinearLayout>
-
-                    <View style="@style/SettingsDivider" />
-
-                    <LinearLayout style="@style/SettingsRow">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/secret_label" />
-                        <EditText
-                            android:id="@+id/secretKeyInput"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="SecretKey"
-                            android:inputType="textPassword"
-                            android:singleLine="true" />
-                    </LinearLayout>
-
-                    <View style="@style/SettingsDivider" />
-
-                    <LinearLayout style="@style/SettingsSwitchRow">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/virtual_style_label" />
-                        <Switch
-                            android:id="@+id/virtualStyleCheck"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                </LinearLayout>
 
                 <!-- 录音 -->
                 <TextView
@@ -935,56 +816,6 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="12dp"
                         android:text="@string/snapshot_test_button" />
-                </LinearLayout>
-
-                <!-- 每日报告 (Supabase) -->
-                <TextView
-                    android:id="@+id/reportsSectionTitle"
-                    style="@style/SettingsSectionTitle"
-                    android:tag="sub"
-                    android:text="@string/group_reports" />
-
-                <LinearLayout
-                    android:id="@+id/reportsGroupCard"
-                    style="@style/SettingsGroupCard"
-                    android:tag="groupCard">
-
-                    <LinearLayout style="@style/SettingsRow">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/supabase_url_label" />
-                        <EditText
-                            android:id="@+id/supabaseUrlInput"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="https://….supabase.co"
-                            android:inputType="textUri"
-                            android:singleLine="true" />
-                    </LinearLayout>
-
-                    <View style="@style/SettingsDivider" />
-
-                    <LinearLayout style="@style/SettingsRow">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/supabase_key_label" />
-                        <EditText
-                            android:id="@+id/supabaseKeyInput"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="eyJ…"
-                            android:inputType="text"
-                            android:singleLine="true" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:tag="sub"
-                            android:text="@string/supabase_hint"
-                            android:textSize="12sp" />
-                    </LinearLayout>
                 </LinearLayout>
 
                 <!-- 语言与系统 -->

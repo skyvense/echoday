@@ -32,7 +32,7 @@
 <ul>
   <li>Each finished segment uploads immediately; failures retry every minute; saving settings triggers an upload right away.</li>
   <li>A manual “Retry upload now” button only appears after a settings change without a successful upload, or after 30+ minutes of continuous failure.</li>
-  <li>Files land in your bucket by day: <code>&lt;date&gt;/rec_….m4a</code>; event markers go to <code>markers/events-&lt;date&gt;.jsonl</code>; voice notes are filed by date the same way.</li>
+  <li>Files land in your EchoDay account by day: <code>&lt;date&gt;/rec_….m4a</code>; event markers go to <code>markers/events-&lt;date&gt;.jsonl</code>; voice notes are filed by date the same way.</li>
   <li>At 48 kbps the quality is plenty for transcription: about 21 MB per hour, ~0.5 GB per day.</li>
 </ul>
 
@@ -47,18 +47,14 @@
   <li>Enable “Auto snapshot when the phone is raised upright” in Settings — it is <b>off by default</b> and asks for camera permission the first time. The switch and the camera choice (back + front / back only / front only) apply immediately, without waiting for Save. There is also a “Test snapshot now” button in Settings to verify the camera works.</li>
   <li>Trigger: raise the phone from low (under 60°) to near upright (72°–108°, close to 90°) and hold for about half a second; the chosen camera(s) then take a photo, and the phone vibrates briefly for each photo actually saved (a buzz means a photo).</li>
   <li>Locked / screen-off capture works while recording is running (the recording service carries the camera foreground-service type, the system-sanctioned way to open the camera in the background). If recording auto-resumed after a phone reboot, open the app once before screen-off capture works again. When not recording, it only fires with the screen on.</li>
-  <li>Photos queue and upload automatically like recordings, into the <code>snapshot-YYYY-MM-DD/</code> folder in your bucket; pending snapshots also appear in the file list.</li>
+  <li>Photos queue and upload automatically like recordings, into the <code>snapshot-YYYY-MM-DD/</code> folder of your EchoDay account; pending snapshots also appear in the file list.</li>
   <li>Anti-misfire: after a shot the phone must go flat again to re-arm, and triggers are at least 15 seconds apart. Works while recording (or while the app is open). Turn it off in Settings and the app never uses the camera.</li>
 </ul>
 
 <h2>Settings (⚙️ button)</h2>
 <ul>
-  <li>Pick a cloud preset first (Cloudflare R2 by default) — it fills in the endpoint and region, which you can still edit by hand.</li>
-  <li>Endpoint: for R2 use <code>https://&lt;AccountID&gt;.r2.cloudflarestorage.com</code> (the https:// prefix is added automatically if you omit it).</li>
-  <li>Region: R2 uses <code>auto</code>; other providers use their region code.</li>
-  <li>Bucket: Tencent Cloud bucket names need the <code>-APPID</code> suffix.</li>
-  <li>Virtual-host style: check it for providers that put the bucket in the hostname (Alibaba / Tencent / AWS / Qiniu); leave it off for R2 / B2.</li>
-  <li>Access Key / Secret live only on this phone — never share them. A wrong secret shows up as the server’s error in the upload status line.</li>
+  <li>EchoDay account: register or sign in right in Settings — registering starts a 7-day free trial. Everything (uploads, the Cloud tab, the Reports tab) uses this one account; while you are signed out, recordings simply stay on the phone and upload after you sign in.</li>
+  <li>Connect my Muse: in the same account card you can generate an agent token and copy the ready-made instructions — your own Muse then pulls each day and pushes the recognition result back.</li>
   <li>Segment length defaults to 60 minutes; “Wi‑Fi only upload” is for metered connections; “Delete local segments after upload” saves phone storage.</li>
   <li>If notifications or background recording get killed by the system, use “Allow background running” to whitelist the app in battery settings.</li>
   <li>Language: at the top of Settings you can pick a language or follow the system language; the app restarts its UI in the new language immediately.</li>
@@ -66,12 +62,12 @@
 
 <h2>Common issues</h2>
 <ul>
-  <li>Uploads keep failing: read the server error in the status line first, then double-check endpoint, region, bucket and keys. With R2 the usual cause is a wrong bucket name or Account ID.</li>
+  <li>Uploads keep failing: read the message in the status line first — it shows either the server’s own text (for example trial ended, or storage full) or a connection error. If you are signed out, sign in again in Settings; uploads resume automatically.</li>
   <li>Files still pending: they retry automatically every minute; after 30 minutes of continuous failure a manual retry button appears.</li>
   <li>Switching phones / reinstalling: the new APK must be signed with the same keystore to install over the old version — keep your signing key backed up before moving devices.</li>
 </ul>
 
-<div class="note">⚠️ Privacy: when a recording includes other people’s conversation, get their consent first. Recordings only go to the storage bucket you configured — never to any third party.</div>
+<div class="note">⚠️ Privacy: when a recording includes other people’s conversation, get their consent first. Recordings only go to your own EchoDay account — never to any third party.</div>
 
 </body>
 </html>

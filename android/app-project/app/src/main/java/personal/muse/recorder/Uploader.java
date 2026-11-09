@@ -18,17 +18,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Uploads finished segments (and event-marker files) to the configured
- * S3-compatible bucket.
+ * Uploads finished segments (and event-marker files) to the EchoDay
+ * platform account the user is logged into.
  *
- * Bucket layout:
+ * Platform key layout:
  *   <yyyy-MM-dd>/rec_<yyyy-MM-dd_HH-mm-ss>.m4a   audio segments
  *   markers/events-<yyyy-MM-dd>.jsonl           event markers (re-PUT on change)
  *   snapshot-<yyyy-MM-dd>/snap_<...>.jpg        auto snapshots (see Snapshotter)
  *
  * Segments get a local "<name>.done" marker after a successful PUT (and are
  * deleted locally when that setting is on). Marker files are tiny and are
- * simply re-uploaded whenever their size changes.
+ * simply re-uploaded whenever their size changes. While logged out nothing
+ * is uploaded and nothing is deleted — files wait on the phone.
  */
 public final class Uploader {
     private static final String TAG = "MuseUploader";
@@ -69,19 +70,6 @@ public final class Uploader {
     private static void setResult(String msg) {
         lastResult = msg;
         lastResultAt = System.currentTimeMillis();
-    }
-
-    /** Shows exactly what was addressed, so config mismatches are obvious. */
-    private static String targetInfo(Context ctx, S3.Config cfg) {
-        String host;
-        try {
-            host = new java.net.URL(cfg.endpoint).getHost();
-        } catch (Exception e) {
-            host = cfg.endpoint;
-        }
-        return ctx.getString(R.string.up_target_info, cfg.bucket, host,
-                ctx.getString(cfg.virtualStyle ? R.string.up_style_virtual : R.string.up_style_path),
-                cfg.region);
     }
 
     private static String trimErr(Exception e) {
@@ -187,24 +175,14 @@ public final class Uploader {
         // Build user-facing texts in the app language, not the device's:
         // this runs on the service's application context.
         Context ctx = LocaleHelper.wrap(app);
-        // One unified pass (v1.26.0): the queue, stub cleanup, .done
-        // bookkeeping and counters are identical for both backends; only
-        // the transport differs, and that lives in Backend.uploadObject.
-        // The platform is used only in cloud mode AND while logged in
-        // (the v1.25 rule); otherwise the S3 checks below run as before.
-        final boolean viaCloud = Backend.uploadViaCloud(app);
-        if (!viaCloud) {
-            String rawEndpoint = Prefs.get(app).getString(Prefs.KEY_S3_ENDPOINT, "");
-            if (rawEndpoint != null && (rawEndpoint.contains("<") || rawEndpoint.contains(">"))) {
-                setResult(ctx.getString(R.string.up_err_placeholder));
-                return;
-            }
-            if (!Prefs.s3Configured(app)) {
-                Log.i(TAG, "S3 not fully configured; keeping files on device.");
-                setResult(ctx.getString(R.string.up_err_not_configured));
-                markFail();
-                return;
-            }
+        // Platform-only since v1.28.0: without a session there is nowhere
+        // to upload to. Keep every file on the phone (not even the stub
+        // cleanup below runs) and say so in the status line.
+        if (!Prefs.cloudLoggedIn(app)) {
+            Log.i(TAG, "Not logged into EchoDay; keeping files on device.");
+            setResult(ctx.getString(R.string.up_err_not_logged_in));
+            markFail();
+            return;
         }
         if (Prefs.wifiOnly(app) && !isUnmetered(app)) {
             Log.i(TAG, "Wi-Fi-only is on and network is metered; postponing upload.");
@@ -212,7 +190,6 @@ public final class Uploader {
             markFail();
             return;
         }
-        S3.Config cfg = Prefs.s3Config(app);
         File[] allPending = pendingFiles(app);
         int stubCount = 0;
         List<File> real = new ArrayList<>();
@@ -256,13 +233,7 @@ public final class Uploader {
                 runDone++;
                 Log.i(TAG, "Uploaded " + name);
             } catch (Exception e) {
-                if (viaCloud) {
-                    stopCloudPass(ctx, name, e);
-                    return;
-                }
-                Log.w(TAG, "Upload failed, will retry later: " + name + " (" + e.getMessage() + ")");
-                setResult(ctx.getString(R.string.up_failed, name, trimErr(e), targetInfo(ctx, cfg)));
-                markFail();
+                stopCloudPass(ctx, name, e);
                 return; // stop this pass; a dead endpoint should not be hammered
             }
         }
@@ -282,17 +253,11 @@ public final class Uploader {
                 runDone++;
                 Log.i(TAG, "Uploaded snapshot " + name);
             } catch (Exception e) {
-                if (viaCloud) {
-                    stopCloudPass(ctx, name, e);
-                    return;
-                }
-                Log.w(TAG, "Snapshot upload failed, will retry later: " + name + " (" + e.getMessage() + ")");
-                setResult(ctx.getString(R.string.up_failed, name, trimErr(e), targetInfo(ctx, cfg)));
-                markFail();
+                stopCloudPass(ctx, name, e);
                 return;
             }
         }
-        if (!syncEvents(app, viaCloud) && hadEvents) {
+        if (!syncEvents(app) && hadEvents) {
             setResult(ctx.getString(R.string.up_events_sync_failed, runDone));
             markFail();
             return;
@@ -305,8 +270,8 @@ public final class Uploader {
 
 
     /**
-     * Handles one failed cloud PUT: writes the user-facing result and
-     * returns true (the pass always stops on the first failure, like S3).
+     * Handles one failed platform PUT: writes the user-facing result and
+     * returns true (the pass always stops on the first failure).
      * 401/402/413 show the server's message verbatim — retrying those
      * unchanged is pointless until the user acts.
      */
@@ -337,7 +302,7 @@ public final class Uploader {
     }
 
     /** Returns false when an events file failed to sync. */
-    private static boolean syncEvents(Context app, boolean viaCloud) {
+    private static boolean syncEvents(Context app) {
         Context ctx = LocaleHelper.wrap(app);
         File dir = Prefs.markersDir(app);
         File[] files = dir.listFiles((d, name) -> name.startsWith("events-") && name.endsWith(".jsonl"));
@@ -358,7 +323,7 @@ public final class Uploader {
                 Log.i(TAG, "Synced " + f.getName());
             } catch (Exception e) {
                 Log.w(TAG, "Event sync failed for " + f.getName() + " (" + e.getMessage() + ")");
-                if (viaCloud && e instanceof MuseCloud.HttpException) {
+                if (e instanceof MuseCloud.HttpException) {
                     int code = ((MuseCloud.HttpException) e).code;
                     if (code == 401 || code == 402 || code == 413) {
                         setResult(ctx.getString(R.string.up_cloud_blocked,

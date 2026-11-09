@@ -40,10 +40,8 @@ public final class Prefs {
     public static final String KEY_CLOUD_EMAIL = "cloud_email";
     public static final String KEY_CLOUD_JWT = "cloud_jwt";
     public static final String KEY_CLOUD_MODE = "cloud_mode"; // legacy (v1.25) upload-via-platform switch
-    // v1.26.0: one unified backend mode for upload + browse + reports.
-    public static final String KEY_BACKEND_MODE = "backend_mode"; // 0=self, 1=cloud
-    public static final int BACKEND_SELF = 0;
-    public static final int BACKEND_CLOUD = 1;
+    // v1.26 had a self-hosted/cloud backend-mode switch here; removed in
+    // v1.28.0 — the app is platform-only now.
     public static final String DEFAULT_CLOUD_URL = "https://akjp.ddn.pw";
     /** The v1.25 prefilled address; stored values are mapped to https. */
     public static final String LEGACY_CLOUD_URL = "http://akjp.ddn.pw:8471";
@@ -135,39 +133,6 @@ public final class Prefs {
         return !cloudJwt(ctx).isEmpty();
     }
 
-    /**
-     * The unified backend mode (v1.26.0): BACKEND_SELF (own R2 + Supabase)
-     * or BACKEND_CLOUD (EchoDay platform). When the new key has
-     * never been written, migrate from the v1.25 cloud-mode switch: cloud
-     * only if that switch was on AND a session exists, else self.
-     */
-    public static int backendMode(Context ctx) {
-        SharedPreferences p = get(ctx);
-        if (p.contains(KEY_BACKEND_MODE)) {
-            int m = p.getInt(KEY_BACKEND_MODE, BACKEND_SELF);
-            return m == BACKEND_CLOUD ? BACKEND_CLOUD : BACKEND_SELF;
-        }
-        return p.getBoolean(KEY_CLOUD_MODE, false) && cloudLoggedIn(ctx)
-                ? BACKEND_CLOUD : BACKEND_SELF;
-    }
-
-    /** Persists the mode immediately and keeps the legacy switch in sync. */
-    public static void setBackendMode(Context ctx, int mode) {
-        get(ctx).edit()
-                .putInt(KEY_BACKEND_MODE, mode == BACKEND_CLOUD ? BACKEND_CLOUD : BACKEND_SELF)
-                .putBoolean(KEY_CLOUD_MODE, mode == BACKEND_CLOUD)
-                .apply();
-    }
-
-    public static boolean isCloudBackend(Context ctx) {
-        return backendMode(ctx) == BACKEND_CLOUD;
-    }
-
-    /** Compat wrapper (v1.25 semantics): cloud backend selected. */
-    public static boolean cloudMode(Context ctx) {
-        return isCloudBackend(ctx);
-    }
-
     /** Directory holding finished/pending .m4a segments. */
     public static File segmentsDir(Context ctx) {
         File dir = new File(ctx.getExternalFilesDir(null), "segments");
@@ -179,34 +144,18 @@ public final class Prefs {
         return dir;
     }
 
-    public static S3.Config s3Config(Context ctx) {
-        SharedPreferences p = get(ctx);
-        S3.Config c = new S3.Config();
-        c.endpoint = p.getString(KEY_S3_ENDPOINT, "").trim();
-        while (c.endpoint.endsWith("/")) c.endpoint = c.endpoint.substring(0, c.endpoint.length() - 1);
-        if (!c.endpoint.isEmpty() && !c.endpoint.contains("://")) c.endpoint = "https://" + c.endpoint;
-        c.region = p.getString(KEY_S3_REGION, "auto").trim();
-        if (c.region.isEmpty()) c.region = "auto";
-        c.bucket = p.getString(KEY_S3_BUCKET, "").trim();
-        c.accessKey = p.getString(KEY_S3_ACCESS_KEY, "").trim();
-        c.secretKey = p.getString(KEY_S3_SECRET_KEY, "").trim();
-        c.virtualStyle = p.getBoolean(KEY_S3_VIRTUAL, false);
-        return c;
-    }
-
-    public static boolean s3Configured(Context ctx) {
-        S3.Config c = s3Config(ctx);
-        return !c.endpoint.isEmpty() && !c.bucket.isEmpty()
-                && !c.accessKey.isEmpty() && !c.secretKey.isEmpty();
-    }
+    // The KEY_S3_* constants above are legacy (v1.2–v1.27 self-hosted
+    // mode): the settings UI and the S3 client are gone since v1.28.0,
+    // the keys stay only so old preference files remain readable.
 
     /** Auto-snapshot on the raise gesture; strictly opt-in, default OFF. */
     public static boolean snapshotEnabled(Context ctx) {
         return get(ctx).getBoolean(KEY_SNAPSHOT_ENABLED, false);
     }
 
-    // The reports tab reuses the legacy supabaseUrl()/supabaseKey() above
-    // (KEY_SB_URL / KEY_SB_KEY) — same SharedPreferences keys.
+    // The legacy supabaseUrl()/supabaseKey() getters above (KEY_SB_URL /
+    // KEY_SB_KEY) are likewise dead since v1.28.0 — the reports tab reads
+    // the platform now; the getters stay so nothing else can break.
 
     /**
      * On-device blank-frame filter for snapshots (v1.17.0): frames that are

@@ -3,26 +3,20 @@
     <string name="app_name">EchoDay</string>
     <string name="seconds_short">秒</string>
     <string name="status_tap_record">点红色按钮开始录音</string>
-    <string name="status_tap_record_no_s3">点红色按钮开始录音（S3 还没配置好，录音会先存手机里）</string>
+    <string name="status_tap_record_no_login">点红色按钮开始录音（还没登录 EchoDay，录音会先存手机里）</string>
+    <string name="up_err_not_logged_in">未上传：还没有登录 EchoDay，录音先存在手机里，登录后会自动上传</string>
     <string name="files_title">录音文件</string>
     <string name="files_title_pending">录音文件（待上传 %1$d 段 · %2$s MB）</string>
     <string name="retry_upload">立即重试上传</string>
     <string name="settings_button">⚙️ 配置（S3 与录音设置）</string>
     <string name="settings_collapse">收起配置</string>
     <string name="settings_s3_title">S3 存储设置（改完点保存，会自动上传一次）</string>
-    <string name="preset_label">云厂商预置（选中自动填好地址和区域，可再手改）</string>
-    <string name="endpoint_label">Endpoint（如 R2: https://&lt;AccountID&gt;.r2.cloudflarestorage.com）</string>
-    <string name="region_label">区域 Region（R2 填 auto，B2/阿里/腾讯填对应的区域代号）</string>
-    <string name="bucket_label">存储桶 Bucket（腾讯云的桶名要带 -APPID 后缀）</string>
-    <string name="access_key_label">Access Key ID</string>
-    <string name="secret_label">Secret Access Key（只存在本机，不要发给任何人）</string>
-    <string name="virtual_style_label">虚拟主机风格（桶名放域名前；阿里/腾讯/AWS/七牛勾选，R2/B2 不勾）</string>
     <string name="segment_minutes_label">每段时长（分钟，默认 60）</string>
     <string name="wifi_only_label">仅在 Wi‑Fi / 不计流量网络时上传</string>
     <string name="delete_after_label">上传成功后删除本地片段（省空间）</string>
     <string name="auto_resume_label">手机重启后自动恢复录音</string>
     <string name="snapshot_label">📸 抬起手机自动拍照（抬过约 80° 就拍）</string>
-    <string name="snapshot_hint">默认关闭。开启后：把手机从平放抬到直立并停稳约 1 秒，自动拍照，先在本机缩到约 1024 宽、500 KB 以内，再排队上传到桶里的 snapshot-日期/ 文件夹。录音运行期间锁屏、息屏也能拍；手机重启后请先打开一次 App，息屏拍照才会恢复。关掉就完全不用摄像头。</string>
+    <string name="snapshot_hint">默认关闭。开启后：把手机从平放抬到直立并停稳约 1 秒，自动拍照，先在本机缩到约 1024 宽、500 KB 以内，再排队上传到 EchoDay 账号的 snapshot-日期/ 文件夹。录音运行期间锁屏、息屏也能拍；手机重启后请先打开一次 App，息屏拍照才会恢复。关掉就完全不用摄像头。</string>
     <string name="row_snapshot">📸 %1$s 快照 · %2$s MB · 待上传</string>
     <string name="tab_record">🎙 录音</string>
     <string name="tab_cloud">☁️ 云端</string>
@@ -35,9 +29,6 @@
     <string name="cat_reports">📊 每日报告（Supabase）</string>
     <string name="cat_system">🌐 语言与系统</string>
 
-    <string name="supabase_url_label">Supabase 项目地址</string>
-    <string name="supabase_key_label">Supabase publishable（anon）key — 在控制台 Settings → API 复制</string>
-    <string name="supabase_hint">只给「日报」页用，只读。填 publishable key 就行（已实测可读）。千万别把 service_role key 填到这里。</string>
 
     <string name="cloud_title">云端文件（R2）</string>
     <string name="cloud_refresh">刷新</string>
@@ -45,7 +36,6 @@
     <string name="cloud_loading">加载中…</string>
     <string name="cloud_downloading">下载中…</string>
     <string name="cloud_empty">这里还没有文件</string>
-    <string name="cloud_not_configured">请先在「配置」页填好云存储</string>
     <string name="cloud_failed">失败：%1$s</string>
     <string name="cloud_photo_section">📸 照片</string>
     <string name="cloud_audio_section">🎵 语音</string>
@@ -55,7 +45,6 @@
     <string name="reports_title">每日总结</string>
     <string name="reports_loading">加载中…</string>
     <string name="reports_empty">还没有每日总结</string>
-    <string name="reports_not_configured">在「配置」页填入 Supabase 的 publishable key 后，这里就能看每日总结</string>
     <string name="reports_failed">加载失败：%1$s</string>
     <string name="reports_segments">%1$d 段录音</string>
     <string name="reports_sheet_button">看当日活动图（%1$d 张照片 · %2$d 个活动时段）</string>
@@ -134,15 +123,9 @@
     <string name="channel_name">录音状态</string>
     <string name="channel_desc">录音进行中的常驻通知</string>
     <string name="notif_stop">停止录音</string>
-    <string name="up_style_virtual">虚拟主机</string>
-    <string name="up_style_path">路径</string>
-    <string name="up_target_info">\n实际请求：桶「%1$s」@ %2$s（%3$s风格，区域 %4$s）</string>
-    <string name="up_err_placeholder">未上传：Endpoint 里还是占位符 &lt;AccountID&gt;，请换成你的真实 R2 Account ID</string>
-    <string name="up_err_not_configured">未上传：S3 设置还没填完整（点“配置”检查 Endpoint、桶名和两个 Key）</string>
     <string name="up_err_wifi_only">未上传：已开启“仅 Wi‑Fi 上传”，当前网络是计流量网络</string>
     <string name="up_no_valid_segments">没有有效的待上传片段（已清理 %1$d 个空片段）</string>
     <string name="up_no_pending_files">没有待上传的文件</string>
-    <string name="up_failed">上传失败：%1$s — %2$s%3$s</string>
     <string name="up_events_sync_failed">录音已传完，但事件标记同步失败，下次会重试（已成功 %1$d 段）</string>
     <string name="up_done">上传完成 ✓ 成功 %1$d 段</string>
     <string name="up_events_synced">，事件标记已同步</string>
@@ -169,23 +152,6 @@
         <item>Português</item>
         <item>Русский</item>
     </string-array>
-    <string-array name="preset_names">
-        <item>Cloudflare R2</item>
-        <item>Backblaze B2 · 美西</item>
-        <item>Backblaze B2 · 美东</item>
-        <item>Backblaze B2 · 欧洲</item>
-        <item>阿里云 OSS · 杭州（S3兼容）</item>
-        <item>阿里云 OSS · 上海（S3兼容）</item>
-        <item>阿里云 OSS · 北京（S3兼容）</item>
-        <item>阿里云 OSS · 深圳（S3兼容）</item>
-        <item>腾讯云 COS · 广州（S3兼容）</item>
-        <item>腾讯云 COS · 上海（S3兼容）</item>
-        <item>腾讯云 COS · 北京（S3兼容）</item>
-        <item>AWS S3 · 美东</item>
-        <item>AWS S3 · 新加坡</item>
-        <item>七牛云 Kodo · 华东（S3兼容）</item>
-        <item>自定义</item>
-    </string-array>
 
     <!-- v1.13 mockup-layout strings -->
     <string name="title_record">录音</string>
@@ -202,25 +168,20 @@
     <string name="self_note_title">按住说话 · 自述</string>
     <string name="self_note_sub">松开保存为自述标记</string>
     <string name="record_pending_count">待上传 %1$d 段</string>
-    <string name="record_pending_synced">待上传 0 段 · R2 已同步</string>
-    <string name="cloud_subtitle">Cloudflare R2 · %1$s</string>
     <string name="storage_label">存储用量</string>
     <string name="storage_quota">免费额度 10 GB</string>
     <string name="cloud_counts">照片 %1$d · 录音 %2$d</string>
     <string name="cloud_photos_title">照片</string>
     <string name="cloud_audio_title">语音</string>
-    <string name="reports_subtitle">Supabase · 每日总结与活动图</string>
+    <string name="reports_subtitle">EchoDay · 每日总结与活动图</string>
     <string name="settings_subtitle">所有设置 · 改完即时生效</string>
-    <string name="group_cloud">云存储</string>
     <string name="group_recording">录音</string>
     <string name="group_upload">上传</string>
     <string name="group_snapshot">自动拍照</string>
-    <string name="group_reports">每日报告</string>
     <string name="group_system">语言与系统</string>
 
     <!-- EchoDay 试用（v1.25.0） -->
-    <string name="group_cloud_ai">EchoDay（试用）</string>
-    <string name="cloud_hint">直接在 app 里注册或登录。之后上传可以走平台（不用再配自己的存储桶），你自己的 Muse 也能每天来拉数据、把识别结果回传。</string>
+    <string name="cloud_hint">直接在 app 里注册或登录。录音、快照和事件标记会自动上传到你的 EchoDay 账号，你自己的 Muse 也能每天来拉数据、把识别结果回传。</string>
     <string name="cloud_server_label">服务器</string>
     <string name="cloud_email_label">邮箱</string>
     <string name="cloud_password_label">密码（不保存在手机上）</string>
@@ -239,10 +200,6 @@
     <string name="cloud_login_ok">已登录。</string>
     <string name="cloud_logout_done">已退出登录。</string>
     <string name="cloud_auth_failed">失败：%1$s</string>
-    <string name="cloud_mode_label">上传到 EchoDay</string>
-    <string name="cloud_mode_hint">打开且已登录时，录音段、标记和快照用账号上传到平台，不再走 S3/R2；关掉则用你自己的存储桶，和以前完全一样。</string>
-    <string name="cloud_mode_on">云端上传已打开。</string>
-    <string name="cloud_mode_on_need_login">云端上传已打开——请先在上方登录。</string>
     <string name="cloud_connect_title">连接我的 Muse</string>
     <string name="cloud_connect_hint">在这里生成 agent token，粘给你的 Muse（或其他 agent）。它能拉取你的每一天——音频和照片——并把每天的识别结果回传。它只能访问你本人的数据。</string>
     <string name="cloud_base_label">平台地址：%1$s</string>
@@ -263,11 +220,6 @@
     <string name="up_cloud_blocked">EchoDay 已暂停上传：%1$s</string>
     <string name="up_cloud_failed">云端上传失败：%1$s — %2$s</string>
     <string name="group_backend">服务</string>
-    <string name="backend_mode_title">服务模式</string>
-    <string name="backend_mode_self">自建（自己的 R2 + Supabase）</string>
-    <string name="backend_mode_cloud">我的服务（EchoDay）</string>
-    <string name="backend_mode_self_on">已切到自建模式：上传、云端文件和日报都走你自己的 R2 + Supabase。</string>
-    <string name="backend_mode_cloud_on">已切到 EchoDay 模式：上传、云端文件和日报都走平台。</string>
     <string name="backend_not_logged_in">先在「配置」页登录 EchoDay</string>
     <string name="cloud_subtitle_cloud">EchoDay · %1$s</string>
     <string name="reports_not_configured_cloud">在「配置」页登录 EchoDay 后，这里就能看每日总结</string>

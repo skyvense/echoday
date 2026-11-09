@@ -35,10 +35,9 @@ import java.util.concurrent.Executors;
 
 /**
 * The "reports" tab: reads the daily summaries (and, per day, the window
-* analyses) from Zhang's Supabase project via PostgREST, using the
-* publishable/anon key the user pastes into Settings. Read-only; the
-* tables need a SELECT policy for the anon role (see the delivery note /
-* Settings hint). The service_role key is never used by the app.
+* analyses) from the EchoDay platform via Backend — the user's own agent
+* pushes each day's result there. (Class name kept from the Supabase era;
+* since v1.28.0 it only talks to the platform.) Read-only.
 */
 public final class SupabaseReports {
 private final Activity act;
@@ -214,8 +213,7 @@ private void loadDays() {
 if (!configured()) {
 days.clear();
 adapter.notifyDataSetChanged();
-status.setText(act.getString(Backend.isCloud(act)
-? R.string.reports_not_configured_cloud : R.string.reports_not_configured));
+status.setText(act.getString(R.string.reports_not_configured_cloud));
 return;
 }
 final int gen = ++generation;

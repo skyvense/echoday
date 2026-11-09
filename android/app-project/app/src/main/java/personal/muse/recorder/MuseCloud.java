@@ -103,8 +103,8 @@ public final class MuseCloud {
     // ---- upload (user JWT) ----
 
     /**
-     * PUT /api/v1/upload/{key} with the same object keys the S3 uploader
-     * uses. 402 (trial/subscription lapsed) and 413 (storage quota full)
+     * PUT /api/v1/upload/{key} with the app's object key layout.
+     * 402 (trial/subscription lapsed) and 413 (storage quota full)
      * come back as HttpException with the server's message in getMessage().
      */
     public static void putObject(String baseUrl, String jwt, String key, File file,

@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 /**
  * Minimal Markdown -> Spannable renderer for the Reports tab. The daily
- * summaries and window analyses stored in Supabase are Markdown files
+ * summaries and window analyses stored on the platform are Markdown files
  * (generated from the .md reports), and showing them raw left ##, ** and
  * - markers all over the detail page.
  *
