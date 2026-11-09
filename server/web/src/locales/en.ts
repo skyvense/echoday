@@ -290,8 +290,7 @@ const en = {
   },
   billing: {
     title: "Billing",
-    introPre: "",
-    introPost: "per month keeps the shelf open for one person. Transcription is not included, because this server does not run it.",
+    intro: "{price} per month keeps the shelf open for one person. Transcription is not included, because this server does not run it.",
     plan: "Plan",
     perMonth: "/ month",
     statusPaid: "Subscription active. Uploads are open.",

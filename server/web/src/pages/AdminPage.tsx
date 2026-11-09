@@ -10,35 +10,35 @@ import {
   type AdminUserDetail,
 } from "../api";
 import { useSession } from "../App";
+import { useLang } from "../i18n";
 
 const PAGE_SIZE = 25;
 
 export function AdminPage() {
   const { me } = useSession();
+  const { t } = useLang();
   const [tab, setTab] = useState<"users" | "coupons">("users");
 
   if (!me) return null;
   if (!me.is_admin) {
     return (
       <div className="max-w-2xl">
-        <h1 className="font-bold text-4xl tracking-tight">Admin</h1>
-        <p className="mt-4 rounded-2xl bg-paper px-4 py-3 text-sm">
-          This account is not an operator. Admin access follows the ADMIN_EMAILS list on the server.
-        </p>
+        <h1 className="font-bold text-4xl tracking-tight">{t("admin.title")}</h1>
+        <p className="mt-4 rounded-2xl bg-paper px-4 py-3 text-sm">{t("admin.notOperator")}</p>
       </div>
     );
   }
 
   return (
     <div>
-      <h1 className="font-bold text-4xl tracking-tight">Admin</h1>
-      <p className="mt-2 text-ink-soft">Accounts, Muse tokens, subscriptions, and coupon codes.</p>
+      <h1 className="font-bold text-4xl tracking-tight">{t("admin.title")}</h1>
+      <p className="mt-2 text-ink-soft">{t("admin.subtitle")}</p>
       <div className="mt-6 flex gap-2">
         <TabButton active={tab === "users"} onClick={() => setTab("users")}>
-          Users
+          {t("admin.tabUsers")}
         </TabButton>
         <TabButton active={tab === "coupons"} onClick={() => setTab("coupons")}>
-          Coupons
+          {t("admin.tabCoupons")}
         </TabButton>
       </div>
       <div className="mt-6">{tab === "users" ? <UsersPanel /> : <CouponsPanel />}</div>
@@ -73,6 +73,7 @@ function errText(err: unknown, fallback: string): string {
 // ---------------------------------------------------------------- users
 
 function UsersPanel() {
+  const { t } = useLang();
   const [q, setQ] = useState("");
   const [offset, setOffset] = useState(0);
   const [total, setTotal] = useState(0);
@@ -89,7 +90,8 @@ function UsersPanel() {
         setTotal(result.total);
         setError("");
       })
-      .catch((err: unknown) => setError(errText(err, "Could not load users.")));
+      .catch((err: unknown) => setError(errText(err, t("admin.loadUsersError"))));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q, offset]);
 
   useEffect(() => {
@@ -101,15 +103,20 @@ function UsersPanel() {
   }, [q]);
 
   async function runRetention() {
-    setRetentionNote("Running retention…");
+    setRetentionNote(t("admin.retentionRunning"));
     try {
       const stats = await api.adminRunRetention();
       setRetentionNote(
-        `Retention done: ${stats.objects_deleted} originals deleted (${formatBytes(stats.bytes_freed)} freed), ` +
-          `${stats.days_processed} processed days, ${stats.days_unprocessed} unprocessed days, ${stats.errors} errors.`,
+        t("admin.retentionDone", {
+          deleted: stats.objects_deleted,
+          freed: formatBytes(stats.bytes_freed),
+          processed: stats.days_processed,
+          unprocessed: stats.days_unprocessed,
+          errors: stats.errors,
+        }),
       );
     } catch (err) {
-      setRetentionNote(errText(err, "Retention run failed."));
+      setRetentionNote(errText(err, t("admin.retentionError")));
     }
   }
 
@@ -119,18 +126,16 @@ function UsersPanel() {
         <input
           value={q}
           onChange={(event) => setQ(event.target.value)}
-          placeholder="Search by email…"
+          placeholder={t("admin.searchPlaceholder")}
           className="w-72 rounded-full border border-line bg-card px-4 py-2 text-sm outline-none focus:border-ink"
         />
-        <span className="text-sm text-ink-soft">
-          {total} user{total === 1 ? "" : "s"}
-        </span>
+        <span className="text-sm text-ink-soft">{t(total === 1 ? "admin.userOne" : "admin.userMany", { n: total })}</span>
         <button
           type="button"
           onClick={runRetention}
           className="ml-auto rounded-full border border-line px-3 py-1.5 text-sm text-ink-soft hover:border-ink hover:text-ink"
         >
-          Run retention now
+          {t("admin.runRetention")}
         </button>
       </div>
       {retentionNote && <p className="mt-3 rounded-2xl bg-paper px-4 py-3 text-sm">{retentionNote}</p>}
@@ -140,13 +145,13 @@ function UsersPanel() {
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead>
             <tr className="border-b border-line text-ink-soft">
-              <th className="px-4 py-3 font-medium">Email</th>
-              <th className="px-4 py-3 font-medium">Plan</th>
-              <th className="px-4 py-3 font-medium">Paid until</th>
-              <th className="px-4 py-3 font-medium">Storage</th>
-              <th className="px-4 py-3 font-medium">Tokens</th>
-              <th className="px-4 py-3 font-medium">Last upload</th>
-              <th className="px-4 py-3 font-medium">Joined</th>
+              <th className="px-4 py-3 font-medium">{t("admin.colEmail")}</th>
+              <th className="px-4 py-3 font-medium">{t("admin.colPlan")}</th>
+              <th className="px-4 py-3 font-medium">{t("admin.colPaidUntil")}</th>
+              <th className="px-4 py-3 font-medium">{t("admin.colStorage")}</th>
+              <th className="px-4 py-3 font-medium">{t("admin.colTokens")}</th>
+              <th className="px-4 py-3 font-medium">{t("admin.colLastUpload")}</th>
+              <th className="px-4 py-3 font-medium">{t("admin.colJoined")}</th>
             </tr>
           </thead>
           <tbody>
@@ -158,7 +163,7 @@ function UsersPanel() {
               >
                 <td className="px-4 py-3">
                   {user.email}
-                  {user.is_admin && <span className="ml-2 rounded-full bg-ink px-2 py-0.5 text-xs text-paper">admin</span>}
+                  {user.is_admin && <span className="ml-2 rounded-full bg-ink px-2 py-0.5 text-xs text-paper">{t("nav.admin")}</span>}
                 </td>
                 <td className="px-4 py-3">{user.mode}</td>
                 <td className="px-4 py-3">{user.paid_until ? formatWhen(user.paid_until) : "—"}</td>
@@ -166,7 +171,7 @@ function UsersPanel() {
                   {formatBytes(user.used_bytes)} / {formatBytes(user.quota_bytes)}
                 </td>
                 <td className="px-4 py-3">
-                  {user.active_token_count} active / {user.token_count}
+                  {t("admin.activeOf", { active: user.active_token_count, total: user.token_count })}
                 </td>
                 <td className="px-4 py-3">{user.last_upload_at ? formatWhen(user.last_upload_at) : "—"}</td>
                 <td className="px-4 py-3">{formatWhen(user.created_at)}</td>
@@ -175,7 +180,7 @@ function UsersPanel() {
             {users.length === 0 && (
               <tr>
                 <td className="px-4 py-6 text-ink-soft" colSpan={7}>
-                  No users match.
+                  {t("admin.noUsersMatch")}
                 </td>
               </tr>
             )}
@@ -190,7 +195,7 @@ function UsersPanel() {
           onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}
           className="rounded-full border border-line px-3 py-1.5 disabled:opacity-40"
         >
-          Previous
+          {t("admin.previous")}
         </button>
         <button
           type="button"
@@ -198,10 +203,10 @@ function UsersPanel() {
           onClick={() => setOffset(offset + PAGE_SIZE)}
           className="rounded-full border border-line px-3 py-1.5 disabled:opacity-40"
         >
-          Next
+          {t("admin.next")}
         </button>
         <span className="text-ink-soft">
-          {total === 0 ? 0 : offset + 1}–{Math.min(total, offset + PAGE_SIZE)} of {total}
+          {total === 0 ? 0 : offset + 1}–{Math.min(total, offset + PAGE_SIZE)} {t("admin.rangeOf")} {total}
         </span>
       </div>
 
@@ -230,6 +235,7 @@ function UserDetail({
   onDeleted: () => void;
 }) {
   const { me } = useSession();
+  const { t } = useLang();
   const [detail, setDetail] = useState<AdminUserDetail | null>(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -245,7 +251,8 @@ function UserDetail({
         setDetail(result);
         setError("");
       })
-      .catch((err: unknown) => setError(errText(err, "Could not load this user.")));
+      .catch((err: unknown) => setError(errText(err, t("admin.loadUserError"))));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   useEffect(() => {
@@ -253,7 +260,7 @@ function UserDetail({
   }, [load]);
 
   if (error) return <p className="mt-4 text-sm text-red-deep">{error}</p>;
-  if (!detail) return <p className="mt-4 text-ink-soft">Loading user…</p>;
+  if (!detail) return <p className="mt-4 text-ink-soft">{t("admin.loadingUser")}</p>;
   const user = detail.user;
 
   async function act(run: () => Promise<void>, done: string) {
@@ -265,7 +272,7 @@ function UserDetail({
       load();
       onChanged();
     } catch (err) {
-      setError(errText(err, "That did not work."));
+      setError(errText(err, t("admin.genericError")));
     } finally {
       setBusy(false);
     }
@@ -275,14 +282,18 @@ function UserDetail({
     <section className="mt-6 rounded-3xl border border-line bg-card p-6">
       <h2 className="font-bold text-2xl tracking-tight">{user.email}</h2>
       <p className="mt-1 text-sm text-ink-soft">
-        Status {user.subscription_status}
-        {user.subscription_source ? ` · via ${user.subscription_source}` : ""} · trial ends {formatWhen(user.trial_ends_at)} ·{" "}
-        {formatBytes(user.used_bytes)} stored · joined {formatWhen(user.created_at)}
+        {t("admin.userMeta", {
+          status: user.subscription_status,
+          via: user.subscription_source ? t("admin.userMetaVia", { source: user.subscription_source }) : "",
+          trialEnd: formatWhen(user.trial_ends_at),
+          bytes: formatBytes(user.used_bytes),
+          joined: formatWhen(user.created_at),
+        })}
       </p>
       {notice && <p className="mt-4 rounded-2xl bg-paper px-4 py-3 text-sm">{notice}</p>}
       {error && <p className="mt-4 text-sm text-red-deep">{error}</p>}
 
-      <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-ink-soft">Subscription</h3>
+      <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-ink-soft">{t("admin.subscription")}</h3>
       <div className="mt-2 flex flex-wrap items-center gap-3">
         <input
           type="datetime-local"
@@ -301,12 +312,12 @@ function UserDetail({
                   paid_until: new Date(paidUntil).toISOString(),
                 });
               },
-              "Paid period updated.",
+              t("admin.paidUpdated"),
             )
           }
           className="rounded-full bg-red px-4 py-2 text-sm text-white disabled:opacity-60"
         >
-          Set paid until
+          {t("admin.setPaidUntil")}
         </button>
         <button
           type="button"
@@ -314,26 +325,28 @@ function UserDetail({
           onClick={() =>
             act(async () => {
               await api.adminSetSubscription(userId, { action: "clear" });
-            }, "Paid period cleared; the account is back on trial/free rules.")
+            }, t("admin.paidCleared"))
           }
           className="rounded-full border border-line px-4 py-2 text-sm disabled:opacity-60"
         >
-          Clear paid period
+          {t("admin.clearPaid")}
         </button>
         <span className="text-sm text-ink-soft">
-          Current: {user.paid_until ? `paid until ${formatWhen(user.paid_until)}` : "not on a paid period"}
+          {user.paid_until ? t("admin.currentPaid", { when: formatWhen(user.paid_until) }) : t("admin.currentNotPaid")}
         </span>
       </div>
 
-      <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-ink-soft">Muse tokens</h3>
+      <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-ink-soft">{t("admin.tokensHeading")}</h3>
       <ul className="mt-2 space-y-2 text-sm">
         {detail.tokens.map((token) => (
           <li key={token.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-paper px-4 py-2.5">
             <code className="text-xs">{token.prefix}…</code>
             <span>{token.name}</span>
             <span className="text-ink-soft">
-              {token.status}
-              {token.last_used_at ? ` · last used ${formatWhen(token.last_used_at)}` : " · never used"}
+              {token.status === "active" ? t("admin.tokenStatusActive") : t("admin.tokenStatusRevoked")}
+              {token.last_used_at
+                ? ` · ${t("admin.tokenLastUsed", { when: formatWhen(token.last_used_at) })}`
+                : ` · ${t("admin.tokenNeverUsed")}`}
             </span>
             {token.status === "active" && (
               <button
@@ -342,16 +355,16 @@ function UserDetail({
                 onClick={() =>
                   act(async () => {
                     await api.adminRevokeToken(userId, token.id);
-                  }, "Token revoked.")
+                  }, t("admin.tokenRevoked"))
                 }
                 className="ml-auto rounded-full border border-line px-3 py-1 text-xs disabled:opacity-60"
               >
-                Revoke
+                {t("connect.revoke")}
               </button>
             )}
           </li>
         ))}
-        {detail.tokens.length === 0 && <li className="text-ink-soft">No tokens yet.</li>}
+        {detail.tokens.length === 0 && <li className="text-ink-soft">{t("admin.noTokens")}</li>}
       </ul>
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <button
@@ -361,35 +374,40 @@ function UserDetail({
             act(async () => {
               const result = await api.adminResetTokens(userId);
               setNewToken(result.token);
-            }, "All old tokens were revoked and a new one was issued below.")
+            }, t("admin.resetDone"))
           }
           className="rounded-full bg-ink px-4 py-2 text-sm text-paper disabled:opacity-60"
         >
-          Reset tokens (revoke all, issue new)
+          {t("admin.resetTokens")}
         </button>
       </div>
       {newToken && (
         <div className="mt-3 rounded-2xl border border-amber/40 bg-amber/10 px-4 py-3">
-          <p className="text-sm">New token — shown once, copy it now:</p>
+          <p className="text-sm">{t("admin.newTokenNote")}</p>
           <code className="mt-1 block break-all text-sm">{newToken}</code>
         </div>
       )}
 
-      <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-ink-soft">Recent days</h3>
+      <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-ink-soft">{t("admin.recentDays")}</h3>
       <ul className="mt-2 space-y-1 text-sm text-ink-soft">
         {detail.days.slice(0, 14).map((day) => (
           <li key={day.date}>
-            {day.date} · {day.audio_count} audio · {day.snapshot_count} photos · {formatBytes(day.bytes)}
-            {day.has_summary ? " · has result" : ""}
-            {day.originals_deleted_at ? ` · originals deleted ${formatWhen(day.originals_deleted_at)}` : ""}
+            {t("admin.dayLine", {
+              date: day.date,
+              audio: day.audio_count,
+              photos: day.snapshot_count,
+              bytes: formatBytes(day.bytes),
+            })}
+            {day.has_summary ? t("admin.dayHasResult") : ""}
+            {day.originals_deleted_at ? t("admin.dayOriginalsDeleted", { when: formatWhen(day.originals_deleted_at) }) : ""}
           </li>
         ))}
-        {detail.days.length === 0 && <li>No days yet.</li>}
+        {detail.days.length === 0 && <li>{t("admin.noDays")}</li>}
       </ul>
 
-      <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-red-deep">Danger zone</h3>
+      <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-red-deep">{t("admin.dangerZone")}</h3>
       {me?.id === user.id ? (
-        <p className="mt-2 text-sm text-ink-soft">You cannot delete your own admin account.</p>
+        <p className="mt-2 text-sm text-ink-soft">{t("admin.cannotDeleteSelf")}</p>
       ) : (
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <button
@@ -405,21 +423,21 @@ function UserDetail({
                 .adminDeleteUser(userId)
                 .then(() => onDeleted())
                 .catch((err: unknown) => {
-                  setError(errText(err, "Could not delete the account."));
+                  setError(errText(err, t("admin.deleteError")));
                   setArmDelete(false);
                 })
                 .finally(() => setBusy(false));
             }}
             className={`rounded-full px-4 py-2 text-sm text-white disabled:opacity-60 ${armDelete ? "bg-red" : "bg-red/60"}`}
           >
-            {armDelete ? `Click again to permanently delete ${user.email}` : "Delete account"}
+            {armDelete ? t("admin.deleteConfirm", { email: user.email }) : t("admin.deleteAccount")}
           </button>
           {armDelete && (
             <button type="button" onClick={() => setArmDelete(false)} className="text-sm text-ink-soft underline">
-              Cancel
+              {t("admin.cancel")}
             </button>
           )}
-          <span className="text-sm text-ink-soft">Deletes the account, all days, files, and tokens. No undo.</span>
+          <span className="text-sm text-ink-soft">{t("admin.deleteExplainer")}</span>
         </div>
       )}
     </section>
@@ -429,6 +447,7 @@ function UserDetail({
 // ---------------------------------------------------------------- coupons
 
 function CouponsPanel() {
+  const { t } = useLang();
   const [coupons, setCoupons] = useState<AdminCoupon[]>([]);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -449,7 +468,8 @@ function CouponsPanel() {
         setCoupons(result.coupons);
         setError("");
       })
-      .catch((err: unknown) => setError(errText(err, "Could not load coupons.")));
+      .catch((err: unknown) => setError(errText(err, t("admin.loadCouponsError"))));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -469,11 +489,11 @@ function CouponsPanel() {
         expires_at: expires ? new Date(expires).toISOString() : null,
         note: note.trim() ? note.trim() : null,
       });
-      setNotice(`Created coupon ${created.code_display}.`);
+      setNotice(t("admin.couponCreated", { code: created.code_display }));
       setCode("");
       load();
     } catch (err) {
-      setError(errText(err, "Could not create the coupon."));
+      setError(errText(err, t("admin.couponCreateError")));
     } finally {
       setBusy(false);
     }
@@ -490,7 +510,7 @@ function CouponsPanel() {
       setRedemptionFor(coupon.id);
       setError("");
     } catch (err) {
-      setError(errText(err, "Could not load redemptions."));
+      setError(errText(err, t("admin.loadRedemptionsError")));
     }
   }
 
@@ -500,39 +520,39 @@ function CouponsPanel() {
   return (
     <div>
       <form onSubmit={create} className="rounded-3xl border border-line bg-card p-6">
-        <h2 className="font-bold text-2xl tracking-tight">New coupon</h2>
+        <h2 className="font-bold text-2xl tracking-tight">{t("admin.newCoupon")}</h2>
         <div className="mt-4 flex flex-wrap items-end gap-3">
           <label className="text-sm">
-            <span className="mb-1 block text-ink-soft">Code (blank = generate)</span>
+            <span className="mb-1 block text-ink-soft">{t("admin.couponCode")}</span>
             <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="ABCD-2345" className={inputCls} />
           </label>
           <label className="text-sm">
-            <span className="mb-1 block text-ink-soft">Kind</span>
+            <span className="mb-1 block text-ink-soft">{t("admin.couponKind")}</span>
             <select value={kind} onChange={(e) => setKind(e.target.value as "days" | "lifetime")} className={inputCls}>
-              <option value="days">Days</option>
-              <option value="lifetime">Lifetime</option>
+              <option value="days">{t("admin.kindDays")}</option>
+              <option value="lifetime">{t("admin.kindLifetime")}</option>
             </select>
           </label>
           {kind === "days" && (
             <label className="text-sm">
-              <span className="mb-1 block text-ink-soft">Days</span>
+              <span className="mb-1 block text-ink-soft">{t("admin.couponDays")}</span>
               <input type="number" min={1} value={days} onChange={(e) => setDays(e.target.value)} className={`${inputCls} w-24`} />
             </label>
           )}
           <label className="text-sm">
-            <span className="mb-1 block text-ink-soft">Max uses</span>
+            <span className="mb-1 block text-ink-soft">{t("admin.couponMaxUses")}</span>
             <input type="number" min={1} value={maxUses} onChange={(e) => setMaxUses(e.target.value)} className={`${inputCls} w-24`} />
           </label>
           <label className="text-sm">
-            <span className="mb-1 block text-ink-soft">Code expires</span>
+            <span className="mb-1 block text-ink-soft">{t("admin.couponExpires")}</span>
             <input type="date" value={expires} onChange={(e) => setExpires(e.target.value)} className={inputCls} />
           </label>
           <label className="text-sm">
-            <span className="mb-1 block text-ink-soft">Note</span>
+            <span className="mb-1 block text-ink-soft">{t("admin.couponNote")}</span>
             <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="For Zhang" className={inputCls} />
           </label>
           <button type="submit" disabled={busy} className="rounded-full bg-red px-4 py-2 text-sm text-white disabled:opacity-60">
-            Create
+            {t("admin.create")}
           </button>
         </div>
         {notice && <p className="mt-4 rounded-2xl bg-paper px-4 py-3 text-sm">{notice}</p>}
@@ -543,12 +563,12 @@ function CouponsPanel() {
         <table className="w-full min-w-[720px] text-left text-sm">
           <thead>
             <tr className="border-b border-line text-ink-soft">
-              <th className="px-4 py-3 font-medium">Code</th>
-              <th className="px-4 py-3 font-medium">Grants</th>
-              <th className="px-4 py-3 font-medium">Used</th>
-              <th className="px-4 py-3 font-medium">Expires</th>
-              <th className="px-4 py-3 font-medium">Status</th>
-              <th className="px-4 py-3 font-medium">Note</th>
+              <th className="px-4 py-3 font-medium">{t("admin.colCode")}</th>
+              <th className="px-4 py-3 font-medium">{t("admin.colGrants")}</th>
+              <th className="px-4 py-3 font-medium">{t("admin.colUsed")}</th>
+              <th className="px-4 py-3 font-medium">{t("admin.colExpires")}</th>
+              <th className="px-4 py-3 font-medium">{t("admin.colStatus")}</th>
+              <th className="px-4 py-3 font-medium">{t("admin.colNote")}</th>
               <th className="px-4 py-3 font-medium" />
             </tr>
           </thead>
@@ -558,12 +578,14 @@ function CouponsPanel() {
                 <td className="px-4 py-3">
                   <code>{coupon.code_display}</code>
                 </td>
-                <td className="px-4 py-3">{coupon.kind === "lifetime" ? "Lifetime" : `${coupon.days} days`}</td>
+                <td className="px-4 py-3">
+                  {coupon.kind === "lifetime" ? t("admin.kindLifetime") : t("admin.grantsDays", { days: coupon.days ?? 0 })}
+                </td>
                 <td className="px-4 py-3">
                   {coupon.used_count} / {coupon.max_uses}
                 </td>
                 <td className="px-4 py-3">{coupon.expires_at ? formatWhen(coupon.expires_at) : "—"}</td>
-                <td className="px-4 py-3">{coupon.disabled ? "disabled" : "active"}</td>
+                <td className="px-4 py-3">{coupon.disabled ? t("admin.statusDisabled") : t("admin.statusActive")}</td>
                 <td className="px-4 py-3">{coupon.note ?? "—"}</td>
                 <td className="px-4 py-3">
                   <span className="flex gap-2">
@@ -572,7 +594,7 @@ function CouponsPanel() {
                       onClick={() => showRedemptions(coupon)}
                       className="rounded-full border border-line px-3 py-1 text-xs"
                     >
-                      Redemptions
+                      {t("admin.redemptions")}
                     </button>
                     {!coupon.disabled && (
                       <button
@@ -582,12 +604,12 @@ function CouponsPanel() {
                             await api.adminDisableCoupon(coupon.id);
                             load();
                           } catch (err) {
-                            setError(errText(err, "Could not disable the coupon."));
+                            setError(errText(err, t("admin.disableError")));
                           }
                         }}
                         className="rounded-full border border-line px-3 py-1 text-xs"
                       >
-                        Disable
+                        {t("admin.disable")}
                       </button>
                     )}
                   </span>
@@ -597,7 +619,7 @@ function CouponsPanel() {
             {coupons.length === 0 && (
               <tr>
                 <td className="px-4 py-6 text-ink-soft" colSpan={7}>
-                  No coupons yet.
+                  {t("admin.noCoupons")}
                 </td>
               </tr>
             )}
@@ -607,14 +629,14 @@ function CouponsPanel() {
 
       {redemptionFor && (
         <section className="mt-4 rounded-3xl border border-line bg-card p-6">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">Redemptions</h3>
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-soft">{t("admin.redemptions")}</h3>
           <ul className="mt-2 space-y-1 text-sm">
             {redemptions.map((row) => (
               <li key={row.id}>
                 {row.email} · {formatWhen(row.redeemed_at)}
               </li>
             ))}
-            {redemptions.length === 0 && <li className="text-ink-soft">Nobody has redeemed this code yet.</li>}
+            {redemptions.length === 0 && <li className="text-ink-soft">{t("admin.nobodyRedeemed")}</li>}
           </ul>
         </section>
       )}

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ApiError, api, formatBytes, formatDay, type DaySummary } from "../api";
+import { useLang } from "../i18n";
 
 export function DaysPage() {
+  const { t } = useLang();
   const [params, setParams] = useSearchParams();
   const q = params.get("q") ?? "";
   const [draft, setDraft] = useState(q);
@@ -19,19 +21,20 @@ export function DaysPage() {
         if (!cancelled) setDays(result.days);
       })
       .catch((err: unknown) => {
-        if (!cancelled) setError(err instanceof ApiError ? err.message : "Could not load days.");
+        if (!cancelled) setError(err instanceof ApiError ? err.message : t("days.loadError"));
       });
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q]);
 
   return (
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-bold text-4xl tracking-tight">Days</h1>
-          <p className="mt-1 text-ink-soft">One row per calendar day the phone uploaded.</p>
+          <h1 className="font-bold text-4xl tracking-tight">{t("days.title")}</h1>
+          <p className="mt-1 text-ink-soft">{t("days.subtitle")}</p>
         </div>
         <form
           className="flex w-full gap-2 sm:w-auto"
@@ -45,26 +48,22 @@ export function DaysPage() {
           <input
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
-            placeholder="Search summaries, markers, filenames"
-            aria-label="Search days"
+            placeholder={t("days.searchPlaceholder")}
+            aria-label={t("days.searchAria")}
             className="w-full rounded-full border border-line bg-card px-4 py-2 sm:w-80"
           />
-          <button type="submit" className="rounded-full bg-ink px-4 py-2 text-paper">
-            Search
+          <button type="submit" className="shrink-0 rounded-full bg-ink px-4 py-2 text-paper">
+            {t("days.searchButton")}
           </button>
         </form>
       </div>
 
       {error && <p className="mt-6 text-red-deep">{error}</p>}
-      {!error && days === null && <p className="mt-8 text-ink-soft">Loading days…</p>}
+      {!error && days === null && <p className="mt-8 text-ink-soft">{t("days.loading")}</p>}
       {days && days.length === 0 && (
         <div className="mt-8 rounded-3xl border border-dashed border-line bg-card px-6 py-10">
-          <h2 className="font-bold text-2xl tracking-tight">{q ? "Nothing matched that search." : "The shelf is empty."}</h2>
-          <p className="mt-2 max-w-xl text-ink-soft">
-            {q
-              ? "Try a date, a marker type like meeting_start, or a word from a summary."
-              : "Sign the Android app into this account and let one segment finish. It will show up here with its markers. Summaries appear after your Muse posts them."}
-          </p>
+          <h2 className="font-bold text-2xl tracking-tight">{q ? t("days.noMatchTitle") : t("days.emptyTitle")}</h2>
+          <p className="mt-2 max-w-xl text-ink-soft">{q ? t("days.noMatchBody") : t("days.emptyBody")}</p>
         </div>
       )}
       {days && days.length > 0 && (
@@ -75,12 +74,10 @@ export function DaysPage() {
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <p className="font-bold text-xl tracking-tight">{formatDay(day.date)}</p>
                   <p className="text-sm text-ink-soft">
-                    {day.audio_count} audio · {day.marker_count} markers · {formatBytes(day.bytes)}
+                    {t("days.counts", { audio: day.audio_count, markers: day.marker_count, bytes: formatBytes(day.bytes) })}
                   </p>
                 </div>
-                <p className="mt-1 text-sm text-ink-soft">
-                  {day.summary_excerpt || "No summary yet. Connect Muse, or write one from the day page."}
-                </p>
+                <p className="mt-1 text-sm text-ink-soft">{day.summary_excerpt || t("days.noSummary")}</p>
               </Link>
             </li>
           ))}

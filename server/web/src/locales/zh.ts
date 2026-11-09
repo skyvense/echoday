@@ -283,8 +283,7 @@ const zh: typeof en = {
   },
   billing: {
     title: "订阅",
-    introPre: "每月",
-    introPost: "，一个人的货架持续开放。不含转写，因为这台服务器不做转写。",
+    intro: "每月 {price}，一个人的货架持续开放。不含转写，因为这台服务器不做转写。",
     plan: "方案",
     perMonth: "/ 月",
     statusPaid: "订阅生效中。上传开放。",
