@@ -1,9 +1,10 @@
 import { createReadStream } from "node:fs";
-import { mkdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { Readable } from "node:stream";
 import {
   CreateBucketCommand,
+  DeleteObjectCommand,
   GetObjectCommand,
   HeadBucketCommand,
   HeadObjectCommand,
@@ -23,6 +24,7 @@ export interface BlobStore {
   ensure(): Promise<void>;
   ping(): Promise<void>;
   put(key: string, body: Buffer): Promise<void>;
+  remove(key: string): Promise<void>;
   size(key: string): Promise<number | null>;
   open(key: string, start: number, endInclusive: number): Promise<OpenedBlob | null>;
 }
@@ -105,6 +107,10 @@ class FsStore implements BlobStore {
     await writeFile(full, body);
   }
 
+  async remove(key: string): Promise<void> {
+    await rm(this.resolve(key), { force: true });
+  }
+
   async size(key: string): Promise<number | null> {
     try {
       const info = await stat(this.resolve(key));
@@ -170,6 +176,13 @@ class S3Store implements BlobStore {
     });
   }
 
+  async remove(key: string): Promise<void> {
+    assertSafeKey(key);
+    await sendWithRetry(async () => {
+      await this.client.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: key }));
+    });
+  }
+
   async size(key: string): Promise<number | null> {
     assertSafeKey(key);
     try {
@@ -229,6 +242,10 @@ class UnconfiguredStore implements BlobStore {
   }
 
   async put(): Promise<void> {
+    throw new StorageUnconfigured(this.reason);
+  }
+
+  async remove(): Promise<void> {
     throw new StorageUnconfigured(this.reason);
   }
 

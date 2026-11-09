@@ -35,6 +35,18 @@ function billingMode(): BillingMode {
 
 const storageDriver = process.env.STORAGE_DRIVER === "r2" || process.env.STORAGE_DRIVER === "s3" ? process.env.STORAGE_DRIVER : "fs";
 
+function adminEmails(): string[] {
+  return (process.env.ADMIN_EMAILS || "")
+    .split(",")
+    .map((part) => part.trim().toLowerCase())
+    .filter((part) => part.length > 0);
+}
+
+/** Ops-console access: the account email is listed in ADMIN_EMAILS. */
+export function isAdminEmail(email: string): boolean {
+  return adminEmails().includes(email.trim().toLowerCase());
+}
+
 export const env = {
   publicUrl,
   apiHost: process.env.API_HOST || "0.0.0.0",
@@ -74,6 +86,14 @@ export const env = {
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "",
   stripePriceId: process.env.STRIPE_PRICE_ID || "",
   supportEmail: (process.env.SUPPORT_EMAIL || "").trim(),
+  adminEmails: adminEmails(),
+  // Originals retention (days). "Processed" = the day has a pushed result;
+  // the clock starts at the result's updated_at. Unprocessed days are timed
+  // from their last upload. See retention.ts.
+  retentionProcessedFreeDays: intEnv("RETENTION_PROCESSED_FREE_DAYS", 2),
+  retentionProcessedPaidDays: intEnv("RETENTION_PROCESSED_PAID_DAYS", 30),
+  retentionUnprocessedFreeDays: intEnv("RETENTION_UNPROCESSED_FREE_DAYS", 7),
+  retentionUnprocessedPaidDays: intEnv("RETENTION_UNPROCESSED_PAID_DAYS", 90),
 };
 
 if (env.jwtSecret.length < 16) {

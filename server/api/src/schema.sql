@@ -13,6 +13,9 @@ CREATE TABLE IF NOT EXISTS users (
 
 ALTER TABLE users ADD COLUMN IF NOT EXISTS token_version integer NOT NULL DEFAULT 1;
 
+-- How the current paid period was granted: 'stripe' | 'stub' | 'coupon' | 'admin'.
+ALTER TABLE users ADD COLUMN IF NOT EXISTS subscription_source text;
+
 CREATE TABLE IF NOT EXISTS api_tokens (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -37,6 +40,10 @@ CREATE TABLE IF NOT EXISTS days (
 );
 
 CREATE INDEX IF NOT EXISTS days_user_day_idx ON days (user_id, day DESC);
+
+-- Set by the retention job once a day's original blobs (audio + snapshots)
+-- have been deleted. The days row, markers, and summary stay forever.
+ALTER TABLE days ADD COLUMN IF NOT EXISTS originals_deleted_at timestamptz;
 
 CREATE TABLE IF NOT EXISTS objects (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -91,6 +98,32 @@ ALTER TABLE summaries ADD COLUMN IF NOT EXISTS photo_analysis_markdown text;
 ALTER TABLE summaries ADD COLUMN IF NOT EXISTS sheet_key text;
 
 CREATE INDEX IF NOT EXISTS summaries_user_day_idx ON summaries (user_id, day DESC);
+
+-- Coupon codes. Redeeming a 'days' code extends the paid period by `days`
+-- (stacked on the current period end); a 'lifetime' code sets a far-future
+-- period end. Codes are stored normalized: uppercase, no separators.
+CREATE TABLE IF NOT EXISTS coupons (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  code text NOT NULL UNIQUE,
+  kind text NOT NULL CHECK (kind in ('days', 'lifetime')),
+  days integer,
+  max_uses integer NOT NULL DEFAULT 1,
+  used_count integer NOT NULL DEFAULT 0,
+  expires_at timestamptz,
+  disabled boolean NOT NULL DEFAULT false,
+  note text,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS coupon_redemptions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  coupon_id uuid NOT NULL REFERENCES coupons(id) ON DELETE CASCADE,
+  user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  redeemed_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (coupon_id, user_id)
+);
+
+CREATE INDEX IF NOT EXISTS coupon_redemptions_user_idx ON coupon_redemptions (user_id);
 
 CREATE TABLE IF NOT EXISTS supabase_identity_links (
   user_id uuid PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,

@@ -26,6 +26,8 @@ export interface Billing {
   mode: "trial" | "paid" | "read_only";
   reason: string;
   trialEndsAt: string;
+  paidUntil: string | null;
+  source: string | null;
   status: string;
   priceCents: number;
   currency: string;
@@ -36,8 +38,74 @@ export interface Me {
   id: string;
   email: string;
   created_at: string;
+  is_admin: boolean;
   public_url: string;
   billing: Billing;
+}
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  created_at: string;
+  is_admin: boolean;
+  subscription_status: string;
+  subscription_source: string | null;
+  trial_ends_at: string;
+  paid_until: string | null;
+  mode: "trial" | "paid" | "read_only";
+  used_bytes: number;
+  quota_bytes: number;
+  token_count: number;
+  active_token_count: number;
+  last_upload_at: string | null;
+}
+
+export interface AdminDay {
+  date: string;
+  audio_count: number;
+  snapshot_count: number;
+  bytes: number;
+  has_summary: boolean;
+  originals_deleted_at: string | null;
+  updated_at: string;
+}
+
+export interface AdminToken {
+  id: string;
+  name: string;
+  prefix: string;
+  scopes: string[];
+  created_at: string;
+  last_used_at: string | null;
+  revoked_at: string | null;
+  status: "active" | "revoked";
+}
+
+export interface AdminUserDetail {
+  user: AdminUser;
+  days: AdminDay[];
+  tokens: AdminToken[];
+}
+
+export interface AdminCoupon {
+  id: string;
+  code: string;
+  code_display: string;
+  kind: "days" | "lifetime";
+  days: number | null;
+  max_uses: number;
+  used_count: number;
+  expires_at: string | null;
+  disabled: boolean;
+  note: string | null;
+  created_at: string;
+}
+
+export interface AdminRedemption {
+  id: string;
+  user_id: string;
+  email: string;
+  redeemed_at: string;
 }
 
 export interface DaySummary {
@@ -182,6 +250,52 @@ export const api = {
   stubActivate: () => request<Me>("/api/v1/billing/stub/activate", { method: "POST" }),
   stubTrial: () => request<Me & { message?: string }>("/api/v1/billing/stub/trial", { method: "POST" }),
   stubCancel: () => request<Me>("/api/v1/billing/stub/cancel", { method: "POST" }),
+  adminUsers: (q = "", limit = 25, offset = 0) =>
+    request<{ users: AdminUser[]; total: number; limit: number; offset: number }>(
+      `/api/v1/admin/users?q=${encodeURIComponent(q)}&limit=${limit}&offset=${offset}`,
+    ),
+  adminUser: (id: string) => request<AdminUserDetail>(`/api/v1/admin/users/${id}`),
+  adminRevokeToken: (userId: string, tokenId: string) =>
+    request<{ ok: boolean }>(`/api/v1/admin/users/${userId}/tokens/${tokenId}/revoke`, { method: "POST" }),
+  adminResetTokens: (userId: string) =>
+    request<{ id: string; token: string; prefix: string; message: string }>(
+      `/api/v1/admin/users/${userId}/tokens/reset`,
+      { method: "POST" },
+    ),
+  adminDeleteUser: (userId: string) =>
+    request<{ ok: boolean; email: string; blobs_deleted: number; blobs_failed: number }>(
+      `/api/v1/admin/users/${userId}`,
+      { method: "DELETE" },
+    ),
+  adminSetSubscription: (userId: string, body: { action: "set" | "clear"; paid_until?: string | null }) =>
+    request<{ ok: boolean; paid_until: string | null; mode: string }>(
+      `/api/v1/admin/users/${userId}/subscription`,
+      { method: "POST", body: JSON.stringify(body) },
+    ),
+  adminCoupons: () => request<{ coupons: AdminCoupon[] }>("/api/v1/admin/coupons"),
+  adminCreateCoupon: (body: {
+    code?: string;
+    kind: "days" | "lifetime";
+    days?: number | null;
+    max_uses: number;
+    expires_at?: string | null;
+    note?: string | null;
+  }) => request<AdminCoupon>("/api/v1/admin/coupons", { method: "POST", body: JSON.stringify(body) }),
+  adminDisableCoupon: (id: string) =>
+    request<AdminCoupon>(`/api/v1/admin/coupons/${id}/disable`, { method: "POST" }),
+  adminCouponRedemptions: (id: string) =>
+    request<{ coupon: AdminCoupon; redemptions: AdminRedemption[] }>(
+      `/api/v1/admin/coupons/${id}/redemptions`,
+    ),
+  adminRunRetention: () =>
+    request<{
+      ok: boolean;
+      days_processed: number;
+      days_unprocessed: number;
+      objects_deleted: number;
+      bytes_freed: number;
+      errors: number;
+    }>("/api/v1/admin/maintenance/retention", { method: "POST" }),
 };
 
 export function formatBytes(bytes: number): string {

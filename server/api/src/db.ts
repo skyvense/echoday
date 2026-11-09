@@ -64,6 +64,7 @@ export interface UserRow {
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
   subscription_current_period_end: Date | null;
+  subscription_source: string | null;
   token_version: number;
 }
 

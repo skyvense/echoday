@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, NavLink, Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { api, clearToken, money, saveToken, type Me } from "./api";
+import { AdminPage } from "./pages/AdminPage";
 import { AuthPage } from "./pages/AuthPage";
 import { BillingPage } from "./pages/BillingPage";
 import { ConnectPage } from "./pages/ConnectPage";
@@ -57,6 +58,7 @@ export function App() {
             <Route path="/days/:date" element={<DayPage />} />
             <Route path="/connect" element={<ConnectPage />} />
             <Route path="/billing" element={<BillingPage />} />
+            <Route path="/admin" element={<AdminPage />} />
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/days" replace />} />
@@ -103,6 +105,7 @@ function Shell() {
             <Tab to="/days">Days</Tab>
             <Tab to="/connect">Connect Muse</Tab>
             <Tab to="/billing">Billing</Tab>
+            {me.is_admin && <Tab to="/admin">Admin</Tab>}
           </nav>
           <div className="flex items-center gap-3 text-sm">
             <span className="hidden text-ink-soft sm:inline">{me.email}</span>

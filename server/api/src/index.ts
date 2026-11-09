@@ -7,13 +7,16 @@ import { initDb } from "./db.js";
 import { apiDocs } from "./docs.js";
 import { env } from "./env.js";
 import { HttpError } from "./http.js";
+import { adminRoutes } from "./routes/admin.js";
 import { authRoutes } from "./routes/auth.js";
 import { billingRoutes } from "./routes/billing.js";
+import { couponRoutes } from "./routes/coupons.js";
 import { dayRoutes } from "./routes/days.js";
 import { museRoutes } from "./routes/muse.js";
 import { tokenRoutes } from "./routes/tokens.js";
 import { uploadRoutes } from "./routes/upload.js";
 import { platformRoutes } from "./routes/platform.js";
+import { runRetention } from "./retention.js";
 import { describeStorage, initStorage, store } from "./storage.js";
 
 const app = new Hono<AppEnv>();
@@ -58,6 +61,8 @@ v1.route("/days", dayRoutes);
 v1.route("/tokens", tokenRoutes);
 v1.route("/muse", museRoutes);
 v1.route("/billing", billingRoutes);
+v1.route("/coupons", couponRoutes);
+v1.route("/admin", adminRoutes);
 v1.route("/platform", platformRoutes);
 app.route("/api/v1", v1);
 
@@ -86,6 +91,22 @@ async function main() {
   serve({ fetch: app.fetch, port: env.apiPort, hostname: env.apiHost }, (info) => {
     console.log(`EchoDay API listening on ${env.apiHost}:${info.port}`);
   });
+  scheduleRetention();
+}
+
+/** Daily originals-cleanup, in-process; also runnable from the admin API. */
+function scheduleRetention() {
+  const run = () => {
+    runRetention()
+      .then((stats) => {
+        if (stats.objects_deleted > 0 || stats.errors > 0) {
+          console.log(`retention run: ${JSON.stringify(stats)}`);
+        }
+      })
+      .catch((error) => console.error("retention run failed", error));
+  };
+  setTimeout(run, 60 * 1000);
+  setInterval(run, 24 * 60 * 60 * 1000);
 }
 
 main().catch((error) => {

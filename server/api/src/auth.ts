@@ -2,7 +2,7 @@ import { createHash, randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
 import type { Context, MiddlewareHandler } from "hono";
 import { SignJWT, jwtVerify } from "jose";
-import { env } from "./env.js";
+import { env, isAdminEmail } from "./env.js";
 import { findUserById, type UserRow } from "./db.js";
 import { bearer, HttpError } from "./http.js";
 import { sql } from "./db.js";
@@ -107,6 +107,19 @@ export function requireUser(): MiddlewareHandler<AppEnv> {
     c.set("actor", "user");
     c.set("scopes", ["*"]);
     await next();
+  };
+}
+
+/** User JWT + the account email must be listed in ADMIN_EMAILS. */
+export function requireAdmin(): MiddlewareHandler<AppEnv> {
+  const userAuth = requireUser();
+  return async (c, next) => {
+    await userAuth(c, async () => {
+      if (!isAdminEmail(c.get("user").email)) {
+        throw new HttpError(403, "forbidden", "Admin access required");
+      }
+      await next();
+    });
   };
 }
 

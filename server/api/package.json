@@ -10,7 +10,7 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "tsx --test src/layout.test.ts src/platform.test.ts src/storage-retry.test.ts src/credentials.test.ts",
+    "test": "tsx --test src/layout.test.ts src/platform.test.ts src/storage-retry.test.ts src/credentials.test.ts src/coupons.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
