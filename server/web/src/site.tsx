@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export function Mark() {
-  return <span className="inline-block h-3.5 w-3.5 rounded-full bg-red shadow-[0_0_0_4px_rgba(194,59,46,0.18)]" />;
+  return (
+    <svg viewBox="0 0 1024 1024" className="h-7 w-7" aria-hidden="true">
+      <path d="M182 165 H842 A330 330 0 0 1 182 165 Z" fill="#F36B53" />
+      <path d="M182 859 H842 A330 330 0 0 0 182 859 Z" fill="#33327E" />
+    </svg>
+  );
 }
 
 export function ThemeToggle() {
