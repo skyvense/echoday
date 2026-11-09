@@ -34,7 +34,7 @@ public final class Prefs {
     public static final String KEY_SNAPSHOT_CAMERA = "snapshot_camera"; // 0=both, 1=back only, 2=front only
     public static final String KEY_SNAPSHOT_FILTER = "snapshot_filter"; // drop blank frames on-device
     public static final String KEY_SNAPSHOT_REPEAT_MINUTES = "snapshot_repeat_minutes"; // held-upright auto-repeat
-    // Muse AI Cloud trial (v1.25.0): account login + agent token mode.
+    // EchoDay trial (v1.25.0): account login + agent token mode.
     // The account password is NEVER persisted — only the session JWT.
     public static final String KEY_CLOUD_URL = "cloud_url";
     public static final String KEY_CLOUD_EMAIL = "cloud_email";
@@ -112,7 +112,7 @@ public final class Prefs {
         return m;
     }
 
-    // ---- Muse AI Cloud trial ----
+    // ---- EchoDay trial ----
 
     /** Platform base URL (no trailing slash); prefilled with the trial VPS. */
     public static String cloudUrl(Context ctx) {
@@ -137,7 +137,7 @@ public final class Prefs {
 
     /**
      * The unified backend mode (v1.26.0): BACKEND_SELF (own R2 + Supabase)
-     * or BACKEND_CLOUD (Muse AI Cloud platform). When the new key has
+     * or BACKEND_CLOUD (EchoDay platform). When the new key has
      * never been written, migrate from the v1.25 cloud-mode switch: cloud
      * only if that switch was on AND a session exists, else self.
      */

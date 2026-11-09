@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Action-bar items for MainActivity. The system title bar (Theme.Material.Light)
-     already shows the left-aligned "Muse Daily Recorder" title, so the help
+     already shows the left-aligned "EchoDay" title, so the help
      button lives here, at the right end of that same bar. -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item

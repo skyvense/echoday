@@ -2,7 +2,7 @@ import { env } from "./env.js";
 
 export function apiDocs(): string {
   const base = env.publicUrl;
-  return `# Muse AI Cloud API
+  return `# EchoDay API
 
 This server stores audio, event markers, and the daily summary. It never calls a transcription or chat model. The phone uploads. Your Muse (or any BYOK agent) pulls a day, transcribes with your own key, and posts the summary back.
 

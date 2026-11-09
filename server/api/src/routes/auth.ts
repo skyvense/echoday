@@ -117,7 +117,7 @@ authRoutes.post("/forgot", async (c) => {
   }
   const contact = env.supportEmail
     ? `Contact ${env.supportEmail} and ask them to reset the password.`
-    : "Contact the person who runs this Muse AI Cloud and ask them to reset the password.";
+    : "Contact the person who runs this EchoDay and ask them to reset the password.";
   return c.json({
     ok: true,
     message: `This server does not email password resets. ${contact}`,

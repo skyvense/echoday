@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pull a Muse AI Cloud day into the muse-recorder inbox, or push a summary back.
+"""Pull a EchoDay day into the muse-recorder inbox, or push a summary back.
 
 Does not transcribe. Does not call OpenAI, Whisper, Grok, or any other model.
 Point summarize_day.py at the inbox afterwards if you want a local transcript,
@@ -144,7 +144,7 @@ def push_result(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Muse AI Cloud pull / summary push. No transcription.")
+    parser = argparse.ArgumentParser(description="EchoDay pull / summary push. No transcription.")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     pull_cmd = sub.add_parser("pull")

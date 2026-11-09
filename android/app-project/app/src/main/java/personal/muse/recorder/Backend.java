@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * Unified backend facade (v1.26.0). The user picks one backend mode in
  * Settings — self-hosted (own S3/R2 bucket + own Supabase project) or the
- * Muse AI Cloud platform — and every feature (upload, cloud browsing,
+ * EchoDay platform — and every feature (upload, cloud browsing,
  * daily reports) goes through this class instead of talking to S3 /
  * MuseCloud / Supabase directly.
  *
@@ -214,7 +214,7 @@ public final class Backend {
         return it;
     }
 
-    // ---- browsing: Muse AI Cloud ----
+    // ---- browsing: EchoDay ----
 
     private static DatesResult cloudListDates(Context ctx) throws Exception {
         JSONObject resp = MuseCloud.getJson(Prefs.cloudUrl(ctx), Prefs.cloudJwt(ctx), "/api/v1/days");
@@ -428,7 +428,7 @@ public final class Backend {
         return body;
     }
 
-    // ---- reports: Muse AI Cloud ----
+    // ---- reports: EchoDay ----
 
     private static List<ReportDay> cloudListReportDays(Context ctx) throws Exception {
         JSONObject resp = MuseCloud.getJson(Prefs.cloudUrl(ctx), Prefs.cloudJwt(ctx), "/api/v1/days");

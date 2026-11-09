@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Default strings (English). Other locales live in values-<lang>/. -->
 <resources>
-    <string name="app_name">Muse Daily Recorder Cloud</string>
+    <string name="app_name">EchoDay</string>
     <!-- Short seconds unit for the segment progress overlay (e.g. 120/600s).
          Only zh overrides this; every other locale falls back to "s". -->
     <string name="seconds_short">s</string>
@@ -234,8 +234,8 @@
     <string name="group_reports">Daily reports</string>
     <string name="group_system">Language &amp; system</string>
 
-    <!-- Muse AI Cloud trial (v1.25.0) -->
-    <string name="group_cloud_ai">Muse AI Cloud (trial)</string>
+    <!-- EchoDay trial (v1.25.0) -->
+    <string name="group_cloud_ai">EchoDay (trial)</string>
     <string name="cloud_hint">Register or sign in here in the app. Uploads can then go to the platform instead of your own bucket, and your own Muse can pull each day and push the recognition result back.</string>
     <string name="cloud_server_label">Server</string>
     <string name="cloud_email_label">Email</string>
@@ -255,7 +255,7 @@
     <string name="cloud_login_ok">Logged in.</string>
     <string name="cloud_logout_done">Logged out.</string>
     <string name="cloud_auth_failed">Failed: %1$s</string>
-    <string name="cloud_mode_label">Upload to Muse AI Cloud</string>
+    <string name="cloud_mode_label">Upload to EchoDay</string>
     <string name="cloud_mode_hint">When on and logged in, finished segments, markers and snapshots upload to the platform with your account instead of S3/R2. Off = your own bucket, unchanged.</string>
     <string name="cloud_mode_on">Cloud upload is on.</string>
     <string name="cloud_mode_on_need_login">Cloud upload is on — log in above to start uploading.</string>
@@ -275,18 +275,18 @@
     <string name="cloud_guide_copy">Copy connect instructions</string>
     <string name="cloud_guide_copied">Instructions copied — paste them to your Muse.</string>
     <string name="cloud_guide_need_token">Generate a token first, then copy the instructions.</string>
-    <string name="cloud_guide_text">Connect to my Muse AI Cloud for me.\nPlatform base URL: %1$s\nMy agent token: %2$s\nSend the token as this header on every request: Authorization: Bearer %2$s\n\nPlease do this for me every day:\n1. GET /api/v1/muse/days — find the days that have no result yet.\n2. GET /api/v1/muse/days/{date} — take the manifest, then download every audio segment, self-note, event-marker file and snapshot photo using the download URLs in the manifest.\n3. Transcribe the audio and run photo recognition locally on your side — the platform never calls a model.\n4. Write the daily summary (my self-notes first, split by the event markers), the full transcript, the window analyses and the photo-recognition notes, and build one daily activity sheet JPEG (about 1 MB) from the usable photos.\n5. Push the result back: PUT /api/v1/muse/days/{date}/result with JSON {markdown, transcript_markdown, analyses_json, photo_analysis_markdown}, then PUT the sheet JPEG (Content-Type: image/jpeg) to /api/v1/muse/days/{date}/sheet.\nThis token only reaches my own data. Keep processing new days until I say stop.</string>
-    <string name="up_cloud_blocked">Muse AI Cloud paused uploads: %1$s</string>
+    <string name="cloud_guide_text">Connect to my EchoDay for me.\nPlatform base URL: %1$s\nMy agent token: %2$s\nSend the token as this header on every request: Authorization: Bearer %2$s\n\nPlease do this for me every day:\n1. GET /api/v1/muse/days — find the days that have no result yet.\n2. GET /api/v1/muse/days/{date} — take the manifest, then download every audio segment, self-note, event-marker file and snapshot photo using the download URLs in the manifest.\n3. Transcribe the audio and run photo recognition locally on your side — the platform never calls a model.\n4. Write the daily summary (my self-notes first, split by the event markers), the full transcript, the window analyses and the photo-recognition notes, and build one daily activity sheet JPEG (about 1 MB) from the usable photos.\n5. Push the result back: PUT /api/v1/muse/days/{date}/result with JSON {markdown, transcript_markdown, analyses_json, photo_analysis_markdown}, then PUT the sheet JPEG (Content-Type: image/jpeg) to /api/v1/muse/days/{date}/sheet.\nThis token only reaches my own data. Keep processing new days until I say stop.</string>
+    <string name="up_cloud_blocked">EchoDay paused uploads: %1$s</string>
     <string name="up_cloud_failed">Cloud upload failed: %1$s — %2$s</string>
     <string name="group_backend">Service</string>
     <string name="backend_mode_title">Service mode</string>
     <string name="backend_mode_self">Self-hosted (your R2 + Supabase)</string>
-    <string name="backend_mode_cloud">Muse AI Cloud service</string>
+    <string name="backend_mode_cloud">EchoDay service</string>
     <string name="backend_mode_self_on">Self-hosted mode: uploads, cloud files and reports use your own R2 + Supabase.</string>
-    <string name="backend_mode_cloud_on">Muse AI Cloud mode: uploads, cloud files and reports use the platform.</string>
-    <string name="backend_not_logged_in">Log in to Muse AI Cloud in the Settings tab first</string>
-    <string name="cloud_subtitle_cloud">Muse AI Cloud · %1$s</string>
-    <string name="reports_not_configured_cloud">Log in to Muse AI Cloud in the Settings tab to read daily summaries here</string>
+    <string name="backend_mode_cloud_on">EchoDay mode: uploads, cloud files and reports use the platform.</string>
+    <string name="backend_not_logged_in">Log in to EchoDay in the Settings tab first</string>
+    <string name="cloud_subtitle_cloud">EchoDay · %1$s</string>
+    <string name="reports_not_configured_cloud">Log in to EchoDay in the Settings tab to read daily summaries here</string>
     <string name="reports_no_summary">No summary for this day yet</string>
     <string name="reports_photo_title">Photo analysis</string>
     <string name="reports_sheet_button_simple">View daily activity sheet</string>

@@ -44,7 +44,7 @@ export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2.5 no-underline">
           <Mark />
-          <span className="font-serif text-xl tracking-tight">Muse AI Cloud</span>
+          <span className="font-serif text-xl tracking-tight">EchoDay</span>
         </Link>
         <nav className="flex flex-wrap items-center gap-3 text-sm">
           <a href="/#how" className="text-ink-soft no-underline hover:text-ink">How it works</a>

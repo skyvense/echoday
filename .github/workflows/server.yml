@@ -1,0 +1,24 @@
+name: Server Docker build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "server/**"
+      - ".github/workflows/server.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Provide a throwaway .env for the build check
+        run: cp .env.example .env
+
+      - name: Build API and web images
+        run: docker compose build

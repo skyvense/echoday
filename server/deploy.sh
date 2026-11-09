@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Muse AI Cloud — one-shot deploy, run ON the VPS inside this bundle's folder.
+# EchoDay — one-shot deploy, run ON the VPS inside this bundle's folder.
 # Brings up postgres + minio + api + web via the bridge compose (web on 8471).
 set -euo pipefail
 cd "$(dirname "$0")"

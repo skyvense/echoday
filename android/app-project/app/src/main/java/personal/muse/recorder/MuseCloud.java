@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 /**
- * Client for the Muse AI Cloud platform (trial, v1.25.0).
+ * Client for the EchoDay platform (trial, v1.25.0).
  *
  * Two different credentials, never mixed up:
  *  - the phone session JWT from POST /api/v1/auth/login (or /register):

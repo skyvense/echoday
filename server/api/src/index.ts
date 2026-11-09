@@ -84,7 +84,7 @@ async function main() {
   await initDb();
   await initStorage();
   serve({ fetch: app.fetch, port: env.apiPort, hostname: env.apiHost }, (info) => {
-    console.log(`Muse AI Cloud API listening on ${env.apiHost}:${info.port}`);
+    console.log(`EchoDay API listening on ${env.apiHost}:${info.port}`);
   });
 }
 

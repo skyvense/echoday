@@ -57,14 +57,14 @@ export function ConnectPage() {
   }
 
   const base = me?.public_url ?? "";
-  const prompt = `You are my Muse. Each morning, pull yesterday from my Muse AI Cloud and write the daily summary.
+  const prompt = `You are my Muse. Each morning, pull yesterday from my EchoDay and write the daily summary.
 
 Base URL: ${base}
 Authorization: Bearer YOUR_MUSE_TOKEN
 
 Rules:
 - This server does not transcribe. Download the audio and transcribe it with my own key or a local model.
-- Never ask Muse AI Cloud to call OpenAI, Whisper, or any other model.
+- Never ask EchoDay to call OpenAI, Whisper, or any other model.
 - Read the markers (conversation, meeting, self-note) and use them to split the day.
 - Write a daily note: one-line overview, timeline, todos, decisions, and anything I said in a voice note.
 - Post it back with PUT ${base}/api/v1/muse/days/YYYY-MM-DD/summary

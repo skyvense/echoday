@@ -97,7 +97,7 @@ function Shell() {
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <Link to="/days" className="flex items-center gap-2.5 no-underline">
             <span className="inline-block h-3.5 w-3.5 rounded-full bg-red shadow-[0_0_0_4px_rgba(194,59,46,0.15)]" />
-            <span className="font-serif text-xl tracking-tight">Muse AI Cloud</span>
+            <span className="font-serif text-xl tracking-tight">EchoDay</span>
           </Link>
           <nav className="flex items-center gap-1 text-sm">
             <Tab to="/days">Days</Tab>

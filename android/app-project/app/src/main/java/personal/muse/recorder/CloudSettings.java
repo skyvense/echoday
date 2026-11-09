@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Settings card for the Muse AI Cloud trial (v1.25.0): account register /
+ * Settings card for the EchoDay trial (v1.25.0): account register /
  * login inside the app, the cloud-upload mode switch, and the in-app
  * "Connect my Muse" section (agent tokens + one-tap copy of the
  * ready-made instruction paragraph).
@@ -60,7 +60,7 @@ public final class CloudSettings {
         this.act = act;
         this.pal = pal;
 
-        // ---- Service mode (v1.26.0): self-hosted vs Muse AI Cloud ----
+        // ---- Service mode (v1.26.0): self-hosted vs EchoDay ----
         // One mode drives uploads, the cloud tab and the reports tab via
         // Backend. Switching applies and persists immediately.
         LinearLayout modeCard = new LinearLayout(act);
@@ -520,7 +520,7 @@ public final class CloudSettings {
 
     private void copy(String text) {
         ClipboardManager cm = (ClipboardManager) act.getSystemService(Context.CLIPBOARD_SERVICE);
-        if (cm != null) cm.setPrimaryClip(ClipData.newPlainText("Muse AI Cloud", text));
+        if (cm != null) cm.setPrimaryClip(ClipData.newPlainText("EchoDay", text));
     }
 
     private void toast(String msg) {

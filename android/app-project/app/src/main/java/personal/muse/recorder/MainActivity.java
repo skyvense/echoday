@@ -603,7 +603,7 @@ public class MainActivity extends Activity {
     }
 
     // Help button on the system title bar (ActionBar): the bar already shows
-    // the left-aligned "Muse Daily Recorder" title from the app label, so
+    // the left-aligned "EchoDay" title from the app label, so
     // the ⓘ item sits on that same bar instead of floating in the content.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

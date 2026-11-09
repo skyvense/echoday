@@ -1,6 +1,6 @@
 # Platform storage and Supabase reads
 
-The Android app authenticates only to Muse AI Cloud. Cloudflare R2 credentials and the Supabase secret key stay in server environment variables. They are not returned by any API and are not placed in the APK.
+The Android app authenticates only to EchoDay. Cloudflare R2 credentials and the Supabase secret key stay in server environment variables. They are not returned by any API and are not placed in the APK.
 
 Audio and marker uploads keep the existing contract: `PUT /api/v1/upload/{muse-recorder key}` with `Authorization: Bearer <platform jwt>`. The API writes the object to the configured store. A repeated PUT of the same key overwrites that object (idempotent). Transient 429/5xx responses are retried up to three times. A 4xx from storage is not retried.
 

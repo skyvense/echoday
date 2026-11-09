@@ -10,7 +10,7 @@
 -- public.analyses (window_start text, window_end text, analysis_text text, updated_at timestamptz) RLS off
 -- public.daily_summaries (day date, summary_text text, segment_count int, updated_at timestamptz) RLS off
 --
--- Muse AI Cloud does not assume its user id equals a Supabase auth.users id.
+-- EchoDay does not assume its user id equals a Supabase auth.users id.
 -- After a column exists, set SUPABASE_READ_ALLOWLIST to
 -- daily_summaries:owner_supabase_user_id:day|summary_text|segment_count
 -- and keep the secret key on the API only.

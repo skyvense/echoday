@@ -1,6 +1,6 @@
-# Muse AI Cloud
+# EchoDay
 
-Self-hosted shelf for [Muse Daily Recorder](https://github.com/skyvense/muse-recorder). The phone uploads each finished hour of audio and the day's event markers. The website shows days, markers, and the summary. Your own Muse (or any BYOK agent) pulls a day, transcribes it with **your** key, and posts the summary back.
+Self-hosted shelf for [EchoDay](https://github.com/skyvense/muse-recorder). The phone uploads each finished hour of audio and the day's event markers. The website shows days, markers, and the summary. Your own Muse (or any BYOK agent) pulls a day, transcribes it with **your** key, and posts the summary back.
 
 This server never calls OpenAI, Whisper, Grok, or any other model. There is no server-side transcription key to set.
 
@@ -110,7 +110,7 @@ No live keys ship with this repo. Leave the three Stripe variables empty and bil
 1. Create a recurring price of **500 USD cents** per month:
 
 ```bash
-stripe products create --name "Muse AI Cloud"
+stripe products create --name "EchoDay"
 stripe prices create --unit-amount 500 --currency usd \
   -d "recurring[interval]=month" --product prod_...
 ```
@@ -221,7 +221,7 @@ A full APK is not built in this repo. `android/settings-mock.html` is a picture 
 On **Connect Muse**, create a token. It is shown once and stored as a hash. Paste this to the agent, with the real token and yesterday's date:
 
 ```text
-Each morning, pull yesterday from my Muse AI Cloud and write the daily summary.
+Each morning, pull yesterday from my EchoDay and write the daily summary.
 Base URL: https://cloud.example.com
 Authorization: Bearer muse_...
 

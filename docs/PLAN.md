@@ -1,4 +1,4 @@
-# Muse AI Cloud — 产品思路与模块功能计划
+# EchoDay — 产品思路与模块功能计划
 
 整理：Muse，2026-11-08。依据：已恢复的 Cursor 设计文档（README、apk-integration、platform-r2-supabase、muse_cloud.py）、muse-recorder PR #1、现有个人版流水线（R2 + 本地转写 + Supabase 日报），以及 Zhang 的确认：①要靠这个赚钱；②让用户配置自己的 AI；③**2026-11-08 晚定版**：另一个机器人 / Cursor 的源码只作参考、按本 PLAN 实施；**注册登录在 app 内完成**；**token 在 app 内发放**，用户把 token 粘给自己的 Muse 等 agent；agent 拉取范围**含照片**；回传的是**每天的图像 + 声音识别结果**，不只是汇总文字。
 
@@ -6,7 +6,7 @@
 
 ## 一、一句话定位
 
-给 Muse Daily Recorder 用的多用户云端：**用户只管录，云端只管存和展示，转写和总结用用户自己的 AI**。平台卖的是"省心的架子"，不是模型。
+给 EchoDay 用的多用户云端：**用户只管录，云端只管存和展示，转写和总结用用户自己的 AI**。平台卖的是"省心的架子"，不是模型。
 
 ## 二、核心思路（为什么这样能赚钱）
 
