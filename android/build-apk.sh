@@ -44,6 +44,6 @@ if [ ! -f "$KS" ]; then
 fi
 KSPASS="$(sed -n 's/keystore password: \([a-z0-9]*\).*/\1/p' "$(dirname "$KS")/keystore-info.txt")"
 "$BT/apksigner" sign --ks "$KS" --ks-pass "pass:$KSPASS" --key-pass "pass:$KSPASS" \
-  --out "$(dirname "$KS")/MuseRecorder.apk" "$OUT/app-aligned.apk"
-"$BT/apksigner" verify "$(dirname "$KS")/MuseRecorder.apk"
-echo "BUILT: $(dirname "$KS")/MuseRecorder.apk"
+  --out "$(dirname "$KS")/EchoDay.apk" "$OUT/app-aligned.apk"
+"$BT/apksigner" verify "$(dirname "$KS")/EchoDay.apk"
+echo "BUILT: $(dirname "$KS")/EchoDay.apk"

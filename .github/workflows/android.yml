@@ -60,10 +60,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: echoday-apk
-          path: android/MuseRecorder.apk
+          path: android/EchoDay.apk
 
       - name: Publish release asset (tags v*)
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: android/MuseRecorder.apk
+        run: |
+          cp EchoDay.apk "EchoDay-${{ github.ref_name }}.apk"
+          gh release upload "${{ github.ref_name }}" "EchoDay-${{ github.ref_name }}.apk" --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}
