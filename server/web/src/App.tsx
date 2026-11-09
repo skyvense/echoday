@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, NavLink, Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { api, clearToken, money, saveToken, type Me } from "./api";
+import { Mark } from "./site";
 import { AdminPage } from "./pages/AdminPage";
 import { AuthPage } from "./pages/AuthPage";
 import { BillingPage } from "./pages/BillingPage";
@@ -99,9 +100,9 @@ function Shell() {
     <div className="min-h-screen">
       <header className="border-b border-line bg-card/80 backdrop-blur">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <Link to="/days" className="flex items-center gap-2.5 no-underline">
-            <span className="inline-block h-3.5 w-3.5 rounded-full bg-red shadow-[0_0_0_4px_rgba(194,59,46,0.15)]" />
-            <span className="font-serif text-xl tracking-tight">EchoDay</span>
+          <Link to="/" className="flex items-center gap-2.5 no-underline">
+            <Mark />
+            <span className="font-bold text-xl tracking-tight">EchoDay</span>
           </Link>
           <nav className="flex items-center gap-1 text-sm">
             <Tab to="/days">Days</Tab>
