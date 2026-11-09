@@ -103,10 +103,18 @@ function ActivityPanel() {
         <li key={entry.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-3">
           <span
             className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
-              entry.kind === "upload" ? "bg-[#1c63f2]/10 text-[#1c63f2]" : "bg-[#f36b53]/10 text-red-deep"
+              entry.kind === "upload"
+                ? "bg-[#1c63f2]/10 text-[#1c63f2]"
+                : entry.kind === "system"
+                  ? "bg-ink/10 text-ink-soft"
+                  : "bg-[#f36b53]/10 text-red-deep"
             }`}
           >
-            {entry.kind === "upload" ? t("admin.activityKindUpload") : t("admin.activityKindAgent")}
+            {entry.kind === "upload"
+              ? t("admin.activityKindUpload")
+              : entry.kind === "system"
+                ? t("admin.activityKindSystem")
+                : t("admin.activityKindAgent")}
           </span>
           <span className="min-w-0 flex-1 text-sm">{entry.detail}</span>
           <span className="text-xs text-ink-soft">{entry.actor}</span>

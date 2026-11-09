@@ -14,10 +14,12 @@ import { store } from "./storage.js";
 // while the per-day counts in the days list stay historical and truthful.
 //
 // Timing basis (which timestamps decide):
-// - A day WITH a result (a summaries row): the result "landed" at
-//   summaries.updated_at — every result/summary re-push refreshes it, so
-//   an actively re-worked day is not cut mid-flight. Originals are deleted
-//   once that is older than 2 days (free) / 30 days (paid).
+// - The cleanup runs once a day at 08:00 Asia/Shanghai.
+// - A day WITH a result (a summaries row): the agent has taken the data
+//   away and analysed it, so its originals are deleted at the first
+//   cleanup whose Asia/Shanghai calendar day is later than the day the
+//   result landed (summaries.updated_at) — in other words, at the 08:00
+//   run on the following day.
 // - A day WITHOUT a result: timed from the day's last original upload
 //   (max objects.uploaded_at). Limit 7 days (free) / 90 days (paid).
 // "Paid" is judged at deletion time with the same accessOf() rules the
@@ -33,15 +35,31 @@ export interface RetentionCandidate {
 }
 
 export function retentionLimitDays(candidate: Pick<RetentionCandidate, "hasResult" | "paid">): number {
-  if (candidate.hasResult) {
-    return candidate.paid ? env.retentionProcessedPaidDays : env.retentionProcessedFreeDays;
-  }
+  // Processed days are schedule-based (next 08:00 cleanup), not age-based.
+  if (candidate.hasResult) return 0;
   return candidate.paid ? env.retentionUnprocessedPaidDays : env.retentionUnprocessedFreeDays;
 }
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+const CST_OFFSET_MS = 8 * 60 * 60 * 1000;
+
+function cstDayStartMs(t: Date): number {
+  return Math.floor((t.getTime() + CST_OFFSET_MS) / DAY_MS) * DAY_MS - CST_OFFSET_MS;
+}
+
 export function retentionDue(candidate: RetentionCandidate, now: Date): boolean {
+  if (candidate.hasResult) {
+    return cstDayStartMs(new Date(candidate.anchorAt)) < cstDayStartMs(now);
+  }
   const ageMs = now.getTime() - new Date(candidate.anchorAt).getTime();
-  return ageMs >= retentionLimitDays(candidate) * 24 * 60 * 60 * 1000;
+  return ageMs >= retentionLimitDays(candidate) * DAY_MS;
+}
+
+function humanBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
 }
 
 export interface RetentionStats {
@@ -121,6 +139,14 @@ export async function runRetention(now: Date = new Date()): Promise<RetentionSta
         await sql`update days set originals_deleted_at = ${now} where id = ${row.day_id}`;
         if (candidate.hasResult) stats.days_processed += 1;
         else stats.days_unprocessed += 1;
+        if (objects.length > 0) {
+          const freed = objects.reduce((sum, object) => sum + Number(object.bytes), 0);
+          await sql`
+            insert into activity_log (user_id, actor, ip, kind, detail)
+            values (${row.user_id}, ${user[0].email}, '', 'system',
+              ${`保留期清理：删除 ${row.day} 的原件 ${objects.length} 个 · 释放 ${humanBytes(freed)}`})
+          `;
+        }
       }
     }
   } finally {

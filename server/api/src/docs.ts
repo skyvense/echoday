@@ -99,7 +99,7 @@ Daily activity sheet (\`PUT .../sheet\`): send the JPEG binary itself as the req
 
 Process new days promptly — originals do not stay forever:
 
-- A day WITH a pushed result: its original audio and snapshot blobs are deleted 2 days after the result lands (paid plan: 30 days).
+- A day WITH a pushed result: its original audio and snapshot blobs are deleted at the daily cleanup (08:00 Asia/Shanghai) on the day after the result lands.
 - A day WITHOUT a result: originals are deleted 7 days after that day's last upload (paid plan: 90 days).
 - Markers, summaries/results, and sheet images are kept forever; only the original audio/photo blobs are removed.
 - Originals quota: 2 GB on the free/trial plan, 20 GB paid. Uploads return 413 \`quota_exceeded\` when the quota is full, until processed days are cleaned up or the plan is upgraded.

@@ -162,7 +162,7 @@ const zh: typeof en = {
     retentionRows: [
       {
         label: "已有日报的日子",
-        body: "日报回传后，原件再保留 2 天（付费版 30 天），之后自动删除。",
+        body: "日报回传后，原件在次日早上 8 点（上海时间）的清理中自动删除。",
       },
       {
         label: "还没有日报的日子",
@@ -376,6 +376,7 @@ const zh: typeof en = {
     activityEmpty: "还没有记录。上传和 agent 请求会从现在开始出现在这里。",
     activityKindUpload: "上传",
     activityKindAgent: "agent",
+    activityKindSystem: "系统",
     searchPlaceholder: "按邮箱搜索…",
     userOne: "{n} 个用户",
     userMany: "{n} 个用户",

@@ -90,8 +90,6 @@ export const env = {
   // Originals retention (days). "Processed" = the day has a pushed result;
   // the clock starts at the result's updated_at. Unprocessed days are timed
   // from their last upload. See retention.ts.
-  retentionProcessedFreeDays: intEnv("RETENTION_PROCESSED_FREE_DAYS", 2),
-  retentionProcessedPaidDays: intEnv("RETENTION_PROCESSED_PAID_DAYS", 30),
   retentionUnprocessedFreeDays: intEnv("RETENTION_UNPROCESSED_FREE_DAYS", 7),
   retentionUnprocessedPaidDays: intEnv("RETENTION_UNPROCESSED_PAID_DAYS", 90),
 };

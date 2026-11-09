@@ -172,7 +172,7 @@ async function main() {
   scheduleRetention();
 }
 
-/** Daily originals-cleanup, in-process; also runnable from the admin API. */
+/** Daily originals-cleanup at 08:00 Asia/Shanghai (00:00 UTC); also runnable from the admin API. */
 function scheduleRetention() {
   const run = () => {
     runRetention()
@@ -183,8 +183,12 @@ function scheduleRetention() {
       })
       .catch((error) => console.error("retention run failed", error));
   };
-  setTimeout(run, 60 * 1000);
-  setInterval(run, 24 * 60 * 60 * 1000);
+  const next = new Date();
+  next.setUTCHours(24, 0, 0, 0);
+  setTimeout(() => {
+    run();
+    setInterval(run, 24 * 60 * 60 * 1000);
+  }, next.getTime() - Date.now());
 }
 
 main().catch((error) => {

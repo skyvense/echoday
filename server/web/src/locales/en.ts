@@ -161,7 +161,7 @@ const en = {
     retentionRows: [
       {
         label: "Day with a result",
-        body: "Original audio and photos are kept 2 more days after the result lands (paid plan: 30 days), then deleted automatically.",
+        body: "Once the result lands, the original audio and photos are deleted at the next morning cleanup — 08:00 (Asia/Shanghai) on the following day.",
       },
       {
         label: "Day with no result",
@@ -385,6 +385,7 @@ const en = {
     activityEmpty: "No activity recorded yet. Uploads and agent requests will appear here.",
     activityKindUpload: "Upload",
     activityKindAgent: "Agent",
+    activityKindSystem: "System",
     searchPlaceholder: "Search by email…",
     userOne: "{n} user",
     userMany: "{n} users",

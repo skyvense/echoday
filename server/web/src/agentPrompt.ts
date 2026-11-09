@@ -21,7 +21,7 @@ Workflow:
 6. If you built a daily activity sheet, PUT the JPEG binary itself (Content-Type: image/jpeg) to ${base}/api/v1/muse/days/YYYY-MM-DD/sheet.
 
 Retention — process new days promptly:
-- Once a day has a result, its original audio/photos are kept only 2 more days (paid plan: 30), then the server deletes them automatically. Markers, summaries and sheets are kept forever.
+- Once a day has a result, its original audio/photos are deleted at the daily cleanup at 08:00 (Asia/Shanghai) on the following day. Markers, summaries and sheets are kept forever.
 - A day with no result loses its originals 7 days after its last upload (paid plan: 90 days). Download what you need before that.
 - Originals storage quota: 2 GB free / 20 GB paid. When it is full, uploads fail with 413 until processed days are cleaned up.`;
 }

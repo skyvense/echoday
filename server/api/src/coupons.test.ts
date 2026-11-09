@@ -86,16 +86,16 @@ test("admin emails match case-insensitively from ADMIN_EMAILS", async () => {
   assert.equal(isAdminEmail(""), false);
 });
 
-test("retention limits follow plan and processing state", async () => {
+test("retention: processed days go at the next-day 08:00 cleanup, unprocessed by age", async () => {
   const { retentionDue, retentionLimitDays } = await import("./retention.js");
-  assert.equal(retentionLimitDays({ hasResult: true, paid: false }), 2);
-  assert.equal(retentionLimitDays({ hasResult: true, paid: true }), 30);
   assert.equal(retentionLimitDays({ hasResult: false, paid: false }), 7);
   assert.equal(retentionLimitDays({ hasResult: false, paid: true }), 90);
   const day = 24 * 60 * 60 * 1000;
-  const processed = { hasResult: true, paid: false, anchorAt: new Date(NOW.getTime() - 3 * day) };
-  assert.equal(retentionDue(processed, NOW), true);
-  assert.equal(retentionDue({ ...processed, anchorAt: new Date(NOW.getTime() - 1 * day) }, NOW), false);
+  // NOW is 2026-11-09T00:00Z = 08:00 Asia/Shanghai on Nov 9.
+  const processedYesterdayCst = { hasResult: true, paid: false, anchorAt: new Date("2026-11-08T15:00:00.000Z") }; // Nov 8, 23:00 CST
+  assert.equal(retentionDue(processedYesterdayCst, NOW), true);
+  const processedTodayCst = { hasResult: true, paid: true, anchorAt: new Date("2026-11-08T17:00:00.000Z") }; // Nov 9, 01:00 CST
+  assert.equal(retentionDue(processedTodayCst, NOW), false);
   const fresh = { hasResult: false, paid: true, anchorAt: new Date(NOW.getTime() - 30 * day) };
   assert.equal(retentionDue(fresh, NOW), false);
 });
