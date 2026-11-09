@@ -58,7 +58,14 @@ const v1 = new Hono<AppEnv>();
 // Activity log for the admin console: app uploads and agent (muse token)
 // requests. Written after the response, never blocking or failing it.
 v1.use("*", async (c, next) => {
-  await next();
+  let thrown: unknown = null;
+  let thrownStatus = 0;
+  try {
+    await next();
+  } catch (error) {
+    thrown = error;
+    thrownStatus = error instanceof HttpError ? error.status : 500;
+  }
   try {
     const pathname = new URL(c.req.url).pathname;
     const isMuse = pathname.startsWith("/api/v1/muse/");
@@ -66,10 +73,10 @@ v1.use("*", async (c, next) => {
     if (!isMuse && !isUpload) return;
     const user = c.get("user");
     if (!user) return;
-    const status = c.res.status;
+    const status = thrownStatus || c.res.status;
     const ip =
-      (c.req.header("x-forwarded-for") || "").split(",")[0]!.trim() ||
       c.req.header("x-real-ip") ||
+      (c.req.header("x-forwarded-for") || "").split(",")[0]!.trim() ||
       "";
     let kind = "agent";
     let detail = "";
@@ -109,6 +116,7 @@ v1.use("*", async (c, next) => {
   } catch (error) {
     console.error("activity log write failed", error);
   }
+  if (thrown) throw thrown;
 });
 
 v1.get("/me", requireUser(), (c) => c.json(publicUser(c.get("user"))));
