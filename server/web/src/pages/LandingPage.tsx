@@ -28,17 +28,27 @@ export function LandingPage() {
             <div className="mt-8">
               {loading ? (
                 <p className="text-ink-soft">Checking the session…</p>
-              ) : me ? (
-                <Link to="/days" className="inline-block rounded-full bg-red px-5 py-3 font-medium text-white no-underline">
-                  Open your days
-                </Link>
               ) : (
-                <>
-                  <Link to="/register" className="inline-block rounded-full bg-red px-5 py-3 font-medium text-white no-underline">
-                    Start 7-day trial
-                  </Link>
-                  <p className="mt-3 text-sm text-ink-soft">$5/mo after. Cancel anytime. Transcription stays on your keys.</p>
-                </>
+                <div className="flex flex-wrap items-center gap-3">
+                  {me ? (
+                    <Link to="/days" className="inline-block rounded-full bg-red px-5 py-3 font-medium text-white no-underline">
+                      Open your days
+                    </Link>
+                  ) : (
+                    <Link to="/register" className="inline-block rounded-full bg-red px-5 py-3 font-medium text-white no-underline">
+                      Start 7-day trial
+                    </Link>
+                  )}
+                  <a
+                    href="https://github.com/skyvense/echoday/releases/latest/download/EchoDay.apk"
+                    className="inline-block rounded-full border border-line bg-card px-5 py-3 font-medium text-ink no-underline"
+                  >
+                    Download Android APK
+                  </a>
+                </div>
+              )}
+              {!loading && !me && (
+                <p className="mt-3 text-sm text-ink-soft">$5/mo after. Cancel anytime. Transcription stays on your keys.</p>
               )}
             </div>
           </div>
