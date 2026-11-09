@@ -92,18 +92,31 @@ v1.use("*", async (c, next) => {
       const sub = pathname.slice("/api/v1/muse".length);
       const dayMatch = sub.match(/^\/days\/(\d{4}-\d{2}-\d{2})(?:\/(.*))?$/);
       const rest = dayMatch?.[2] ?? "";
+      const day = dayMatch?.[1] ?? "";
       if (sub === "/days") {
         detail = `agent 查询日子列表`;
-      } else if (dayMatch && rest === "manifest") {
-        detail = `agent 查询 ${dayMatch[1]} 的清单（manifest）`;
+      } else if (dayMatch && (rest === "" || rest === "manifest")) {
+        detail = `agent 查询 ${day} 的清单（manifest）`;
       } else if (dayMatch && rest === "result" && c.req.method === "PUT") {
-        detail = `agent 回传 ${dayMatch[1]} 的日报`;
+        detail = `agent 回传 ${day} 的日报`;
       } else if (dayMatch && rest === "result") {
-        detail = `agent 读取 ${dayMatch[1]} 的日报`;
+        detail = `agent 读取 ${day} 的日报`;
+      } else if (dayMatch && rest === "summary" && c.req.method === "PUT") {
+        detail = `agent 回传 ${day} 的日报`;
+      } else if (dayMatch && rest === "summary") {
+        detail = `agent 读取 ${day} 的日报`;
+      } else if (dayMatch && rest === "sheet" && c.req.method === "PUT") {
+        detail = `agent 回传 ${day} 的活动图`;
       } else if (dayMatch && rest === "sheet") {
-        detail = `agent 回传 ${dayMatch[1]} 的活动图`;
-      } else if (dayMatch && rest.startsWith("files/")) {
-        detail = `agent 下载 ${decodeURIComponent(rest.slice("files/".length))}`;
+        detail = `agent 读取 ${day} 的活动图`;
+      } else if (dayMatch && rest.startsWith("segments/")) {
+        detail = `agent 下载录音 ${decodeURIComponent(rest.slice("segments/".length))}`;
+      } else if (dayMatch && rest.startsWith("snapshots/")) {
+        detail = `agent 下载快照 ${decodeURIComponent(rest.slice("snapshots/".length))}`;
+      } else if (dayMatch && rest === "markers") {
+        detail = `agent 查询 ${day} 的标记`;
+      } else if (dayMatch && rest === "markers/raw") {
+        detail = `agent 下载 ${day} 的标记文件`;
       } else {
         detail = `agent 请求 ${c.req.method} ${sub}`;
       }
