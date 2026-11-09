@@ -50,6 +50,7 @@ export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
           <a href="/#how" className="text-ink-soft no-underline hover:text-ink">How it works</a>
           <a href="/#pricing" className="text-ink-soft no-underline hover:text-ink">Pricing</a>
           <a href="/#muse" className="text-ink-soft no-underline hover:text-ink">Connect Muse</a>
+          <Link to="/download" className="text-ink-soft no-underline hover:text-ink">Download</Link>
           <a
             href="https://github.com/skyvense/echoday"
             target="_blank"

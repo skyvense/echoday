@@ -7,6 +7,7 @@ import { BillingPage } from "./pages/BillingPage";
 import { ConnectPage } from "./pages/ConnectPage";
 import { DayPage } from "./pages/DayPage";
 import { DaysPage } from "./pages/DaysPage";
+import { DownloadPage } from "./pages/DownloadPage";
 import { ForgotPage } from "./pages/ForgotPage";
 import { LandingPage } from "./pages/LandingPage";
 
@@ -49,6 +50,7 @@ export function App() {
     <SessionContext.Provider value={session}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/download" element={<DownloadPage />} />
         <Route path="/login" element={<AuthPage mode="login" />} />
         <Route path="/register" element={<AuthPage mode="register" />} />
         <Route path="/forgot" element={<ForgotPage />} />
