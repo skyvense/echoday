@@ -20,7 +20,7 @@ export function DownloadPage() {
       <main>
         <section className="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:py-20">
           <p className="text-sm font-medium tracking-wide text-red-deep">Android app</p>
-          <h1 className="mt-3 max-w-xl font-serif text-5xl leading-[1.05] tracking-tight sm:text-6xl">
+          <h1 className="mt-3 max-w-xl font-bold text-5xl leading-[1.05] tracking-tight sm:text-6xl">
             Download EchoDay
           </h1>
           <p className="mt-5 max-w-lg text-lg leading-relaxed text-ink-soft">
@@ -53,11 +53,11 @@ export function DownloadPage() {
 
         <section className="border-t border-line bg-card">
           <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
-            <h2 className="font-serif text-4xl tracking-tight">Install in three steps</h2>
+            <h2 className="font-bold text-4xl tracking-tight">Install in three steps</h2>
             <div className="mt-8 grid gap-6 sm:grid-cols-3">
               {installSteps.map((step) => (
                 <article key={step.n}>
-                  <p className="font-serif text-red">{step.n}</p>
+                  <p className="font-bold text-red">{step.n}</p>
                   <h3 className="mt-2 font-medium">{step.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-ink-soft">{step.body}</p>
                 </article>

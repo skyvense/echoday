@@ -99,7 +99,7 @@ export function BillingPage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="font-serif text-4xl tracking-tight">Billing</h1>
+      <h1 className="font-bold text-4xl tracking-tight">Billing</h1>
       <p className="mt-2 text-ink-soft">
         {price} per month keeps the shelf open for one person. Transcription is not included, because this server does
         not run it.
@@ -107,7 +107,7 @@ export function BillingPage() {
 
       <section className="mt-6 rounded-3xl border border-line bg-card p-6">
         <p className="text-sm uppercase tracking-wide text-ink-soft">Plan</p>
-        <p className="mt-1 font-serif text-5xl tracking-tight">
+        <p className="mt-1 font-bold text-5xl tracking-tight">
           {price}
           <span className="text-2xl text-ink-soft"> / month</span>
         </p>

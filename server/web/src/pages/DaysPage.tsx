@@ -30,7 +30,7 @@ export function DaysPage() {
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-serif text-4xl tracking-tight">Days</h1>
+          <h1 className="font-bold text-4xl tracking-tight">Days</h1>
           <p className="mt-1 text-ink-soft">One row per calendar day the phone uploaded.</p>
         </div>
         <form
@@ -59,7 +59,7 @@ export function DaysPage() {
       {!error && days === null && <p className="mt-8 text-ink-soft">Loading days…</p>}
       {days && days.length === 0 && (
         <div className="mt-8 rounded-3xl border border-dashed border-line bg-card px-6 py-10">
-          <h2 className="font-serif text-2xl">{q ? "Nothing matched that search." : "The shelf is empty."}</h2>
+          <h2 className="font-bold text-2xl tracking-tight">{q ? "Nothing matched that search." : "The shelf is empty."}</h2>
           <p className="mt-2 max-w-xl text-ink-soft">
             {q
               ? "Try a date, a marker type like meeting_start, or a word from a summary."
@@ -73,7 +73,7 @@ export function DaysPage() {
             <li key={day.date}>
               <Link to={`/days/${day.date}`} className="block px-5 py-4 no-underline hover:bg-paper">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <p className="font-serif text-xl">{formatDay(day.date)}</p>
+                  <p className="font-bold text-xl tracking-tight">{formatDay(day.date)}</p>
                   <p className="text-sm text-ink-soft">
                     {day.audio_count} audio · {day.marker_count} markers · {formatBytes(day.bytes)}
                   </p>

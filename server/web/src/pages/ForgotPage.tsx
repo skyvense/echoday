@@ -28,7 +28,7 @@ export function ForgotPage() {
     <div className="min-h-screen">
       <SiteHeader />
       <main className="mx-auto max-w-md px-4 py-12">
-        <h1 className="font-serif text-4xl tracking-tight">Password help</h1>
+        <h1 className="font-bold text-4xl tracking-tight">Password help</h1>
         <p className="mt-2 text-sm text-ink-soft">
           This server does not send reset email. The note below tells you who to ask.
         </p>

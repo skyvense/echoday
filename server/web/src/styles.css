@@ -1,52 +1,52 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #f3efe4;
-  --paper-deep: #e7e0d0;
-  --ink: #1b1714;
-  --ink-soft: #5e564c;
-  --card: #fffdf8;
-  --line: #d9d0c0;
-  --red: #c23b2e;
-  --red-deep: #8d241c;
-  --moss: #2f6b4f;
-  --amber: #8a5a12;
+  --paper: #f6f7f9;
+  --paper-deep: #eceef3;
+  --ink: #131a30;
+  --ink-soft: #59637a;
+  --card: #ffffff;
+  --line: #e3e6ee;
+  --red: #f36b53;
+  --red-deep: #cd3f27;
+  --moss: #1e7d52;
+  --amber: #946108;
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --paper: #141210;
-  --paper-deep: #221e1a;
-  --ink: #f6f1e7;
-  --ink-soft: #c9bbaa;
-  --card: #1e1a17;
-  --line: #3c342c;
-  --red: #e15a4a;
-  --red-deep: #ffb4a8;
-  --moss: #8dccb0;
-  --amber: #e0b56a;
+  --paper: #0a0e1d;
+  --paper-deep: #141a2e;
+  --ink: #eef1f8;
+  --ink-soft: #a3adc4;
+  --card: #10162a;
+  --line: #232c47;
+  --red: #ff7a5f;
+  --red-deep: #ffb59f;
+  --moss: #7fd6a8;
+  --amber: #e8bc66;
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #141210;
-    --paper-deep: #221e1a;
-    --ink: #f6f1e7;
-    --ink-soft: #c9bbaa;
-    --card: #1e1a17;
-    --line: #3c342c;
-    --red: #e15a4a;
-    --red-deep: #ffb4a8;
-    --moss: #8dccb0;
-    --amber: #e0b56a;
+    --paper: #0a0e1d;
+    --paper-deep: #141a2e;
+    --ink: #eef1f8;
+    --ink-soft: #a3adc4;
+    --card: #10162a;
+    --line: #232c47;
+    --red: #ff7a5f;
+    --red-deep: #ffb59f;
+    --moss: #7fd6a8;
+    --amber: #e8bc66;
     color-scheme: dark;
   }
 }
 
 @theme inline {
-  --font-sans: "Figtree Variable", "Segoe UI", sans-serif;
-  --font-serif: "Fraunces Variable", Georgia, serif;
+  --font-sans: "Figtree Variable", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Figtree Variable", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   --color-paper: var(--paper);
   --color-paper-deep: var(--paper-deep);
   --color-ink: var(--ink);
@@ -68,7 +68,7 @@ body {
   min-height: 100vh;
   color: var(--color-ink);
   background:
-    radial-gradient(1200px 500px at 10% -10%, rgba(194, 59, 46, 0.08), transparent 50%),
+    radial-gradient(1200px 500px at 10% -10%, rgba(51, 50, 126, 0.05), transparent 50%),
     var(--color-paper);
   font-family: var(--font-sans);
 }
@@ -87,8 +87,8 @@ textarea {
 .prose-day h1,
 .prose-day h2,
 .prose-day h3 {
-  font-family: var(--font-serif);
-  font-weight: 560;
+  font-family: var(--font-sans);
+  font-weight: 700;
   letter-spacing: -0.02em;
   margin: 1.1em 0 0.35em;
 }

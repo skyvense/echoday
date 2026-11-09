@@ -81,7 +81,7 @@ Retention — process new days promptly:
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
       <section>
-        <h1 className="font-serif text-4xl tracking-tight">Connect Muse</h1>
+        <h1 className="font-bold text-4xl tracking-tight">Connect Muse</h1>
         <p className="mt-2 text-ink-soft">
           The token is how your agent reads a day and writes the summary. It cannot upload audio or touch billing.
         </p>
@@ -141,7 +141,7 @@ Retention — process new days promptly:
 
       <section className="rounded-3xl border border-line bg-card p-5 sm:p-6">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="font-serif text-2xl">Paste this to Grok or Muse</h2>
+          <h2 className="font-bold text-2xl tracking-tight">Paste this to Grok or Muse</h2>
           <button
             type="button"
             onClick={() => copy("prompt", prompt)}

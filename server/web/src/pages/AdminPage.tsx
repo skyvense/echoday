@@ -21,7 +21,7 @@ export function AdminPage() {
   if (!me.is_admin) {
     return (
       <div className="max-w-2xl">
-        <h1 className="font-serif text-4xl tracking-tight">Admin</h1>
+        <h1 className="font-bold text-4xl tracking-tight">Admin</h1>
         <p className="mt-4 rounded-2xl bg-paper px-4 py-3 text-sm">
           This account is not an operator. Admin access follows the ADMIN_EMAILS list on the server.
         </p>
@@ -31,7 +31,7 @@ export function AdminPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-4xl tracking-tight">Admin</h1>
+      <h1 className="font-bold text-4xl tracking-tight">Admin</h1>
       <p className="mt-2 text-ink-soft">Accounts, Muse tokens, subscriptions, and coupon codes.</p>
       <div className="mt-6 flex gap-2">
         <TabButton active={tab === "users"} onClick={() => setTab("users")}>
@@ -273,7 +273,7 @@ function UserDetail({
 
   return (
     <section className="mt-6 rounded-3xl border border-line bg-card p-6">
-      <h2 className="font-serif text-2xl tracking-tight">{user.email}</h2>
+      <h2 className="font-bold text-2xl tracking-tight">{user.email}</h2>
       <p className="mt-1 text-sm text-ink-soft">
         Status {user.subscription_status}
         {user.subscription_source ? ` · via ${user.subscription_source}` : ""} · trial ends {formatWhen(user.trial_ends_at)} ·{" "}
@@ -500,7 +500,7 @@ function CouponsPanel() {
   return (
     <div>
       <form onSubmit={create} className="rounded-3xl border border-line bg-card p-6">
-        <h2 className="font-serif text-2xl tracking-tight">New coupon</h2>
+        <h2 className="font-bold text-2xl tracking-tight">New coupon</h2>
         <div className="mt-4 flex flex-wrap items-end gap-3">
           <label className="text-sm">
             <span className="mb-1 block text-ink-soft">Code (blank = generate)</span>

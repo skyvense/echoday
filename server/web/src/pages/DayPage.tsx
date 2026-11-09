@@ -65,7 +65,7 @@ export function DayPage() {
       <Link to="/days" className="text-sm text-ink-soft no-underline hover:text-ink">
         ← Days
       </Link>
-      <h1 className="mt-3 font-serif text-4xl tracking-tight">{formatDay(day.date)}</h1>
+      <h1 className="mt-3 font-bold text-4xl tracking-tight">{formatDay(day.date)}</h1>
       <p className="mt-1 text-ink-soft">
         {day.audio.length} audio file{day.audio.length === 1 ? "" : "s"} · {day.markers.length} markers
         {day.snapshots.length ? ` · ${day.snapshots.length} snapshots` : ""}
@@ -74,7 +74,7 @@ export function DayPage() {
       <section className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(16rem,0.8fr)]">
         <article className="rounded-3xl border border-line bg-card p-5 sm:p-7">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="font-serif text-2xl">Summary</h2>
+            <h2 className="font-bold text-2xl tracking-tight">Summary</h2>
             <button
               type="button"
               onClick={() => setEditing((value) => !value)}
@@ -143,7 +143,7 @@ export function DayPage() {
         </article>
 
         <aside className="rounded-3xl border border-line bg-card p-5">
-          <h2 className="font-serif text-2xl">Markers</h2>
+          <h2 className="font-bold text-2xl tracking-tight">Markers</h2>
           {day.markers.length === 0 ? (
             <p className="mt-3 text-sm text-ink-soft">No event markers for this day.</p>
           ) : (
@@ -163,7 +163,7 @@ export function DayPage() {
       </section>
 
       <section className="mt-6 rounded-3xl border border-line bg-card p-5 sm:p-7">
-        <h2 className="font-serif text-2xl">Audio</h2>
+        <h2 className="font-bold text-2xl tracking-tight">Audio</h2>
         {day.audio.length === 0 ? (
           <p className="mt-3 text-ink-soft">No segments uploaded for this day.</p>
         ) : (
@@ -188,7 +188,7 @@ export function DayPage() {
 
       {day.snapshots.length > 0 && (
         <section className="mt-6 rounded-3xl border border-line bg-card p-5 sm:p-7">
-          <h2 className="font-serif text-2xl">Snapshots</h2>
+          <h2 className="font-bold text-2xl tracking-tight">Snapshots</h2>
           <ul className="mt-4 grid gap-4 sm:grid-cols-2">
             {day.snapshots.map((shot) => (
               <li key={shot.filename}>

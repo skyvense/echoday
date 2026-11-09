@@ -48,7 +48,7 @@ export function AuthPage({ mode }: { mode: "login" | "register" }) {
       <SiteHeader />
       <main className="mx-auto grid max-w-5xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-2">
         <div>
-          <h1 className="font-serif text-4xl tracking-tight">{mode === "login" ? "Sign in" : "Create an account"}</h1>
+          <h1 className="font-bold text-4xl tracking-tight">{mode === "login" ? "Sign in" : "Create an account"}</h1>
           <p className="mt-3 text-ink-soft">
             {mode === "login"
               ? "Use the same email on the phone and on this website."
