@@ -53,7 +53,7 @@ uploadRoutes.put("/*", requireUser(), async (c) => {
   // Re-uploading an existing key still counts its old bytes once more;
   // uploads are write-once segments in practice, so this stays simple.
   const usageRows = await sql<{ total: string }[]>`
-    select coalesce(sum(bytes), 0)::text as total from objects where user_id = ${user.id}
+    select coalesce(sum(bytes), 0)::text as total from objects where user_id = ${user.id} and deleted_at is null
   `;
   const usageBytes = Number(usageRows[0]?.total ?? 0);
   if (usageBytes + body.length > access.quotaBytes) {

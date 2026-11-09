@@ -104,7 +104,7 @@ museRoutes.get("/days/:date/markers/raw", requireMuse("markers:read"), async (c)
   if (!isDay(date)) throw new HttpError(400, "bad_date", "Date must be YYYY-MM-DD");
   const rows = await sql<{ storage_key: string; filename: string }[]>`
     select storage_key, filename from objects
-    where user_id = ${c.get("user").id} and day = ${date} and kind = 'markers'
+    where user_id = ${c.get("user").id} and day = ${date} and kind = 'markers' and deleted_at is null
   `;
   const row = rows[0];
   if (!row) {
@@ -206,6 +206,7 @@ async function sendMuseFile(
       and day = ${date}
       and filename = ${safeName}
       and kind = any(${kinds})
+      and deleted_at is null
   `;
   const row = rows[0];
   if (!row) throw new HttpError(404, "not_found", "File not found");

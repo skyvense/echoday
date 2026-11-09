@@ -100,9 +100,11 @@ export function DaysPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <p className="font-bold text-xl tracking-tight">{formatDay(day.date)}</p>
-                    <p className="text-sm text-ink-soft">
-                      {t("days.counts", { audio: day.audio_count, markers: day.marker_count, bytes: formatBytes(day.bytes) })}
-                    </p>
+                    {!(day.audio_count === 0 && day.marker_count === 0 && day.bytes === 0) && (
+                      <p className="text-sm text-ink-soft">
+                        {t("days.counts", { audio: day.audio_count, markers: day.marker_count, bytes: formatBytes(day.bytes) })}
+                      </p>
+                    )}
                   </div>
                   <p className="mt-1 text-sm text-ink-soft">{day.summary_excerpt || t("days.noSummary")}</p>
                 </div>

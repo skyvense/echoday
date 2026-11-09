@@ -9,8 +9,9 @@ import { store } from "./storage.js";
 // note / snapshot. Markers (the markers table and the kind='markers'
 // object), summaries, and daily sheet images are kept forever; the days
 // row stays and is stamped with originals_deleted_at once its originals
-// are gone. Quota usage is a live sum over objects, so deleting the rows
-// frees quota with no counter to reconcile.
+// are gone. Quota usage sums only live rows, so retention tombstones the
+// rows (deleted_at) instead of deleting them: quota frees immediately,
+// while the per-day counts in the days list stay historical and truthful.
 //
 // Timing basis (which timestamps decide):
 // - A day WITH a result (a summaries row): the result "landed" at
@@ -79,13 +80,13 @@ export async function runRetention(now: Date = new Date()): Promise<RetentionSta
         to_char(d.day, 'YYYY-MM-DD') as day,
         s.updated_at as summary_updated_at,
         (select max(o.uploaded_at) from objects o
-          where o.day_id = d.id and o.kind = any(${[...ORIGINAL_KINDS]})) as last_upload_at
+          where o.day_id = d.id and o.deleted_at is null and o.kind = any(${[...ORIGINAL_KINDS]})) as last_upload_at
       from days d
       left join summaries s on s.day_id = d.id
       where d.originals_deleted_at is null
         and exists (
           select 1 from objects o
-          where o.day_id = d.id and o.kind = any(${[...ORIGINAL_KINDS]})
+          where o.day_id = d.id and o.deleted_at is null and o.kind = any(${[...ORIGINAL_KINDS]})
         )
     `;
     for (const row of candidates) {
@@ -100,13 +101,13 @@ export async function runRetention(now: Date = new Date()): Promise<RetentionSta
 
       const objects = await sql<{ id: string; storage_key: string; bytes: string | number }[]>`
         select id, storage_key, bytes from objects
-        where day_id = ${row.day_id} and kind = any(${[...ORIGINAL_KINDS]})
+        where day_id = ${row.day_id} and deleted_at is null and kind = any(${[...ORIGINAL_KINDS]})
       `;
       let dayFailed = false;
       for (const object of objects) {
         try {
           await store.remove(object.storage_key);
-          await sql`delete from objects where id = ${object.id}`;
+          await sql`update objects set deleted_at = now() where id = ${object.id}`;
           stats.objects_deleted += 1;
           stats.bytes_freed += Number(object.bytes);
         } catch (error) {

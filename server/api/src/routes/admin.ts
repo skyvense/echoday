@@ -40,7 +40,7 @@ interface AdminUserAgg {
 async function userAgg(userId: string): Promise<AdminUserAgg> {
   const rows = await sql<AdminUserAgg[]>`
     select
-      coalesce((select sum(bytes) from objects where user_id = ${userId}), 0) as used_bytes,
+      coalesce((select sum(bytes) from objects where user_id = ${userId} and deleted_at is null), 0) as used_bytes,
       (select count(*)::int from api_tokens where user_id = ${userId}) as token_count,
       (select count(*)::int from api_tokens where user_id = ${userId} and revoked_at is null) as active_token_count,
       (select max(uploaded_at) from objects where user_id = ${userId}) as last_upload_at

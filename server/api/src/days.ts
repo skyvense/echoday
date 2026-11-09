@@ -44,7 +44,7 @@ export async function listDays(userId: string, query: string): Promise<DayListRo
         )
         or exists (
           select 1 from objects o
-          where o.day_id = d.id and o.filename ilike ${pattern} escape '\\'
+          where o.day_id = d.id and o.deleted_at is null and o.filename ilike ${pattern} escape '\\'
         )
       )
     order by d.day desc
@@ -80,7 +80,7 @@ export async function dayDetail(userId: string, day: string) {
   const objects = await sql<ObjectRow[]>`
     select filename, kind, bytes, sha256, content_type, storage_key, logical_key, uploaded_at
     from objects
-    where day_id = ${dayRow.id}
+    where day_id = ${dayRow.id} and deleted_at is null
     order by filename asc
   `;
   const markers = await sql<

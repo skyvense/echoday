@@ -143,3 +143,5 @@ CREATE TABLE IF NOT EXISTS activity_log (
 );
 
 CREATE INDEX IF NOT EXISTS activity_log_ts_idx ON activity_log (ts DESC);
+
+ALTER TABLE objects ADD COLUMN IF NOT EXISTS deleted_at timestamptz;

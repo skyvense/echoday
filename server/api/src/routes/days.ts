@@ -171,6 +171,7 @@ async function sendDayFile(
       and day = ${date}
       and filename = ${safeName}
       and kind = any(${kinds})
+      and deleted_at is null
   `;
   const row = rows[0];
   if (!row) throw new HttpError(404, "not_found", "File not found");
