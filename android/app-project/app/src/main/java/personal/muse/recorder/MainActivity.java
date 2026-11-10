@@ -53,8 +53,11 @@ public class MainActivity extends Activity {
     private Button selfNoteButton, retryUploadButton;
     private ProgressBar uploadProgress;
     private View settingsContainer;
-    // Title-bar account chip (v1.34.0): email + plan + expiry, tap = Account page.
-    private TextView accountChip;
+    // Account line inside the EXISTING title bar (v1.34.0, moved into the
+    // ActionBar itself in v1.34.1 at Zhang's request — no extra bar):
+    // a custom ActionBar view shows "EchoDay" plus, under it, the
+    // signed-in email · plan · expiry; tapping it opens the Account page.
+    private TextView accountChip, barTitle;
     private boolean chipBusy = false;
     private long chipFetchedAtMs = 0;
     private final java.util.concurrent.ExecutorService chipIo =
@@ -211,9 +214,7 @@ public class MainActivity extends Activity {
         snapshotCameraSpinner = findViewById(R.id.snapshotCameraSpinner);
         settingsContainer = findViewById(R.id.settingsContainer);
         darkModeSpinner = findViewById(R.id.darkModeSpinner);
-        accountChip = findViewById(R.id.accountChip);
-        accountChip.setOnClickListener(v ->
-                startActivity(new Intent(this, AccountActivity.class)));
+        setupActionBarAccount();
         refreshAccountChip(false);
 
         applyTheme();
@@ -531,6 +532,39 @@ public class MainActivity extends Activity {
     }
 
     /**
+     * Puts the account line into the existing ActionBar as a custom
+     * view: "EchoDay" title with the account summary under it. The ⓘ
+     * help menu item stays on the same bar, at its right end.
+     */
+    private void setupActionBarAccount() {
+        android.app.ActionBar ab = getActionBar();
+        if (ab == null) return;
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        barTitle = new TextView(this);
+        barTitle.setText(R.string.app_name);
+        barTitle.setTextSize(17);
+        barTitle.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+        barTitle.setTextColor(pal.text);
+        box.addView(barTitle);
+        accountChip = new TextView(this);
+        accountChip.setTextSize(12);
+        accountChip.setTextColor(pal.sub);
+        accountChip.setSingleLine(true);
+        accountChip.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        box.addView(accountChip);
+        box.setOnClickListener(v ->
+                startActivity(new Intent(this, AccountActivity.class)));
+        ab.setDisplayShowCustomEnabled(true);
+        ab.setDisplayShowTitleEnabled(false);
+        ab.setCustomView(box, new android.app.ActionBar.LayoutParams(
+                android.app.ActionBar.LayoutParams.WRAP_CONTENT,
+                android.app.ActionBar.LayoutParams.WRAP_CONTENT,
+                android.view.Gravity.START | android.view.Gravity.CENTER_VERTICAL));
+    }
+
+    /**
      * Title-bar account chip (v1.34.0): shows the signed-in email plus
      * plan and expiry from /me ("skyvense@gmail.com · 付费 · 到 2026-11-16").
      * The email renders instantly from prefs; the plan part refreshes in
@@ -630,11 +664,8 @@ public class MainActivity extends Activity {
      */
     private void applyTheme() {
         findViewById(R.id.rootLayout).setBackgroundColor(pal.bg);
-        findViewById(R.id.accountBar).setBackgroundColor(pal.tabBar);
-        findViewById(R.id.accountBarDivider).setBackgroundColor(pal.divider);
-        ((TextView) findViewById(R.id.accountBarMark)).setTextColor(pal.accent);
-        accountChip.setTextColor(pal.sub);
-        accountChip.setBackground(Ui.rounded(this, pal.card2, 12));
+        if (barTitle != null) barTitle.setTextColor(pal.text);
+        if (accountChip != null) accountChip.setTextColor(pal.sub);
         findViewById(R.id.tabBar).setBackgroundColor(pal.tabBar);
         findViewById(R.id.tabDivider).setBackgroundColor(pal.divider);
         findViewById(R.id.footerDivider).setBackgroundColor(pal.divider);
