@@ -40,6 +40,10 @@ public class AccountActivity extends Activity {
     private EditText couponInput;
     private Button redeemButton;
     private boolean couponBusy = false;
+    // Billing card (v1.35.0): subscribe / manage-subscription entry.
+    private TextView billingNote;
+    private Button subscribeButton, portalButton;
+    private boolean billingBusy = false;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -108,6 +112,35 @@ public class AccountActivity extends Activity {
         spinRow.addView(statusText);
         card.addView(spinRow);
 
+        // ---- billing card ----
+        LinearLayout billingCard = card(root, dp(14));
+        billingCard.addView(label(getString(R.string.billing_title), 16, pal.text, true));
+        billingNote = label("", 13, pal.sub, false);
+        LinearLayout.LayoutParams bnp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        bnp.topMargin = dp(6);
+        billingNote.setLayoutParams(bnp);
+        billingCard.addView(billingNote);
+        subscribeButton = new Button(this);
+        subscribeButton.setText(R.string.billing_subscribe);
+        Ui.stylePrimary(subscribeButton, pal);
+        LinearLayout.LayoutParams sbp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        sbp.topMargin = dp(10);
+        subscribeButton.setLayoutParams(sbp);
+        billingCard.addView(subscribeButton);
+        portalButton = new Button(this);
+        portalButton.setText(R.string.billing_manage);
+        Ui.styleGhost(portalButton, pal);
+        LinearLayout.LayoutParams pbp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        pbp.topMargin = dp(8);
+        portalButton.setLayoutParams(pbp);
+        portalButton.setVisibility(View.GONE);
+        billingCard.addView(portalButton);
+        subscribeButton.setOnClickListener(v -> doBilling(true));
+        portalButton.setOnClickListener(v -> doBilling(false));
+
         // ---- coupon card ----
         LinearLayout couponCard = card(root, dp(14));
         couponCard.addView(label(getString(R.string.account_coupon_title), 16, pal.text, true));
@@ -161,6 +194,94 @@ public class AccountActivity extends Activity {
         logoutButton.setOnClickListener(v -> doLogout());
 
         loadAccount();
+        loadBilling();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Returning from the browser checkout: refresh plan + billing so
+        // a just-paid subscription shows up without restarting the page.
+        loadAccount();
+        loadBilling();
+    }
+
+    private void loadBilling() {
+        final String base = Prefs.cloudUrl(this);
+        final String jwt = Prefs.cloudJwt(this);
+        io.execute(() -> {
+            JSONObject b = null;
+            Exception error = null;
+            try {
+                b = MuseCloud.billing(base, jwt);
+            } catch (Exception e) {
+                error = e;
+            }
+            final JSONObject fB = b;
+            ui.post(() -> {
+                if (fB == null) return; // offline: leave the card as-is
+                String mode = fB.optString("mode", "");
+                boolean portal = fB.optBoolean("portal_available", false);
+                if ("paid".equals(mode)) {
+                    subscribeButton.setVisibility(View.GONE);
+                    billingNote.setText(R.string.billing_paid_note);
+                } else {
+                    subscribeButton.setVisibility(View.VISIBLE);
+                    billingNote.setText("");
+                }
+                portalButton.setVisibility(portal ? View.VISIBLE : View.GONE);
+            });
+        });
+    }
+
+    /** checkout=true opens Stripe Checkout; false opens the customer portal. */
+    private void doBilling(final boolean checkout) {
+        if (billingBusy) return;
+        billingBusy = true;
+        subscribeButton.setEnabled(false);
+        portalButton.setEnabled(false);
+        toast(getString(R.string.billing_opening));
+        final String base = Prefs.cloudUrl(this);
+        final String jwt = Prefs.cloudJwt(this);
+        io.execute(() -> {
+            JSONObject result = null;
+            Exception error = null;
+            try {
+                result = checkout
+                        ? MuseCloud.billingCheckout(base, jwt)
+                        : MuseCloud.billingPortal(base, jwt);
+            } catch (Exception e) {
+                error = e;
+            }
+            final JSONObject fResult = result;
+            final Exception fError = error;
+            ui.post(() -> {
+                billingBusy = false;
+                subscribeButton.setEnabled(true);
+                portalButton.setEnabled(true);
+                if (fError != null || fResult == null) {
+                    toast(getString(R.string.cloud_auth_failed,
+                            fError == null ? "" : trimErr(fError)));
+                    return;
+                }
+                String url = fResult.optString("url", "");
+                if (!url.isEmpty()) {
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                android.net.Uri.parse(url)));
+                    } catch (Exception e) {
+                        toast(getString(R.string.cloud_auth_failed, trimErr(e)));
+                    }
+                    return;
+                }
+                // Stub mode on the server: it answers with an explanation
+                // instead of a URL until Stripe keys are configured.
+                String msg = fResult.optString("message", "");
+                toast(msg.isEmpty()
+                        ? getString(R.string.cloud_auth_failed, "") : msg);
+                loadBilling();
+            });
+        });
     }
 
     private void loadAccount() {

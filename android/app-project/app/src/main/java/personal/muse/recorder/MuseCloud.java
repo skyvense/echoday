@@ -99,6 +99,23 @@ public final class MuseCloud {
         return requestJson(baseUrl, "POST", "/api/v1/coupons/redeem", jwt, body);
     }
 
+    // ---- billing (user JWT) ----
+
+    /** GET /api/v1/billing → access block + portal_available / stub_active. */
+    public static JSONObject billing(String baseUrl, String jwt) throws Exception {
+        return requestJson(baseUrl, "GET", "/api/v1/billing", jwt, null);
+    }
+
+    /** POST /api/v1/billing/checkout → {provider:"stripe", url} or a stub message. */
+    public static JSONObject billingCheckout(String baseUrl, String jwt) throws Exception {
+        return requestJson(baseUrl, "POST", "/api/v1/billing/checkout", jwt, new JSONObject());
+    }
+
+    /** POST /api/v1/billing/portal → {url} (Stripe customer portal). */
+    public static JSONObject billingPortal(String baseUrl, String jwt) throws Exception {
+        return requestJson(baseUrl, "POST", "/api/v1/billing/portal", jwt, new JSONObject());
+    }
+
     // ---- agent tokens (user JWT) ----
 
     public static JSONArray listTokens(String baseUrl, String jwt) throws Exception {
