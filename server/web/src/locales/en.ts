@@ -16,7 +16,7 @@ const en = {
     dark: "Dark",
   },
   footer: {
-    tagline: "The shelf for an all-day recorder. Your agent does the thinking.",
+    tagline: "Never fear forgetting again.",
     rights: "EchoDay",
   },
   common: {
@@ -29,7 +29,7 @@ const en = {
   },
   shell: {
     trialBanner:
-      "Trial uploads are open until {date}. After that the shelf stays readable. Keeping uploads on is {price} a month.",
+      "Trial uploads are open until {date}. After that your days stay readable. Keeping uploads on is {price} a month.",
     readOnlyBanner: "Uploads are paused ({reason}). Existing days and Muse summaries still open.",
     reviewBilling: "Review billing",
   },
@@ -71,7 +71,7 @@ const en = {
     ],
     howTitle: "How your agent works a day",
     howIntro:
-      "EchoDay is a shelf, not a brain. Your own agent — Muse, Grok, or any tool that can make HTTPS calls — does the daily run below, on your keys.",
+      "EchoDay remembers; the thinking is your agent's job. Your own agent — Muse, Grok, or any tool that can make HTTPS calls — does the daily run below, on your keys.",
     workflow: [
       {
         title: "List the days",
@@ -196,7 +196,7 @@ const en = {
       },
       {
         q: "What happens when my trial ends?",
-        a: "Uploads pause (the app gets HTTP 402), but everything already on the shelf stays readable, and your agent can still post summaries for days that are already here. Subscribe at $5/mo to reopen uploads.",
+        a: "Uploads pause (the app gets HTTP 402), but everything already uploaded stays readable, and your agent can still post summaries for days that are already here. Subscribe at $5/mo to reopen uploads.",
       },
       {
         q: "Can I get my data back out, or delete it?",
@@ -216,7 +216,7 @@ const en = {
     eyebrow: "Android app",
     title: "Download EchoDay",
     intro:
-      "The EchoDay Android app records your day and uploads it to your shelf, where your own Muse can pull it and write the summary.",
+      "The EchoDay Android app records your day and uploads it to your EchoDay account, where your own Muse can pull it and write the summary.",
     downloadLatest: "Download APK (latest)",
     githubRepo: "GitHub repository",
     versionLatest: "Version: latest. Looking for an older build?",
@@ -230,7 +230,7 @@ const en = {
       },
       {
         title: "Open the app and sign in",
-        body: "Launch EchoDay, register or sign in, and recording uploads to your shelf from there.",
+        body: "Launch EchoDay, register or sign in, and recording uploads to your account from there.",
       },
     ],
   },
@@ -238,7 +238,7 @@ const en = {
     signInTitle: "Sign in",
     registerTitle: "Create an account",
     signInIntro: "Use the same email on the phone and on this website.",
-    registerIntro: "Registration opens 7 days of uploads. After that, the shelf stays readable at $5 a month.",
+    registerIntro: "Registration opens 7 days of uploads. After that, your days stay readable at $5 a month.",
     password: "Password",
     confirmPassword: "Confirm password",
     passwordRule: "At least 8 characters, with a letter and a number.",
@@ -266,7 +266,7 @@ const en = {
     loadError: "Could not load days.",
     noMatchTitle: "Nothing matched that search.",
     noMatchBody: "Try a date, a marker type like meeting_start, or a word from a summary.",
-    emptyTitle: "The shelf is empty.",
+    emptyTitle: "Nothing here yet.",
     emptyBody:
       "Sign the Android app into this account and let one segment finish. It will show up here with its markers. Summaries appear after your Muse posts them.",
     counts: "{audio} audio · {markers} markers · {bytes}",
@@ -341,7 +341,7 @@ const en = {
   },
   billing: {
     title: "Billing",
-    intro: "{price} per month keeps the shelf open for one person. Transcription is not included, because this server does not run it.",
+    intro: "{price} per month keeps your second memory open for one person. Transcription is not included, because this server does not run it.",
     plan: "Plan",
     perMonth: "/ month",
     statusPaid: "Subscription active. Uploads are open.",

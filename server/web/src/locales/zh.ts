@@ -18,7 +18,7 @@ const zh: typeof en = {
     dark: "深色",
   },
   footer: {
-    tagline: "全天录音的置物架。思考交给你的 agent。",
+    tagline: "从此，不再害怕忘记。",
     rights: "EchoDay",
   },
   common: {
@@ -30,7 +30,7 @@ const zh: typeof en = {
     couldNotReach: "连不上服务器。",
   },
   shell: {
-    trialBanner: "试用期上传开放到 {date}。之后货架仍可读。保持上传为每月 {price}。",
+    trialBanner: "试用期上传开放到 {date}。之后记录仍可读。保持上传为每月 {price}。",
     readOnlyBanner: "上传已暂停（{reason}）。已有的日子和 Muse 日报仍可打开。",
     reviewBilling: "查看订阅",
   },
@@ -72,7 +72,7 @@ const zh: typeof en = {
     ],
     howTitle: "你的 agent 如何处理一天",
     howIntro:
-      "EchoDay 是置物架，不是大脑。由你自己的 agent —— Muse、Grok，或任何能发 HTTPS 请求的工具 —— 用你的 key 按下面的流程跑完每一天。",
+      "EchoDay 负责记住，思考交给你的 agent。由你自己的 agent —— Muse、Grok，或任何能发 HTTPS 请求的工具 —— 用你的 key 按下面的流程跑完每一天。",
     workflow: [
       {
         title: "列出日子",
@@ -197,7 +197,7 @@ const zh: typeof en = {
       },
       {
         q: "试用到期会怎样？",
-        a: "上传会暂停（app 收到 HTTP 402），但货架上已有的内容仍可读，你的 agent 也还能为已存在的日子补传日报。订阅 $5/月即可恢复上传。",
+        a: "上传会暂停（app 收到 HTTP 402），但已上传的内容仍可读，你的 agent 也还能为已存在的日子补传日报。订阅 $5/月即可恢复上传。",
       },
       {
         q: "数据能导出或删除吗？",
@@ -216,7 +216,7 @@ const zh: typeof en = {
   download: {
     eyebrow: "Android 应用",
     title: "下载 EchoDay",
-    intro: "EchoDay 安卓 app 录下你的一天并上传到你的货架，你自己的 Muse 可以在那里把它取走并写出日报。",
+    intro: "EchoDay 安卓 app 录下你的一天并上传到你的 EchoDay 账号，你自己的 Muse 可以在那里把它取走并写出日报。",
     downloadLatest: "下载 APK（最新版）",
     githubRepo: "GitHub 仓库",
     versionLatest: "版本：最新版。想找旧版本？",
@@ -225,14 +225,14 @@ const zh: typeof en = {
     steps: [
       { title: "下载 APK", body: "在安卓手机上点下载按钮，保存 EchoDay.apk。" },
       { title: "允许未知来源", body: "安卓询问时，允许你的浏览器为这次安装从未知来源安装应用。" },
-      { title: "打开 app 登录", body: "启动 EchoDay，注册或登录，录音就会从此上传到你的货架。" },
+      { title: "打开 app 登录", body: "启动 EchoDay，注册或登录，录音就会从此上传到你的账号。" },
     ],
   },
   auth: {
     signInTitle: "登录",
     registerTitle: "创建账号",
     signInIntro: "在手机和这个网站上用同一个邮箱。",
-    registerIntro: "注册即开放 7 天上传。之后货架仍可读，$5/月。",
+    registerIntro: "注册即开放 7 天上传。之后记录仍可读，$5/月。",
     password: "密码",
     confirmPassword: "确认密码",
     passwordRule: "至少 8 个字符，包含字母和数字。",
@@ -260,7 +260,7 @@ const zh: typeof en = {
     loadError: "日子加载失败。",
     noMatchTitle: "没有匹配这条搜索的内容。",
     noMatchBody: "试试日期、meeting_start 这类标记类型，或日报里出现过的词。",
-    emptyTitle: "货架是空的。",
+    emptyTitle: "这里还空着。",
     emptyBody:
       "让安卓 app 登录这个账号，等一段录音传完。它就会带着标记出现在这里。日报会在你的 Muse 回传后出现。",
     counts: "{audio} 段音频 · {markers} 个标记 · {bytes}",
@@ -334,7 +334,7 @@ const zh: typeof en = {
   },
   billing: {
     title: "订阅",
-    intro: "每月 {price}，一个人的货架持续开放。不含转写，因为这台服务器不做转写。",
+    intro: "每月 {price}，一个人的第二记忆持续开放。不含转写，因为这台服务器不做转写。",
     plan: "方案",
     perMonth: "/ 月",
     statusPaid: "订阅生效中。上传开放。",

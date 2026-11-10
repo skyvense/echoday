@@ -235,7 +235,7 @@ export function LandingPage() {
                 <p>
                   <span className="text-[#f36b53]">PUT</span> /api/v1/muse/days/2026-11-08/result
                 </p>
-                <p className="text-white/45">→ the summary is on your shelf</p>
+                <p className="text-white/45">→ the day is now remembered</p>
               </div>
             </div>
           </div>
