@@ -95,6 +95,8 @@ Result body (\`PUT .../result\`):
 
 Daily activity sheet (\`PUT .../sheet\`): send the JPEG binary itself as the request body with \`Content-Type: image/jpeg\` — no JSON, no multipart. Layout: the photos are the content — a tight grid of 3-4 columns of large images (each at least ~350 px wide in the final JPEG, photos filling at least 85% of the area, total width ~1200-1600 px, about 1 MB). Never print filenames or paths on the sheet; at most a small HH:MM label in a photo corner. No tiny thumbnails on a blank canvas.
 
+Cadence: analyse TODAY every 4 hours during the day (about 08:00-24:00) — pull what was uploaded since the last pass and re-PUT the complete cumulative result for the day so far (a result PUT replaces the whole result), refreshing the sheet as well; then one final pass after the day ends, before the 08:00 cleanup. An interim result is not the finish.
+
 ## Retention and quota
 
 Process new days promptly — originals do not stay forever:

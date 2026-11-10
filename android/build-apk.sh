@@ -23,7 +23,7 @@ sed 's|<manifest xmlns:android="http://schemas.android.com/apk/res/android">|<ma
   --rename-manifest-package personal.muse.recorder.cloud \
   --min-sdk-version 26 --target-sdk-version 34 \
   -A "$SRC/assets" \
-  --version-code 54 --version-name 1.33.1 "$OUT/compiled.zip"
+  --version-code 55 --version-name 1.33.2 "$OUT/compiled.zip"
 
 find "$SRC/java" "$OUT/gen" -name '*.java' > "$OUT/sources.txt"
 "$JAVABIN/javac" -encoding UTF-8 -cp "$AJAR" -d "$OUT/classes" @"$OUT/sources.txt"
