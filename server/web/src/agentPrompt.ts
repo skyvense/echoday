@@ -18,7 +18,7 @@ Workflow:
    PUT ${base}/api/v1/muse/days/YYYY-MM-DD/result
    JSON: {"markdown":"...","transcript_markdown":"...","analyses_json":[{"window_start":"YYYY-MM-DD HH:MM","window_end":"YYYY-MM-DD HH:MM","text":"..."}],"photo_analysis_markdown":"...","source":"muse","model":"<your model>"}
    markdown is required (max 200k chars); transcript_markdown max 2M chars; analyses_json max 100 entries; photo_analysis_markdown max 200k chars.
-6. If you built a daily activity sheet, PUT the JPEG binary itself (Content-Type: image/jpeg) to ${base}/api/v1/muse/days/YYYY-MM-DD/sheet.
+6. Build a daily activity sheet from the day's usable snapshot photos and PUT the JPEG binary itself (Content-Type: image/jpeg) to ${base}/api/v1/muse/days/YYYY-MM-DD/sheet. Sheet layout (important): the PHOTOS are the content — a tight grid of 3-4 columns of large images, each photo at least ~350 px wide in the final JPEG, photos filling at least 85% of the sheet's area, total width about 1200-1600 px, JPEG quality ~85 (about 1 MB). Never print filenames or paths on the sheet; the only text allowed is a small HH:MM time label in a corner of each photo. Never paste tiny thumbnails onto a big blank canvas.
 
 Retention — process new days promptly:
 - Once a day has a result, its original audio/photos are deleted at the daily cleanup at 08:00 (Asia/Shanghai) on the following day. Markers, summaries and sheets are kept forever.

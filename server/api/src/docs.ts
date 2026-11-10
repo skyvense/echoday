@@ -93,7 +93,7 @@ Result body (\`PUT .../result\`):
 
 \`markdown\` is required (max 200,000 chars). \`transcript_markdown\` max 2,000,000 chars, \`analyses_json\` is an array of at most 100 entries, \`photo_analysis_markdown\` max 200,000 chars, \`source\` is "muse" or "manual", \`model\` max 120 chars.
 
-Daily activity sheet (\`PUT .../sheet\`): send the JPEG binary itself as the request body with \`Content-Type: image/jpeg\` — no JSON, no multipart.
+Daily activity sheet (\`PUT .../sheet\`): send the JPEG binary itself as the request body with \`Content-Type: image/jpeg\` — no JSON, no multipart. Layout: the photos are the content — a tight grid of 3-4 columns of large images (each at least ~350 px wide in the final JPEG, photos filling at least 85% of the area, total width ~1200-1600 px, about 1 MB). Never print filenames or paths on the sheet; at most a small HH:MM label in a photo corner. No tiny thumbnails on a blank canvas.
 
 ## Retention and quota
 
