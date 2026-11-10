@@ -545,8 +545,9 @@ public class MainActivity extends Activity {
         // App icon on the title bar itself (v1.34.3, Zhang).
         android.widget.ImageView icon = new android.widget.ImageView(this);
         icon.setImageResource(R.mipmap.ic_launcher);
-        LinearLayout.LayoutParams ipp = new LinearLayout.LayoutParams(dp(30), dp(30));
-        ipp.rightMargin = dp(8);
+        LinearLayout.LayoutParams ipp = new LinearLayout.LayoutParams(
+                (int) Ui.dp(this, 30), (int) Ui.dp(this, 30));
+        ipp.rightMargin = (int) Ui.dp(this, 8);
         box.addView(icon, ipp);
         LinearLayout texts = new LinearLayout(this);
         texts.setOrientation(LinearLayout.VERTICAL);
