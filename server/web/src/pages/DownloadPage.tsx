@@ -2,7 +2,7 @@ import { useSession } from "../App";
 import { useLang } from "../i18n";
 import { SiteFooter, SiteHeader } from "../site";
 
-const APK_URL = "https://github.com/skyvense/echoday/releases/latest/download/EchoDay.apk";
+const APK_URL = "/download/apk";
 const REPO_URL = "https://github.com/skyvense/echoday";
 const RELEASES_URL = "https://github.com/skyvense/echoday/releases";
 

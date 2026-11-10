@@ -53,6 +53,38 @@ app.get("/api/v1/docs", (c) => {
   return c.text(apiDocs(), 200, { "Content-Type": "text/plain; charset=utf-8" });
 });
 
+// Stable APK download link for the website: /download/apk always
+// redirects to the LATEST release's version-named asset
+// (EchoDay-v<version>.apk), so the saved file carries its version
+// while the link itself never changes. The GitHub lookup is cached
+// for 10 minutes; on any failure it falls back to GitHub's own
+// fixed-name latest link (same file, unversioned name).
+const APK_FALLBACK = "https://github.com/skyvense/echoday/releases/latest/download/EchoDay.apk";
+let apkCache: { url: string; at: number } | null = null;
+app.get("/download/apk", async (c) => {
+  const now = Date.now();
+  if (apkCache && now - apkCache.at < 10 * 60 * 1000) {
+    return c.redirect(apkCache.url, 302);
+  }
+  try {
+    const res = await fetch("https://api.github.com/repos/skyvense/echoday/releases/latest", {
+      headers: { "User-Agent": "echoday-server", Accept: "application/vnd.github+json" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) throw new Error(`github ${res.status}`);
+    const rel: any = await res.json();
+    const asset = (rel.assets || []).find(
+      (a: any) => typeof a?.name === "string" && /^EchoDay-v.+\.apk$/.test(a.name),
+    );
+    if (!asset?.browser_download_url) throw new Error("no versioned asset");
+    apkCache = { url: asset.browser_download_url, at: now };
+    return c.redirect(apkCache.url, 302);
+  } catch (error) {
+    console.error("apk redirect lookup failed", error);
+    return c.redirect(APK_FALLBACK, 302);
+  }
+});
+
 const v1 = new Hono<AppEnv>();
 
 // Activity log for the admin console: app uploads and agent (muse token)
