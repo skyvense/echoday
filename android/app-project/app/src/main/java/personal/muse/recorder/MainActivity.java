@@ -216,6 +216,7 @@ public class MainActivity extends Activity {
         darkModeSpinner = findViewById(R.id.darkModeSpinner);
         setupActionBarAccount();
         refreshAccountChip(false);
+        fillVersionLine();
 
         applyTheme();
 
@@ -529,6 +530,35 @@ public class MainActivity extends Activity {
         lastEventText.setText(getString(R.string.last_event, label, time));
         toast(getString(R.string.marked_toast, label, time));
         Uploader.kick(this);
+    }
+
+    /**
+     * Settings header version line (v1.34.5): "版本 1.34.5 · 编译于
+     * 2026-11-10 14:32". The build stamp comes from assets/build_info.txt,
+     * written by build-apk.sh at build time (aapt2 zeroes APK entry
+     * timestamps, so the zip carries no usable build date). Builds made
+     * without the script fall back to the install/update time.
+     */
+    private void fillVersionLine() {
+        TextView tv = findViewById(R.id.settingsVersion);
+        if (tv == null) return;
+        try {
+            android.content.pm.PackageInfo pi =
+                    getPackageManager().getPackageInfo(getPackageName(), 0);
+            String built = "";
+            try {
+                java.io.InputStream in = getAssets().open("build_info.txt");
+                byte[] buf = new byte[64];
+                int n = in.read(buf);
+                in.close();
+                if (n > 0) built = new String(buf, 0, n, "UTF-8").trim();
+            } catch (Exception ignored) {}
+            if (built.isEmpty()) {
+                built = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
+                        .format(new Date(pi.lastUpdateTime));
+            }
+            tv.setText(getString(R.string.settings_version, pi.versionName, built));
+        } catch (Exception ignored) {}
     }
 
     /**

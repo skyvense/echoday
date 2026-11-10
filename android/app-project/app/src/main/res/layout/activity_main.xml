@@ -645,6 +645,14 @@
                     android:text="@string/settings_subtitle"
                     android:textSize="14sp" />
 
+                <TextView
+                    android:id="@+id/settingsVersion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:tag="sub"
+                    android:textSize="12sp" />
+
                 <!-- EchoDay account: built programmatically by CloudSettings -->
                 <TextView
                     style="@style/SettingsSectionTitle"

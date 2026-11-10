@@ -12,6 +12,13 @@ SRC="$(cd "$(dirname "$0")" && pwd)/app-project/app/src/main"
 OUT="$(cd "$(dirname "$0")" && pwd)/build-out"
 KS="$(cd "$(dirname "$0")" && pwd)/muse-recorder.keystore"
 rm -rf "$OUT"; mkdir -p "$OUT/compiled" "$OUT/gen" "$OUT/classes" "$OUT/dex"
+# Build stamp for the in-app version line (Settings header): aapt2
+# zeroes APK entry timestamps, so the compile date travels as an asset
+# in an overlay copy of assets/ (the source tree stays clean). Stamped
+# in Asia/Shanghai time so CI (UTC) and local builds agree.
+mkdir -p "$OUT/assets"
+cp -r "$SRC/assets/." "$OUT/assets/"
+TZ=Asia/Shanghai date '+%Y-%m-%d %H:%M' > "$OUT/assets/build_info.txt"
 
 "$BT/aapt2" compile --dir "$SRC/res" -o "$OUT/compiled.zip"
 # aapt2 (unlike AGP) requires a package attribute in the manifest; inject it
@@ -22,8 +29,8 @@ sed 's|<manifest xmlns:android="http://schemas.android.com/apk/res/android">|<ma
   --manifest "$OUT/AndroidManifest.xml" --java "$OUT/gen" \
   --rename-manifest-package personal.muse.recorder.cloud \
   --min-sdk-version 26 --target-sdk-version 34 \
-  -A "$SRC/assets" \
-  --version-code 60 --version-name 1.34.4 "$OUT/compiled.zip"
+  -A "$OUT/assets" \
+  --version-code 61 --version-name 1.34.5 "$OUT/compiled.zip"
 
 find "$SRC/java" "$OUT/gen" -name '*.java' > "$OUT/sources.txt"
 "$JAVABIN/javac" -encoding UTF-8 -cp "$AJAR" -d "$OUT/classes" @"$OUT/sources.txt"

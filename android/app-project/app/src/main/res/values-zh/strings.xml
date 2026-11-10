@@ -263,6 +263,7 @@
     <string name="refresh_fetch_cloud">正在获取文件列表…</string>
     <string name="refresh_fetch_day_files">正在获取当天文件…</string>
     <string name="refresh_rendering">正在整理显示…</string>
+    <string name="settings_version">版本 %1$s · 编译于 %2$s</string>
     <string name="up_cloud_blocked">EchoDay 已暂停上传：%1$s</string>
     <string name="up_cloud_failed">云端上传失败：%1$s — %2$s</string>
     <string name="group_backend">服务</string>

@@ -270,6 +270,7 @@
     <string name="refresh_fetch_cloud">Fetching the file list…</string>
     <string name="refresh_fetch_day_files">Fetching this day\'s files…</string>
     <string name="refresh_rendering">Preparing the view…</string>
+    <string name="settings_version">Version %1$s · built %2$s</string>
     <string name="up_cloud_blocked">EchoDay paused uploads: %1$s</string>
     <string name="up_cloud_failed">Cloud upload failed: %1$s — %2$s</string>
     <string name="group_backend">Service</string>
