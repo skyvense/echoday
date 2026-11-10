@@ -66,6 +66,8 @@ public final class Backend {
         public final List<DateEntry> dates = new ArrayList<>();
         public long totalBytes = -1;
         public long quotaBytes = -1;
+        /** Billing mode from /me: paid | trial | read_only | "" (unknown). */
+        public String billingMode = "";
     }
 
     public static final class FileEntry {
@@ -106,7 +108,10 @@ public final class Backend {
         try {
             JSONObject me = MuseCloud.me(Prefs.cloudUrl(ctx), Prefs.cloudJwt(ctx));
             JSONObject billing = me != null ? me.optJSONObject("billing") : null;
-            if (billing != null) out.quotaBytes = billing.optLong("quotaBytes", -1);
+            if (billing != null) {
+                out.quotaBytes = billing.optLong("quotaBytes", -1);
+                out.billingMode = billing.optString("mode", "");
+            }
         } catch (Exception ignored) {}
         return out;
     }

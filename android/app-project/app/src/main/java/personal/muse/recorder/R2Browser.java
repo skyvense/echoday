@@ -52,7 +52,7 @@ public final class R2Browser {
     private final Handler ui = new Handler(Looper.getMainLooper());
     private final ExecutorService io = Executors.newSingleThreadExecutor();
 
-    private final TextView subtitle, status, storageTotal;
+    private final TextView subtitle, status, storageTotal, storageQuota;
     private final ProgressBar spinner;
     private final Button backButton, refreshButton;
     private final ScrollView scroll;
@@ -91,6 +91,7 @@ public final class R2Browser {
     private final List<DateInfo> dateInfos = new ArrayList<>();
     private long totalBytes = -1;
     private long quotaBytes = -1;
+    private String billingMode = "";
     private long cacheAtMs = 0;
 
     public R2Browser(Activity act) {
@@ -112,11 +113,12 @@ public final class R2Browser {
         playLabel = act.findViewById(R.id.cloudPlayLabel);
         playerRow = act.findViewById(R.id.cloudPlayerRow);
         storageTotal = act.findViewById(R.id.cloudStorageTotal);
+        storageQuota = act.findViewById(R.id.cloudStorageQuota);
         storageBar = act.findViewById(R.id.cloudStorageBar);
         act.findViewById(R.id.cloudStorageCard)
                 .setBackground(Ui.cardBg(act, pal, 16));
         ((TextView) act.findViewById(R.id.cloudStorageLabel)).setTextColor(pal.sub);
-        ((TextView) act.findViewById(R.id.cloudStorageQuota)).setTextColor(pal.sub);
+        storageQuota.setTextColor(pal.sub);
         storageTotal.setTextColor(pal.text);
         subtitle.setTextColor(pal.sub);
         status.setTextColor(pal.sub);
@@ -239,6 +241,7 @@ public final class R2Browser {
                     cacheAtMs = System.currentTimeMillis();
                     totalBytes = res.totalBytes;
                     quotaBytes = res.quotaBytes;
+                    billingMode = res.billingMode;
                     dateInfos.clear();
                     for (Backend.DateEntry e : res.dates) {
                         DateInfo di = new DateInfo();
@@ -263,6 +266,18 @@ public final class R2Browser {
     }
 
     private void renderStorage() {
+        // Quota label is dynamic (v1.34.4): it used to be a static
+        // layout string ("Free quota 10 GB" — a leftover from the
+        // personal era) shown to everyone, paid members included.
+        if (quotaBytes > 0) {
+            if ("paid".equals(billingMode)) {
+                storageQuota.setText(act.getString(R.string.storage_quota_paid, fmtSize(quotaBytes)));
+            } else if ("trial".equals(billingMode)) {
+                storageQuota.setText(act.getString(R.string.storage_quota_free, fmtSize(quotaBytes)));
+            } else {
+                storageQuota.setText(act.getString(R.string.storage_quota_plain, fmtSize(quotaBytes)));
+            }
+        }
         if (totalBytes < 0) {
             storageTotal.setText("—");
             storageBar.setProgress(0);

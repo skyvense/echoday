@@ -176,7 +176,10 @@
     <string name="self_note_sub">Release to save as a voice-note marker</string>
     <string name="record_pending_count">%1$d segments pending</string>
     <string name="storage_label">Storage</string>
-    <string name="storage_quota">Free quota 10 GB</string>
+    <string name="storage_quota">Quota</string>
+    <string name="storage_quota_paid">Paid quota %1$s</string>
+    <string name="storage_quota_free">Free quota %1$s</string>
+    <string name="storage_quota_plain">Quota %1$s</string>
     <string name="cloud_counts">%1$d photos · %2$d audio</string>
     <string name="cloud_photos_title">Photos</string>
     <string name="cloud_audio_title">Audio</string>
