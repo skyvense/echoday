@@ -52,6 +52,11 @@ public class AccountActivity extends Activity {
         setTheme(Ui.isDark(this) ? android.R.style.Theme_Material
                 : android.R.style.Theme_Material_Light);
         pal = Ui.of(this);
+        android.app.ActionBar ab0 = getActionBar();
+        if (ab0 != null) {
+            ab0.setIcon(R.mipmap.ic_launcher);
+            ab0.setDisplayShowHomeEnabled(true);
+        }
 
         ScrollView scroll = new ScrollView(this);
         scroll.setBackgroundColor(pal.bg);

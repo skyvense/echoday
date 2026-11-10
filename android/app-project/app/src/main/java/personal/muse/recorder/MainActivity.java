@@ -540,20 +540,29 @@ public class MainActivity extends Activity {
         android.app.ActionBar ab = getActionBar();
         if (ab == null) return;
         LinearLayout box = new LinearLayout(this);
-        box.setOrientation(LinearLayout.VERTICAL);
+        box.setOrientation(LinearLayout.HORIZONTAL);
         box.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        // App icon on the title bar itself (v1.34.3, Zhang).
+        android.widget.ImageView icon = new android.widget.ImageView(this);
+        icon.setImageResource(R.mipmap.ic_launcher);
+        LinearLayout.LayoutParams ipp = new LinearLayout.LayoutParams(dp(30), dp(30));
+        ipp.rightMargin = dp(8);
+        box.addView(icon, ipp);
+        LinearLayout texts = new LinearLayout(this);
+        texts.setOrientation(LinearLayout.VERTICAL);
         barTitle = new TextView(this);
         barTitle.setText(R.string.app_name);
         barTitle.setTextSize(17);
         barTitle.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
         barTitle.setTextColor(pal.text);
-        box.addView(barTitle);
+        texts.addView(barTitle);
         accountChip = new TextView(this);
         accountChip.setTextSize(12);
         accountChip.setTextColor(pal.sub);
         accountChip.setSingleLine(true);
         accountChip.setEllipsize(android.text.TextUtils.TruncateAt.END);
-        box.addView(accountChip);
+        texts.addView(accountChip);
+        box.addView(texts);
         box.setOnClickListener(v ->
                 startActivity(new Intent(this, AccountActivity.class)));
         ab.setDisplayShowCustomEnabled(true);

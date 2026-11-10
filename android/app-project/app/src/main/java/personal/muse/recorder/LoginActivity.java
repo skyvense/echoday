@@ -62,21 +62,17 @@ public class LoginActivity extends Activity {
         scroll.addView(root);
         setContentView(scroll);
 
-        // App icon at the very top, then the name once — no second
-        // heading below it (v1.34.2, Zhang: the stacked titles looked
-        // messy and the text-glyph mark rendered lopsided).
-        android.widget.ImageView icon = new android.widget.ImageView(this);
-        icon.setImageResource(R.mipmap.ic_launcher);
-        LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(dp(64), dp(64));
-        root.addView(icon, ip);
+        // The app icon lives on the very top title bar (v1.34.3, Zhang):
+        // the ActionBar already says "EchoDay", so the page body does
+        // not repeat a big icon or a second big app name.
+        android.app.ActionBar ab = getActionBar();
+        if (ab != null) {
+            ab.setIcon(R.mipmap.ic_launcher);
+            ab.setDisplayShowHomeEnabled(true);
+        }
 
-        TextView name = label(getString(R.string.app_name), 28, pal.text, true);
-        LinearLayout.LayoutParams np = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        np.topMargin = dp(12);
-        name.setLayoutParams(np);
-        root.addView(name);
-        root.addView(label(getString(R.string.login_tagline), 14, pal.sub, false));
+        TextView tagline = label(getString(R.string.login_tagline), 16, pal.text, true);
+        root.addView(tagline);
         TextView subtitle = label(getString(R.string.login_subtitle), 13, pal.sub, false);
         LinearLayout.LayoutParams sp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
