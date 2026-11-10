@@ -62,26 +62,27 @@ public class LoginActivity extends Activity {
         scroll.addView(root);
         setContentView(scroll);
 
-        TextView mark = new TextView(this);
-        mark.setText("● ◗");
-        mark.setTextSize(34);
-        mark.setTextColor(pal.accent);
-        root.addView(mark);
+        // App icon at the very top, then the name once — no second
+        // heading below it (v1.34.2, Zhang: the stacked titles looked
+        // messy and the text-glyph mark rendered lopsided).
+        android.widget.ImageView icon = new android.widget.ImageView(this);
+        icon.setImageResource(R.mipmap.ic_launcher);
+        LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(dp(64), dp(64));
+        root.addView(icon, ip);
 
         TextView name = label(getString(R.string.app_name), 28, pal.text, true);
         LinearLayout.LayoutParams np = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        np.topMargin = dp(10);
+        np.topMargin = dp(12);
         name.setLayoutParams(np);
         root.addView(name);
         root.addView(label(getString(R.string.login_tagline), 14, pal.sub, false));
-        TextView welcome = label(getString(R.string.login_welcome), 20, pal.text, true);
-        LinearLayout.LayoutParams wp = new LinearLayout.LayoutParams(
+        TextView subtitle = label(getString(R.string.login_subtitle), 13, pal.sub, false);
+        LinearLayout.LayoutParams sp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        wp.topMargin = dp(28);
-        welcome.setLayoutParams(wp);
-        root.addView(welcome);
-        root.addView(label(getString(R.string.login_subtitle), 13, pal.sub, false));
+        sp.topMargin = dp(8);
+        subtitle.setLayoutParams(sp);
+        root.addView(subtitle);
 
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
