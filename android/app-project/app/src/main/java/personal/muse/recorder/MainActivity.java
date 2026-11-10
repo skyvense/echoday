@@ -53,6 +53,12 @@ public class MainActivity extends Activity {
     private Button selfNoteButton, retryUploadButton;
     private ProgressBar uploadProgress;
     private View settingsContainer;
+    // Title-bar account chip (v1.34.0): email + plan + expiry, tap = Account page.
+    private TextView accountChip;
+    private boolean chipBusy = false;
+    private long chipFetchedAtMs = 0;
+    private final java.util.concurrent.ExecutorService chipIo =
+            java.util.concurrent.Executors.newSingleThreadExecutor();
     // Tabs
     private Button tabRecordButton, tabCloudButton, tabReportsButton, tabSettingsButton;
     private View pageRecord, pageCloud, pageReports, pageSettings;
@@ -162,6 +168,13 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Sign-in gate (v1.34.0): with no session, the app opens on the
+        // dedicated sign-in screen like most apps do.
+        if (!Prefs.cloudLoggedIn(this)) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
         // Pick the matching framework theme before inflating, so native
         // widgets (spinners, dialogs, menus) follow the app's palette
         // instead of always rendering light.
@@ -198,6 +211,10 @@ public class MainActivity extends Activity {
         snapshotCameraSpinner = findViewById(R.id.snapshotCameraSpinner);
         settingsContainer = findViewById(R.id.settingsContainer);
         darkModeSpinner = findViewById(R.id.darkModeSpinner);
+        accountChip = findViewById(R.id.accountChip);
+        accountChip.setOnClickListener(v ->
+                startActivity(new Intent(this, AccountActivity.class)));
+        refreshAccountChip(false);
 
         applyTheme();
 
@@ -513,9 +530,58 @@ public class MainActivity extends Activity {
         Uploader.kick(this);
     }
 
+    /**
+     * Title-bar account chip (v1.34.0): shows the signed-in email plus
+     * plan and expiry from /me ("skyvense@gmail.com · 付费 · 到 2026-11-16").
+     * The email renders instantly from prefs; the plan part refreshes in
+     * the background (throttled) so the bar never blocks on the network.
+     */
+    private void refreshAccountChip(boolean fetch) {
+        if (accountChip == null) return;
+        if (!Prefs.cloudLoggedIn(this)) {
+            accountChip.setText("");
+            return;
+        }
+        if (accountChip.getText().length() == 0) {
+            accountChip.setText(Prefs.cloudEmail(this));
+        }
+        if (!fetch || chipBusy
+                || System.currentTimeMillis() - chipFetchedAtMs < 30_000) return;
+        chipBusy = true;
+        final String base = Prefs.cloudUrl(this);
+        final String jwt = Prefs.cloudJwt(this);
+        chipIo.execute(() -> {
+            org.json.JSONObject me = null;
+            Exception error = null;
+            try {
+                me = MuseCloud.me(base, jwt);
+            } catch (Exception e) {
+                error = e;
+            }
+            final org.json.JSONObject fMe = me;
+            final Exception fError = error;
+            ui.post(() -> {
+                chipBusy = false;
+                if (isFinishing()) return;
+                if (fError != null) {
+                    if (fError instanceof MuseCloud.HttpException
+                            && ((MuseCloud.HttpException) fError).code == 401) {
+                        Prefs.get(this).edit().remove(Prefs.KEY_CLOUD_JWT).apply();
+                        startActivity(new Intent(this, LoginActivity.class));
+                        finish();
+                    }
+                    return; // keep the last known chip text when offline
+                }
+                chipFetchedAtMs = System.currentTimeMillis();
+                accountChip.setText(AccountInfo.from(this, fMe).chipText(this));
+            });
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        refreshAccountChip(true);
         // Covers the reboot case: if the service was auto-started before
         // the app was opened, claiming the camera type may have been
         // refused then; retry now that the app is in the foreground.
@@ -564,6 +630,11 @@ public class MainActivity extends Activity {
      */
     private void applyTheme() {
         findViewById(R.id.rootLayout).setBackgroundColor(pal.bg);
+        findViewById(R.id.accountBar).setBackgroundColor(pal.tabBar);
+        findViewById(R.id.accountBarDivider).setBackgroundColor(pal.divider);
+        ((TextView) findViewById(R.id.accountBarMark)).setTextColor(pal.accent);
+        accountChip.setTextColor(pal.sub);
+        accountChip.setBackground(Ui.rounded(this, pal.card2, 12));
         findViewById(R.id.tabBar).setBackgroundColor(pal.tabBar);
         findViewById(R.id.tabDivider).setBackgroundColor(pal.divider);
         findViewById(R.id.footerDivider).setBackgroundColor(pal.divider);

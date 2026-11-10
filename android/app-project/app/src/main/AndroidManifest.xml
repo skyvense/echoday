@@ -39,6 +39,18 @@
             android:exported="false"
             android:label="使用帮助" />
 
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AccountActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ConnectActivity"
+            android:exported="false" />
+
         <service
             android:name=".RecordingService"
             android:exported="false"

@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -46,6 +47,7 @@ private final Handler ui = new Handler(Looper.getMainLooper());
 private final ExecutorService io = Executors.newSingleThreadExecutor();
 
 private final TextView title, status, detailText, dayTitle;
+private final ProgressBar spinner;
 private final Button backButton, refreshButton, sheetButton;
 private final ImageView sheetImage;
 private final ListView list;
@@ -159,6 +161,7 @@ this.act = act;
 this.pal = Ui.of(act);
 title = act.findViewById(R.id.reportsTitle);
 status = act.findViewById(R.id.reportsStatus);
+spinner = act.findViewById(R.id.reportsSpinner);
 detailText = act.findViewById(R.id.reportsDetailText);
 dayTitle = act.findViewById(R.id.reportsDayTitle);
 backButton = act.findViewById(R.id.reportsBackButton);
@@ -201,12 +204,25 @@ detail.setVisibility(View.GONE);
 list.setVisibility(View.VISIBLE);
 detailBar.setVisibility(View.GONE);
 header.setVisibility(View.VISIBLE);
+hideSpinner();
 status.setText("");
 return true;
 }
 
 private boolean configured() {
 return Backend.reportsConfigured(act);
+}
+
+/** Refresh feedback (v1.34.0): spinner + the stage the load is in. */
+private void showStage(int stageRes) {
+ui.post(() -> {
+spinner.setVisibility(View.VISIBLE);
+status.setText(act.getString(stageRes));
+});
+}
+
+private void hideSpinner() {
+ui.post(() -> spinner.setVisibility(View.GONE));
 }
 
 private void loadDays() {
@@ -217,9 +233,10 @@ status.setText(act.getString(R.string.reports_not_configured_cloud));
 return;
 }
 final int gen = ++generation;
-status.setText(act.getString(R.string.reports_loading));
+showStage(R.string.refresh_connecting);
 io.execute(() -> {
 try {
+showStage(R.string.refresh_fetch_reports);
 List<Backend.ReportDay> rows = Backend.listReportDays(act);
 List<DayRow> out = new ArrayList<>();
 for (Backend.ReportDay r : rows) {
@@ -233,6 +250,7 @@ out.add(d);
 }
 ui.post(() -> {
 if (gen != generation) return;
+hideSpinner();
 loadedAtMs = System.currentTimeMillis();
 days.clear();
 days.addAll(out);
@@ -242,8 +260,11 @@ status.setText(out.isEmpty()
 });
 } catch (Exception e) {
 if (gen != generation) return;
-ui.post(() -> status.setText(
-act.getString(R.string.reports_failed, trimErr(e))));
+ui.post(() -> {
+hideSpinner();
+status.setText(
+act.getString(R.string.reports_failed, trimErr(e)));
+});
 }
 });
 }
@@ -307,8 +328,9 @@ header.setVisibility(View.GONE);
 detailBar.setVisibility(View.VISIBLE);
 dayTitle.setText(d.day);
 detailText.setText(renderMd(d.summary));
-status.setText(act.getString(R.string.reports_loading));
+showStage(R.string.refresh_connecting);
 io.execute(() -> {
+showStage(R.string.refresh_fetch_day);
 Backend.ReportDetail rep = null;
 Exception error = null;
 try {
@@ -320,6 +342,7 @@ final Backend.ReportDetail fRep = rep;
 final Exception fError = error;
 ui.post(() -> {
 if (gen != generation || !detailOpen) return;
+hideSpinner();
 if (fError != null || fRep == null) {
 status.setText(act.getString(R.string.reports_failed,
 fError == null ? "" : trimErr(fError)));

@@ -53,6 +53,7 @@ public final class R2Browser {
     private final ExecutorService io = Executors.newSingleThreadExecutor();
 
     private final TextView subtitle, status, storageTotal;
+    private final ProgressBar spinner;
     private final Button backButton, refreshButton;
     private final ScrollView scroll;
     private final LinearLayout container;
@@ -99,6 +100,7 @@ public final class R2Browser {
         ((TextView) act.findViewById(R.id.cloudTitle)).setTextColor(pal.text);
         subtitle = act.findViewById(R.id.cloudSubtitle);
         status = act.findViewById(R.id.cloudStatus);
+        spinner = act.findViewById(R.id.cloudSpinner);
         backButton = act.findViewById(R.id.cloudBackButton);
         refreshButton = act.findViewById(R.id.cloudRefreshButton);
         scroll = act.findViewById(R.id.cloudScroll);
@@ -186,6 +188,18 @@ public final class R2Browser {
         ui.post(() -> status.setText(s == null ? "" : s));
     }
 
+    /** Refresh feedback (v1.34.0): spinner next to the status line. */
+    private void showStage(int stageRes) {
+        ui.post(() -> {
+            spinner.setVisibility(View.VISIBLE);
+            status.setText(act.getString(stageRes));
+        });
+    }
+
+    private void hideSpinner() {
+        ui.post(() -> spinner.setVisibility(View.GONE));
+    }
+
     private int dp(float v) {
         return (int) (v * act.getResources().getDisplayMetrics().density + 0.5f);
     }
@@ -215,9 +229,10 @@ public final class R2Browser {
         level = LEVEL_DATES;
         detail.setVisibility(View.GONE);
         scroll.setVisibility(View.VISIBLE);
-        setStatus(act.getString(R.string.cloud_loading));
+        showStage(R.string.refresh_connecting);
         io.execute(() -> {
             try {
+                showStage(R.string.refresh_fetch_cloud);
                 Backend.DatesResult res = Backend.listDates(act);
                 ui.post(() -> {
                     if (gen != generation) return;
@@ -235,11 +250,13 @@ public final class R2Browser {
                     }
                     renderDates();
                     renderStorage();
+                    hideSpinner();
                     setStatus(res.dates.isEmpty()
                             ? act.getString(R.string.cloud_empty) : "");
                 });
             } catch (Exception e) {
                 if (gen != generation) return;
+                hideSpinner();
                 setStatus(act.getString(R.string.cloud_failed, trimErr(e)));
             }
         });
@@ -311,9 +328,10 @@ public final class R2Browser {
         level = LEVEL_FOLDER;
         detail.setVisibility(View.GONE);
         scroll.setVisibility(View.VISIBLE);
-        setStatus(act.getString(R.string.cloud_loading));
+        showStage(R.string.refresh_connecting);
         io.execute(() -> {
             try {
+                showStage(R.string.refresh_fetch_day_files);
                 Backend.DayFiles files = Backend.listDay(act, date);
                 List<Item> photos = new ArrayList<>();
                 for (Backend.FileEntry e : files.photos) photos.add(item(e));
@@ -322,11 +340,13 @@ public final class R2Browser {
                 ui.post(() -> {
                     if (gen != generation) return;
                     renderFolder(date, photos, clips);
+                    hideSpinner();
                     setStatus(photos.isEmpty() && clips.isEmpty()
                             ? act.getString(R.string.cloud_empty) : "");
                 });
             } catch (Exception e) {
                 if (gen != generation) return;
+                hideSpinner();
                 setStatus(act.getString(R.string.cloud_failed, trimErr(e)));
             }
         });
@@ -537,7 +557,7 @@ public final class R2Browser {
         detailTitle.setText(r.name);
         image.setVisibility(View.GONE);
         playerRow.setVisibility(View.GONE);
-        setStatus(act.getString(R.string.cloud_downloading));
+        showStage(R.string.cloud_downloading);
         final File dest = new File(cacheDir(), r.name);
         io.execute(() -> {
             try {
@@ -546,6 +566,7 @@ public final class R2Browser {
                 }
                 ui.post(() -> {
                     if (gen != generation) return;
+                    hideSpinner();
                     setStatus("");
                     if (r.photo) {
                         image.setImageBitmap(BitmapFactory.decodeFile(dest.getAbsolutePath()));
@@ -560,6 +581,7 @@ public final class R2Browser {
                 });
             } catch (Exception e) {
                 if (gen != generation) return;
+                hideSpinner();
                 setStatus(act.getString(R.string.cloud_failed, trimErr(e)));
             }
         });
