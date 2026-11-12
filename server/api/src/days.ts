@@ -55,7 +55,12 @@ export async function listDays(userId: string, query: string): Promise<DayListRo
 
 export function excerpt(markdown: string | null): string | null {
   if (!markdown) return null;
-  const flat = markdown.replace(/\s+/g, " ").trim();
+  let md = markdown.replace(/^\s+/, "");
+  // A final day result opens with the full-day summary heading; the list
+  // excerpt should be the summary text itself, not the heading line.
+  const heading = md.match(/^#{1,6}\s*(全天活动摘要|Full-day summary)[^\n]*\n+/);
+  if (heading) md = md.slice(heading[0].length);
+  const flat = md.replace(/\s+/g, " ").trim();
   if (flat.length <= 180) return flat;
   return flat.slice(0, 177) + "…";
 }

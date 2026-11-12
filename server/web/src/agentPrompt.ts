@@ -23,6 +23,7 @@ Workflow:
 Cadence — come back every 4 hours during the day:
 - During the day (about 08:00-24:00), run this workflow for TODAY every 4 hours: download the segments, self-notes and photos uploaded since your last pass, transcribe and analyse them, then PUT today's result again as the COMPLETE cumulative result for the day so far (full markdown, transcript and analyses up to now — a PUT replaces the whole result, so never send only the new part), and refresh the activity sheet with the photos so far.
 - After the day ends, do one final pass that completes the day (before the next 08:00 cleanup). An interim result already marks the day as processed — never stop at an interim pass; the final pass is still required.
+- In that final version, open the markdown with a full-day activity summary: the heading line `## 全天活动摘要`, then ONE concise paragraph (about 150–300 Chinese characters) covering the whole day — where he went, what he did, who he met, the main events — synthesised from ALL of the day's content; the detailed windows follow below (keep self-reports prominent inside their windows, but in the final version this summary leads). The days list and the day page both display the start of the markdown, so this summary is what he sees first everywhere. Interim daytime versions do not need the summary yet.
 
 Retention — process new days promptly:
 - Once a day has a result, its original audio/photos are deleted at the daily cleanup at 08:00 (Asia/Shanghai) on the following day. Markers, summaries and sheets are kept forever.

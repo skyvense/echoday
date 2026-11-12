@@ -149,7 +149,14 @@ return (int) (v * act.getResources().getDisplayMetrics().density + 0.5f);
 
 private static String firstLine(String s) {
 // Clean one-line preview: strip all markdown markers, not just ##.
-return Markdown.stripToPlain(s);
+// A final day report opens with a full-day summary heading; the
+// preview should show the summary text itself, not the heading.
+String t = s == null? "": s;
+java.util.regex.Matcher m = java.util.regex.Pattern
+.compile("^\\s*#{1,6}\\s*(全天活动摘要|Full-day summary)[^\\n]*\\n+")
+.matcher(t);
+if (m.find()) t = t.substring(m.end());
+return Markdown.stripToPlain(t);
 }
 
 private CharSequence renderMd(String text) {
